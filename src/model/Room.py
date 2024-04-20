@@ -25,8 +25,8 @@ class RoomItem(Enum):
 # Room class with myItems and myDoors attributes, and various
 class Room:
     def __init__self(self):
-        self.myItems = []
-        self.myDoors = []
+        self.__myItems = []
+        self.__myDoors = []
 
     def get_items(self):
         return self.myItems

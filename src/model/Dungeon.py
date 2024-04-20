@@ -4,10 +4,10 @@ class Dungeon:
         self.__my_user_x_coordinate = 0.0
         self.__my_user_y_coordinate = 0.0
 
-    def create_maze(self):
+    def __create_maze(self):
         pass
 
-    def maze_is_valid(self,maze):
+    def __maze_is_valid(self,maze):
         pass
 
     def get_user_x(self):
