@@ -29,7 +29,7 @@ class Room:
         self.__myDoors = []
 
     def get_items(self):
-        return self.myItems
+        return self.__myItems
 
     def get_doors(self):
         return self.myDoors
@@ -38,4 +38,4 @@ class Room:
         pass
 
     def set_items(self,items):
-        self.myItems = items
+        self.__myItems = items
