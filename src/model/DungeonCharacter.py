@@ -1,5 +1,5 @@
 from random import random as random_float
-from abc import ABC, abstractmethod
+from abc import ABC
 
 
 class DungeonCharacter(ABC):
@@ -22,7 +22,7 @@ class DungeonCharacter(ABC):
             The chance to hit of the character, expressed as a float between 0 and 1
 """
 
-    def __new__(cls, *args, **kwargs):
+    def __new__(cls, *args, **kwargs) -> 'DungeonCharacter':
         """
         This method is called before the __init__ method, and is overwritten
         to prevent instantiation of the abstract class
@@ -34,15 +34,16 @@ class DungeonCharacter(ABC):
             raise TypeError("DungeonCharacter class is abstract and cannot be instantiated directly")
         return cls.__new__(cls, *args, **kwargs)
 
-    def __init__(self, my_name: str, my_class: type):
+    def __init__(self, the_name: str, the_class: type) -> None:
         """
         Constructor for the abstract DungeonCharacter class
-        :param my_name: the name of the character
-        :param my_class: the class that instantiated the character
+        :param the_name: the name of the character
+        :param the_class: the class that instantiated the character
         """
-        self.__my_name = my_name
-        self.__my_class = my_class
+        self.__my_name = the_name
+        self.__my_class = the_class
         # Set default values for the rest of the attributes, as sqlite3 database not yet implemented
+        # TODO: Implement sqlite3 database to retrieve character attributes
         self.__my_health = 0
         self.__my_damage_min = 0
         self.__my_damage_max = 0
@@ -84,7 +85,7 @@ class DungeonCharacter(ABC):
         """
         return self.__my_health
 
-    def set_health(self, health):
+    def set_health(self, health: int) -> None:
         """
         Setter for the health of the character
         :param health: the new health of the character
@@ -127,4 +128,4 @@ class DungeonCharacter(ABC):
         return (
                 f"Name: {self.__my_name}"
                 f" Health: {self.__my_health}"
-        )
+                )
