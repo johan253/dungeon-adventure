@@ -1,41 +1,47 @@
-from enum import Enum
-
-#Directions enum
-
-class Directions(Enum):
-    NORTH = 'North'
-    EAST  = 'East'
-    SOUTH = 'South'
-    WEST = 'West'
-
-# RoomItem enumeration
-
-class RoomItem(Enum):
-    HEALING_POTION = 'HealingPotion'
-    VISION_POTION = 'VisionPotion'
-    PIT = 'Pit'
-    ABSTRACTION = 'Abstraction'
-    ENCAPSULATION = 'Encapsulation'
-    INHERITANCE = 'Inheritance'
-    POLYMORPHISM = 'Polymorphism'
-    ENTRANCE = 'Entrance'
-    EXIT = 'Exit'
+from src.model.RoomItem import RoomItem
+from src.model.Directions import Direction
 
 
-# Room class with myItems and myDoors attributes, and various
 class Room:
-    def __init__self(self):
-        self.__myItems = []
-        self.__myDoors = []
+    """
+    Class representing a room in the dungeon. A room has items and doors.
+    Attributes:
+        - my_items: List[RoomItem]
+            Represents the items in the room
+        - my_doors: List[Direction]
+            Represents the doors in the room
+    """
+    def __init__(self) -> None:
+        """
+        Constructor for the Room class
+        """
+        self.__my_items: [RoomItem] = []
+        self.__my_doors: [Direction] = []
 
-    def get_items(self):
-        return self.__myItems
+    def get_items(self) -> [RoomItem]:
+        """
+        Getter for the items in the room
+        :return: the items in the room
+        """
+        return self.__my_items
 
-    def get_doors(self):
-        return self.myDoors
+    def get_doors(self) -> [Direction]:
+        """
+        Getter for the doors in the room
+        :return: the doors in the room
+        """
+        return self.__my_doors
 
-    def to_string(self):
-        pass
+    def set_items(self, items: [RoomItem]) -> None:
+        """
+        Setter for the items in the room
+        :param items: the new items in the room
+        """
+        self.__my_items = items
 
-    def set_items(self,items):
-        self.__myItems = items
+    def __str__(self) -> str:
+        """
+        String representation of the room
+        :return: the string representation of the room
+        """
+        return "Room with items: " + str(self.__my_items) + " and doors: " + str(self.__my_doors)
