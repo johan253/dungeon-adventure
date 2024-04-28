@@ -1,11 +1,27 @@
-from DungeonCharacter import DungeonCharacter
+from src.model.Hero import Hero
+from src.model.Monster import Monster
 
 
-class Thief(DungeonCharacter):
-    DEFAULT_NAME = "Warrior"
+class Warrior(Hero):
+    """
+    This class represents a warrior in the Dungeon Adventure game
+    Attributes:
+        - DEFAULT_NAME: String
+            The default name of the warrior
+    """
+    DEFAULT_NAME: str = "Warrior"
 
-    def __init__(self, my_name=DEFAULT_NAME, my_class=None, my_chance_to_block=0.0):
-        super().__init__(my_name, my_class, my_chance_to_block)
+    def __init__(self, the_name=DEFAULT_NAME) -> None:
+        """
+        Constructor for the Warrior class
+        :param the_name: The name of the warrior
+        """
+        super().__init__(the_name, Warrior)
 
-    def do_special(self, other):
+    def do_special(self, other: Monster) -> bool:
+        """
+        This method allows the warrior to perform a special attack or ability
+        :param other: The monster to perform the special ability on
+        :return: True if the special ability was successful, False otherwise
+        """
         pass

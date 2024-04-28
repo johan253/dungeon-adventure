@@ -1,5 +1,4 @@
-from random import random as random_float
-from abc import ABC
+from abc import ABC, abstractmethod
 
 
 class DungeonCharacter(ABC):
@@ -32,7 +31,7 @@ class DungeonCharacter(ABC):
         if cls is DungeonCharacter:
             # Raise an error if the class is this abstract class
             raise TypeError("DungeonCharacter class is abstract and cannot be instantiated directly")
-        return cls.__new__(cls, *args, **kwargs)
+        return super().__new__(cls)
 
     def __init__(self, the_name: str, the_class: type) -> None:
         """
@@ -44,25 +43,20 @@ class DungeonCharacter(ABC):
         self.__my_class = the_class
         # Set default values for the rest of the attributes, as sqlite3 database not yet implemented
         # TODO: Implement sqlite3 database to retrieve character attributes
-        self.__my_health = 0
-        self.__my_damage_min = 0
-        self.__my_damage_max = 0
-        self.__my_attack_speed = 0
-        self.__my_chance_to_hit = 0.0
+        self.__my_health = 999
+        self.__my_damage_min = 9
+        self.__my_damage_max = 99
+        self.__my_attack_speed = 9
+        self.__my_chance_to_hit = 0.9
 
+    @abstractmethod
     def attack(self, the_other_character: 'DungeonCharacter') -> bool:
         """
         This method allows the character to attack another character
         :param the_other_character: the character to attack
         :return: True if the attack was successful, False otherwise
         """
-        dice_roll: float = random_float()
-        if dice_roll <= self.__my_chance_to_hit:
-            damage: int = int(random_float() * (self.__my_damage_max - self.__my_damage_min) + self.__my_damage_min)
-            the_other_character.set_health(the_other_character.get_health() - damage)
-            return True
-        else:
-            return False
+        pass
 
     def get_name(self) -> str:
         """
@@ -120,6 +114,15 @@ class DungeonCharacter(ABC):
         """
         return self.__my_chance_to_hit
 
+    def damage(self, damage: int) -> bool:
+        """
+        This method damages the character by a certain amount
+        :param damage: The amount of damage to deal to the character
+        :return: True if the character is dead, False otherwise
+        """
+        self.__my_health -= damage
+        return self.__my_health <= 0
+
     def __str__(self) -> str:
         """
         String representation of the character
@@ -127,5 +130,6 @@ class DungeonCharacter(ABC):
         """
         return (
                 f"Name: {self.__my_name}"
-                f" Health: {self.__my_health}"
+                f"\nHealth: {self.__my_health}"
+                f"\nType: {self.__my_class.__name__}\n"
                 )
