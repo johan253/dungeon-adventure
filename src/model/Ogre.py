@@ -1,4 +1,4 @@
-from Monster import Monster
+from src.model.Monster import Monster
 
 
 class Ogre(Monster):
