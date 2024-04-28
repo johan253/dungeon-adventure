@@ -1,40 +1,53 @@
-from model.DungeonCharacter import DungeonCharacter
-from model.Hero import Hero
-from model.Monster import Monster
-from model.Skeleton import Skeleton
-from model.Ogre import Ogre
-from model.Gremlin import Gremlin
+from controller.DungeonAdventure import DungeonAdventure
 from model.Warrior import Warrior
 from model.Thief import Thief
 from model.Priestess import Priestess
 
-from model.Room import Room
-from model.RoomItem import RoomItem
-from model.Directions import Direction
 
-# to test if the class can be instantiated
+print("Welcome to Dungeon Adventure!")
+print("Please enter your name:")
+name = input()
+print("Please choose a class:")
+print("1. Warrior")
+print("2. Thief")
+print("3. Priestess")
+choice = input("Enter the number of the class you want to play: ")
+valid = choice in ["1", "2", "3"]
+while not valid:
+    print("Invalid input. Please enter a number between 1 and 3.")
+    choice = input("Enter the number of the class you want to play: ")
+    valid = choice in ["1", "2", "3"]
+player_type: type = None
+if choice == "1":
+    player_type = Warrior
+elif choice == "2":
+    player_type = Thief
+else:
+    player_type = Priestess
 
-# war = Warrior("warrior bob")
-# thi = Thief("thief joe")
-# pri = Priestess("priest alice")
-#
-# ogre = Ogre("Shrek")
-# skeleton = Skeleton("Bones")
-# gremlin = Gremlin("Gizmo")
-#
-# count = 0
-#
-# print(f"{ogre.get_name()} health:", ogre.get_health())
-# while ogre.get_health() > 0:
-#     health = ogre.get_health()
-#     war.attack(ogre)
-#     if ogre.get_health() == health:
-#         print(f"{war.get_name()} missed!")
-#     else:
-#         print(f"{war.get_name()} hit {ogre.get_name()} for", health - ogre.get_health(), "damage")
-#         print(f"{ogre.get_name()} health:", ogre.get_health())
-#     count += 1
-# print(f"{ogre.get_name()} defeated! took {count} turns")
-
-rm = Room()
-print("Creating a room, has items: ", rm.get_items(), " and doors: ", rm.get_doors())
+print(f"Welcome, {name} the {player_type.__name__}!")
+game: DungeonAdventure = DungeonAdventure(name, player_type)
+while True:
+    print("Enter one of the following choices")
+    print("1. Move North")
+    print("2. Move South")
+    print("3. Move East")
+    print("4. Move West")
+    print("5. QUIT GAME")
+    direction = input("Enter the number of the direction you want to move: ")
+    valid = direction in ["1", "2", "3", "4", "5"]
+    while not valid:
+        print("Invalid input. Please enter a number between 1 and 4.")
+        direction = input("Enter the number of the direction you want to move: ")
+        valid = direction in ["1", "2", "3", "4", "5"]
+    if direction == "1":
+        game.move_player(0, -1)
+    elif direction == "2":
+        game.move_player(0, 1)
+    elif direction == "3":
+        game.move_player(1, 0)
+    elif direction == "4":
+        game.move_player(-1, 0)
+    else:
+        break
+print("Thank you for playing Dungeon Adventure!")
