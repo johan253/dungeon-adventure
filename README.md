@@ -1,3 +1,16 @@
-# dungeon-adventure
+# Dungeon Adventure
+A dungeon crawler type game where a user scavenges through a maze and battles monsters to find the 4 pillars of Object Orieted Programming:
+- Abstraction
+- Encapsulation
+- Inheritence
+- Polymorphism
 ## TCSS360 - Spring 2024
+Made as a final project for TCSS360 Software Development and Quality Assurance Techniques at the University of Washington Tacoma
 ### Made by: Aly Badr, Johan Hernandez, Lwazi Mabota
+Project [SRS](https://uwnetid-my.sharepoint.com/:w:/r/personal/mlwazi_uw_edu/Documents/srs_template.docx?d=wc5e45b6c599b42978a3fa66e18cb0a38&csf=1&web=1&e=vqPJ7w)
+## Version
+0.2.0
+## Developed with
+- Python
+- SQLite
+- Pygame
