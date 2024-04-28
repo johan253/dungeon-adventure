@@ -35,6 +35,7 @@ class RoomItem(Enum):
     PillarOfInheritance = "I"
     PillarOfPolymorphism = "P"
     BombPotion = "B"
+    SpeedPotion = "S"
 
     @classmethod
     def list(cls) -> [str]:

@@ -1,3 +1,4 @@
+import random
 from src.model.RoomItem import RoomItem
 from src.model.Directions import Direction
 
@@ -11,6 +12,7 @@ class Room:
         - my_doors: List[Direction]
             Represents the doors in the room
     """
+
     def __init__(self) -> None:
         """
         Constructor for the Room class
@@ -47,3 +49,28 @@ class Room:
         return "Room with items: " + str(self.__my_items) + " and doors: " + str(self.__my_doors)
 
     def generate_rooms(self):
+
+        """
+        Generates random items for the room
+        """
+
+        self.__my_items = []
+
+        """
+        (Possibly an) Exit - only one room will have an exit and 
+        the room that contains the exit will contain NOTHING else
+        """
+
+        if is_exit:
+            self.__my_items.append(RoomItem.Exit)
+            return
+
+        # Generate items
+
+        for item in [RoomItem.HealingPotion, RoomItem.SpeedPotion , RoomItem.VisionPotion, RoomItem.Pit, RoomItem.BombPotion]:
+            if random.randint(1, 100) <= 10:  # 10% chance
+                self.__my_items.append(item)
+
+        # Randomly add a pillar
+        if random.randint(1, 100) <= 25:  # 25% chance
+            self.__my_items.append(random.choice([RoomItem.PillarOfAbstraction, RoomItem.PillarOfEncapsulation, RoomItem.PillarOfInheritance, RoomItem.PillarOfPolymorphism]))
