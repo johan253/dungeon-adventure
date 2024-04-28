@@ -1,8 +1,8 @@
 # Dungeon Adventure
-A dungeon crawler type game where a user scavenges through a maze and battles monsters to find the 4 pillars of Object Orieted Programming:
+A dungeon crawler type game where a user scavenges through a maze and battles monsters to find the 4 pillars of Object Oriented Programming:
 - Abstraction
 - Encapsulation
-- Inheritence
+- Inheritance
 - Polymorphism
 ## TCSS360 - Spring 2024
 Made as a final project for TCSS360 Software Development and Quality Assurance Techniques at the University of Washington Tacoma
