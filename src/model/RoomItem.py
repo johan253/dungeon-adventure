@@ -1,6 +1,6 @@
 from enum import Enum
 
-
+import random
 class RoomItem(Enum):
     """
     Enum for the different types of items that can be found in a room.
@@ -34,6 +34,7 @@ class RoomItem(Enum):
     PillarOfEncapsulation = "E"
     PillarOfInheritance = "I"
     PillarOfPolymorphism = "P"
+    BombPotion = "B"
 
     @classmethod
     def list(cls) -> [str]:

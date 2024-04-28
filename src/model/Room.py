@@ -45,3 +45,5 @@ class Room:
         :return: the string representation of the room
         """
         return "Room with items: " + str(self.__my_items) + " and doors: " + str(self.__my_doors)
+
+    def generate_rooms(self):
