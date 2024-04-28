@@ -65,6 +65,7 @@ class DungeonCharacter(ABC):
         :return: True if the character is dead, False otherwise
         """
         self.__my_health -= damage
+        self.__my_health = max(0, self.__my_health)
         return self.__my_health <= 0
 
     def get_name(self) -> str:
