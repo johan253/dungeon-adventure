@@ -1,27 +1,23 @@
 class DungeonAdventure:
-    """
-    This class represents the controller for the dungeon adventure game
-    Attributes:
-        - my_player: DungeonCharacter
-        - my_inventory: List[DungeonItem]
-        - my_dungeon: Dungeon
-    """
+    def __init__(self):
+        self.__my_player = None #Hero
+        self.__my_inventory = [] #RoomItem
+        self.__my_dungeon = None #Dungeon
 
-    __instance = None
+    def move_player(self):
+        pass
 
-    def __new__(cls, *args, **kwargs):
-        """
-        This method is called before the __init__ method, and is overwritten
-        to prevent more than once instance of this class from being created
-        :param args: the arguments passed to the class constructor
-        """
-        if not hasattr(cls, '__instance'):
-            cls.__instance = super().__new__(cls, *args, **kwargs)
-        return cls.__instance
+    def use_item(self,item): # item = Room-Item
+       pass
 
-    def run(self) -> None:
-        """
-        This method runs the dungeon adventure game
-        """
-        print("Welcome to Dungeon Adventure!")
-        print("You are now in the dungeon. Good luck!")
+    def __battle(self,char1, char2):
+        pass
+
+    def get_Dungeon(self):
+        pass
+
+    def get_invnetory(self):
+        return self.__my_inventory
+
+
+

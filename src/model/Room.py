@@ -15,8 +15,8 @@ class Room:
         """
         Constructor for the Room class
         """
-        self.__my_items: [RoomItem] = []
-        self.__my_doors: [Direction] = []
+        self.__my_items: [RoomItem] = RoomItem.list()
+        self.__my_doors: [Direction] = Direction.list()
 
     def get_items(self) -> [RoomItem]:
         """
