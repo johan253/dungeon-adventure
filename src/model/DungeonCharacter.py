@@ -19,7 +19,7 @@ class DungeonCharacter(ABC):
             The attack speed of the character
         - my_chance_to_hit: Float
             The chance to hit of the character, expressed as a float between 0 and 1
-"""
+    """
 
     def __new__(cls, *args, **kwargs) -> 'DungeonCharacter':
         """
@@ -57,6 +57,15 @@ class DungeonCharacter(ABC):
         :return: True if the attack was successful, False otherwise
         """
         pass
+
+    def damage(self, damage: int) -> bool:
+        """
+        This method damages the character by a certain amount
+        :param damage: The amount of damage to deal to the character
+        :return: True if the character is dead, False otherwise
+        """
+        self.__my_health -= damage
+        return self.__my_health <= 0
 
     def get_name(self) -> str:
         """
@@ -113,15 +122,6 @@ class DungeonCharacter(ABC):
         :return: the chance to hit of the character
         """
         return self.__my_chance_to_hit
-
-    def damage(self, damage: int) -> bool:
-        """
-        This method damages the character by a certain amount
-        :param damage: The amount of damage to deal to the character
-        :return: True if the character is dead, False otherwise
-        """
-        self.__my_health -= damage
-        return self.__my_health <= 0
 
     def __str__(self) -> str:
         """

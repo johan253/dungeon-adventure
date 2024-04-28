@@ -5,6 +5,4 @@ from model.Thief import Thief
 from model.Warrior import Warrior
 
 # to test if the class can be instantiated
-char = Thief("bob")
-char2 = Warrior("joe")
-print(char, char2)
+

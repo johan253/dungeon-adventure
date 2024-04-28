@@ -19,7 +19,7 @@ class Monster(DungeonCharacter, ABC):
         """
         if cls is Monster:
             raise TypeError("The Monster class may not be instantiated directly")
-        return super().__new__(cls, *args, **kwargs)
+        return super().__new__(cls)
 
     def __init__(self, the_name, the_class) -> None:
         """

@@ -1,5 +1,5 @@
 from src.model.Hero import Hero
-from src.model.Monster import Monster
+from src.model.DungeonCharacter import DungeonCharacter
 
 
 class Priestess(Hero):
@@ -18,7 +18,7 @@ class Priestess(Hero):
         """
         super().__init__(the_name, Priestess)
 
-    def do_special(self, other) -> bool:
+    def do_special(self, other: DungeonCharacter) -> bool:
         """
         This method allows the priestess to perform a special attack or ability
         :param other: The monster to perform the special ability on

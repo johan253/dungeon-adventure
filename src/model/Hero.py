@@ -28,7 +28,7 @@ class Hero(DungeonCharacter, ABC):
         :param the_class: The class that instantiated the hero
         """
         super().__init__(the_name, the_class)
-        # use SQLite batabase to retrieve this value?
+        # use SQLite database to retrieve this value?
         self.__my_chance_to_block = 0.1
 
     @abstractmethod
