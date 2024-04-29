@@ -28,12 +28,11 @@ class DungeonRoom:
         self.my_monster_type = "none"
 
     '''
-    Setter for the my_room property.'''
+   This function sets the room name with a num.'''
     def set_room(self, num):
         self.my_room = f"Dungeon Room {num}.tmx"
     '''
-    Setter for the my_type property.
-    Depending on the provided type properties of the room may change.'''
+   This function sets the type of the room.(entrance, exit, pillar)'''
     def set_type(self, the_type):
         self.my_type = the_type
         if the_type in {"entrance", "exit"}:
