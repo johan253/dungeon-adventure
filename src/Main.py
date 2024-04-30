@@ -40,14 +40,18 @@ while True:
         print("Invalid input. Please enter a number between 1 and 4.")
         direction = input("Enter the number of the direction you want to move: ")
         valid = direction in ["1", "2", "3", "4", "5"]
+        is_dead = False
     if direction == "1":
-        game.move_player(0, -1)
+        is_dead = game.move_player(0, -1)
     elif direction == "2":
-        game.move_player(0, 1)
+        is_dead = game.move_player(0, 1)
     elif direction == "3":
-        game.move_player(1, 0)
+        is_dead = game.move_player(1, 0)
     elif direction == "4":
-        game.move_player(-1, 0)
+        is_dead = game.move_player(-1, 0)
     else:
+        break
+    if is_dead:
+        print("Game Over, you have died.")
         break
 print("Thank you for playing Dungeon Adventure!")
