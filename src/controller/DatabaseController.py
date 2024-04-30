@@ -1,8 +1,8 @@
 import sqlite3
 
 
-def get_connection(ds, entity, name):
-    query = f"Select from {entity} where name = '{name}'"
+def get_connection(ds, character_class, name):
+    query = f"Select from {character_class} where name = '{name}'"
     result_map = {}
     try:
         connection = ds.connect()
