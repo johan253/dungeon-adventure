@@ -2,11 +2,10 @@ import sqlite3
 
 
 def get_connection(ds, character_class, name):
-    query = f"Select from {character_class} where name = '{name}'"
+    query = f"Select * from {character_class} where name = '{name}'"
     result_map = {}
     try:
-        connection = ds.connect()
-        pointer = connection.cursor()
+        pointer = ds.cursor()
         pointer.execute(query)
         columns = [desc[0] for desc in pointer.description]
         for row in pointer.fetchall():
@@ -15,13 +14,12 @@ def get_connection(ds, character_class, name):
         print(error)
         raise SystemExit(0)
     finally:
-        connection.close()
-    return result_map
+        return result_map
 
 
 def get_data():
     sql_data = {}
-    ds = sqlite3.connect('Dungeon_Data.db')
+    ds = sqlite3.connect('../DungeonData.db')
     try:
         sql_data["Warrior"] = get_connection(ds, "Hero", "Warrior")
         sql_data["Priestess"] = get_connection(ds, "Hero", "Priestess")
@@ -35,4 +33,8 @@ def get_data():
 
 
 if __name__ == '__main__':
-    print(get_data())
+    data = get_data()
+    for key in data:
+        print(f"{key}:")
+        for inner_key in data[key]:
+            print(f"\t{inner_key}: {data[key][inner_key]}")
