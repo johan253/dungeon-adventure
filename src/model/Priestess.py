@@ -1,5 +1,6 @@
 from src.model.Hero import Hero
 from src.model.DungeonCharacter import DungeonCharacter
+import random
 
 
 class Priestess(Hero):
@@ -18,10 +19,24 @@ class Priestess(Hero):
         """
         super().__init__(the_name, Priestess)
 
-    def do_special(self, other: DungeonCharacter) -> bool:
+    def do_special(self, other: DungeonCharacter = None) -> bool:
         """
-        This method allows the priestess to perform a special attack or ability
-        :param other: The monster to perform the special ability on
-        :return: True if the special ability was successful, False otherwise
+        This method allows the priestess to perform a special healing ability.
+        It can heal herself or another character. If no target is specified, it heals herself.
+        :param other: The character to perform the healing on (defaults to None, which means heal self)
+        :return: True if the healing was performed, False otherwise (e.g., if the target is already at full health)
         """
-        pass
+        target = other if other is not None else self
+        current_health = target.get_health()
+        max_health = 100  # Assuming 100 is the max health limit; adjust as needed for your game design
+        if current_health < max_health:
+            heal_amount = random.randint(25, 50)  # Heal range
+            new_health = min(max_health, current_health + heal_amount)
+            target.set_health(new_health)
+            print(f"{target.get_name()} healed for {heal_amount} health points to {new_health}.")
+            return True
+        else:
+            print(f"{target.get_name()} is already at full health.")
+            return False
+
+

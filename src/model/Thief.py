@@ -1,5 +1,6 @@
 from src.model.Hero import Hero
 from src.model.DungeonCharacter import DungeonCharacter
+import random
 
 
 class Thief(Hero):
@@ -20,8 +21,33 @@ class Thief(Hero):
 
     def do_special(self, other: DungeonCharacter) -> bool:
         """
-        This method allows the thief to perform a special attack or ability
-        :param other: The monster to perform the special ability on
-        :return: True if the special ability was successful, False otherwise
+        This method allows the thief to perform a special attack or ability.
+        Uses a probability map to decide the outcome of a surprise attack.
+        :param other: The monster to perform the special ability on.
+        :return: True if an attack is attempted, False if caught.
         """
-        pass
+        attack_actions = {
+            0.4: self.double_attack,  # 40% chance
+            0.6: self.get_caught,  # 20% chance
+            1.0: self.normal_attack  # 40% chance
+        }
+
+        outcome = random.random()
+        for probability, action in sorted(attack_actions.items()):
+            if outcome < probability:
+                return action(other)
+
+    def double_attack(self, other: DungeonCharacter) -> bool:
+        print(f"{self.get_name()} launches a double attack on {other.get_name()}!")
+        self.attack(other)  # First attack
+        self.attack(other)  # Second attack
+        return True
+
+    def get_caught(self, other: DungeonCharacter) -> bool:
+        print(f"{self.get_name()} is caught and cannot make an attack!")
+        return False
+
+    def normal_attack(self, other: DungeonCharacter) -> bool:
+        print(f"{self.get_name()} performs a normal attack on {other.get_name()}.")
+        self.attack(other)
+        return True
