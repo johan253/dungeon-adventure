@@ -15,4 +15,4 @@ class Ogre(Monster):
         Constructor for the Ogre class
         :param name: The name of the Ogre
         """
-        super().__init__(name, Ogre)
+        super().__init__(name, Ogre.__name__)

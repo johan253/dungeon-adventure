@@ -15,4 +15,4 @@ class Skeleton(Monster):
         Constructor for the Skeleton class
         :param name: The name of the Skeleton
         """
-        super().__init__(name, Skeleton)
+        super().__init__(name, Skeleton.__name__)

@@ -1,9 +1,8 @@
 import sqlite3
+import os
 
 
 class DatabaseController:
-    __DATABASE_PATH = '../DungeonData.db'
-    __DB = sqlite3.connect(__DATABASE_PATH)
     __instance = None
 
     def __new__(cls, *args, **kwargs):
@@ -21,30 +20,28 @@ class DatabaseController:
         """
         Constructor for the DatabaseController class
         """
-        pass
-
-    def __get_connection(self, ds, character_class, name):
-        query = f"Select * from '{character_class}' where name = '{name}'"
-        result_map = {}
-        try:
-            pointer = ds.cursor()
-            pointer.execute(query)
-            columns = [desc[0] for desc in pointer.description]
-            for row in pointer.fetchall():
-                result_map = {columns[i]: row[i] for i in range(len(columns))}
-        except sqlite3.Error as error:
-            print(error)
-            raise SystemExit(0)
-        finally:
-            return result_map
+        script_dir = os.path.dirname(os.path.realpath(__file__))
+        self.__DATABASE_PATH = os.path.join(script_dir, '../DungeonData.db')
+        self.__DB = sqlite3.connect(self.__DATABASE_PATH)
 
     def get_stats(self, character_class: str, character_name: str):
         """
         This method retrieves the stats of a character from the database
+        :param character_name: the name of the character
         :param character_class: the class of the character
         :return: a dictionary containing the stats of the character
         """
-        return self.__get_connection(self.__DB, character_class, character_name)
+        query = f"Select * from {character_class} where name = '{character_name}'"
+        data = {}
+        pointer = self.__DB.cursor()
+        print(query)
+        pointer.execute(query)
+        columns = [desc[0] for desc in pointer.description]
+        row = pointer.fetchone()
+        if row is not None:
+            data = {columns[i]: row[i] for i in range(len(columns))}
+        pointer.close()
+        return data
 
     def get_all_data(self) -> dict:
         """

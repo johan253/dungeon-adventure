@@ -1,6 +1,7 @@
 from src.model.DungeonCharacter import DungeonCharacter
 from random import random
 from abc import ABC
+from src.controller.DatabaseController import DatabaseController as DB
 
 
 class Monster(DungeonCharacter, ABC):
@@ -29,7 +30,7 @@ class Monster(DungeonCharacter, ABC):
         """
         super().__init__(the_name, Monster.__name__, the_class)
         # incorporate SQLite driver for this?
-        self.__my_chance_to_heal = 0.1
+        self.__my_chance_to_heal = DB().get_stats(Monster.__name__, the_class)['chance_to_heal']
 
     def get_chance_to_heal(self) -> float:
         """

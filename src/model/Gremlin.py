@@ -15,4 +15,4 @@ class Gremlin(Monster):
         Constructor for the Gremlin class
         :param name: The name of the Gremlin
         """
-        super().__init__(name, Gremlin)
+        super().__init__(name, Gremlin.__name__)

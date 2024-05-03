@@ -1,6 +1,7 @@
 from src.model.DungeonCharacter import DungeonCharacter
 from random import random
 from abc import ABC, abstractmethod
+from src.controller.DatabaseController import DatabaseController as DB
 
 
 class Hero(DungeonCharacter, ABC):
@@ -28,8 +29,7 @@ class Hero(DungeonCharacter, ABC):
         :param the_class: The class that instantiated the hero
         """
         super().__init__(the_name, Hero.__name__, the_class)
-        # use SQLite database to retrieve this value?
-        self.__my_chance_to_block = 0.1
+        self.__my_chance_to_block = DB().get_stats(Hero.__name__, the_class)['chance_to_block']
 
     @abstractmethod
     def do_special(self, other: DungeonCharacter) -> bool:

@@ -50,8 +50,8 @@ class TestModels(unittest.TestCase):
         war = self.war
         self.assertEqual(war.get_name(), "warrior bob",
                          "Name should be instantiated with given value")
-        self.assertEqual(war.get_class(), Warrior,
-                         "Class should be instantiated with given class")
+        self.assertEqual(war.get_category(), "Hero",
+                         "Warrior category should be 'Hero'")
         war.set_health(25)
         self.assertEqual(war.get_health(), 25,
                          "Health setter should set health to given value")
@@ -73,7 +73,7 @@ class TestModels(unittest.TestCase):
         while other_character.get_health() > 0:
             health = other_character.get_health()
             war.attack(other_character)
-            if other_character.get_health() != health:
+            if other_character.get_health() != health and other_character.get_health() > 0:
                 damage_dealt = health - other_character.get_health()
                 self.assertGreaterEqual(damage_dealt, war.get_damage_min(),
                                         "Damage dealt should be greater than or equal to minimum damage")
@@ -84,9 +84,29 @@ class TestModels(unittest.TestCase):
         self.assertEqual(other_character.get_health(), 0, "Other character health should be 0 when dead")
         self.assertGreater(count_attack, 0, "Should have attacked at least once")
         self.assertGreaterEqual(count_miss, int(count_attack * war.get_chance_to_hit() * 0.5),
-                                "Should have hit at least half the time")
+                                f"Should have hit at least about {int(count_attack * war.get_chance_to_hit())} times")
         self.assertLessEqual(count_miss, int(count_attack * war.get_chance_to_hit() * 1.5),
-                             "Should have hit at most 1.5 times")
+                             f"Should have hit at most about {int(count_attack * war.get_chance_to_hit())} times")
+
+    def test_chance_to_block(self):
+        """
+        This method tests the chance to block an attack
+        """
+        thief = self.thi
+        count_block = 0
+        count_attacks = 0
+        while thief.get_health() > 0:
+            health = thief.get_health()
+            thief.damage(5)
+            if thief.get_health() == health:
+                count_block += 1
+            count_attacks += 1
+        self.assertEqual(thief.get_health(), 0, "Warrior health should be 0 when dead")
+        self.assertGreater(count_block, 0, "Should have blocked at least once")
+        self.assertGreaterEqual(count_block, int(count_attacks * thief.get_chance_to_block() * 0.5),
+                                f"Should have been hit at least about {int(count_block * thief.get_chance_to_block())} times")
+        self.assertLessEqual(count_block, int(count_attacks * thief.get_chance_to_block() * 1.5),
+                             f"Should have been hit at most about {int(count_block * thief.get_chance_to_block())} times")
 
     # TODO: Implement the following test for every hero, when special abilities are implemented
     def test_special_ability_warrior(self):
