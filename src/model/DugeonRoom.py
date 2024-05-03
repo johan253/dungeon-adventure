@@ -32,7 +32,7 @@ class DungeonRoom:
         """
         return self.__items
 
-    def set_items(self, items: list[RoomItem]) -> None:
+    def set_items(self, items: list[RoomItem] | RoomItem) -> None:
         """
         Setter for the items in the room
         :param items: the items in the room

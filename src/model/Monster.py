@@ -30,7 +30,10 @@ class Monster(DungeonCharacter, ABC):
         """
         super().__init__(the_name, Monster.__name__, the_class)
         # incorporate SQLite driver for this?
-        self.__my_chance_to_heal = DB().get_stats(Monster.__name__, the_class)['chance_to_heal']
+        data = DB().get_stats(Monster.__name__, the_class)
+        self.__my_chance_to_heal = data['chance_to_heal']
+        self.__my_min_heal = data['min_heal']
+        self.__my_max_heal = data['max_heal']
 
     def get_chance_to_heal(self) -> float:
         """
@@ -39,12 +42,26 @@ class Monster(DungeonCharacter, ABC):
         """
         return self.__my_chance_to_heal
 
+    def get_min_heal(self) -> int:
+        """
+        This method returns the minimum amount that the monster can heal
+        :return: The minimum amount that the monster can heal
+        """
+        return self.__my_min_heal
+
+    def get_max_heal(self) -> int:
+        """
+        This method returns the maximum amount that the monster can heal
+        :return: The maximum amount that the monster can heal
+        """
+        return self.__my_max_heal
+
     def heal(self) -> None:
         """
         This method heals the monster based on chance to heal and healing range
         """
         if random() <= self.__my_chance_to_heal:
-            self.set_health(self.get_health() + 5)
+            self.set_health(int(random() * (self.__my_max_heal - self.__my_min_heal) + self.__my_min_heal))
 
     def attack(self, other: DungeonCharacter) -> bool:
         """

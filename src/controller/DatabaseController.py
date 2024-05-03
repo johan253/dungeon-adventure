@@ -34,7 +34,6 @@ class DatabaseController:
         query = f"Select * from {character_class} where name = '{character_name}'"
         data = {}
         pointer = self.__DB.cursor()
-        print(query)
         pointer.execute(query)
         columns = [desc[0] for desc in pointer.description]
         row = pointer.fetchone()

@@ -27,9 +27,9 @@ class Thief(Hero):
         :return: True if an attack is attempted, False if caught.
         """
         attack_actions = {
-            0.4: self.double_attack,  # 40% chance
-            0.6: self.get_caught,  # 20% chance
-            1.0: self.normal_attack  # 40% chance
+            0.4: self.__double_attack,  # 40% chance
+            0.6: self.__get_caught,  # 20% chance
+            1.0: self.__normal_attack  # 40% chance
         }
 
         outcome = random.random()
@@ -37,17 +37,31 @@ class Thief(Hero):
             if outcome < probability:
                 return action(other)
 
-    def double_attack(self, other: DungeonCharacter) -> bool:
-        print(f"{self.get_name()} launches a double attack on {other.get_name()}!")
-        self.attack(other)  # First attack
-        self.attack(other)  # Second attack
-        return True
+    def __double_attack(self, other: DungeonCharacter) -> bool:
+        """
+        This method allows the thief to perform a double attack on another character.
+        :param other: The character to attack
+        :return: True if the attack was successful, False otherwise
+        """
+        # print(f"{self.get_name()} launches a double attack on {other.get_name()}!")
+        res1 = self.attack(other)  # First attack
+        res2 = self.attack(other)  # Second attack
+        return res1 or res2
 
-    def get_caught(self, other: DungeonCharacter) -> bool:
-        print(f"{self.get_name()} is caught and cannot make an attack!")
+    def __get_caught(self, other: DungeonCharacter) -> bool:
+        """
+        This method allows the thief to attempt a surprise attack but gets caught.
+        :param other: The character to attack
+        :return: False, as the thief is caught and cannot make an attack
+        """
+        # print(f"{self.get_name()} is caught and cannot make an attack!")
         return False
 
-    def normal_attack(self, other: DungeonCharacter) -> bool:
-        print(f"{self.get_name()} performs a normal attack on {other.get_name()}.")
-        self.attack(other)
-        return True
+    def __normal_attack(self, other: DungeonCharacter) -> bool:
+        """
+        This method allows the thief to perform a normal attack on another character.
+        :param other: The character to attack
+        :return: True if the attack was successful, False otherwise
+        """
+        # print(f"{self.get_name()} performs a normal attack on {other.get_name()}.")
+        return self.attack(other)

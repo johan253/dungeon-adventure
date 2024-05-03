@@ -43,7 +43,6 @@ class DungeonCharacter(ABC):
         self.__my_name = the_name
         self.__my_category = the_category
         stats = DB().get_stats(the_category, the_class)
-        print(stats)
         self.__my_health = stats['health']
         self.__my_damage_min = stats['min_damage']
         self.__my_damage_max = stats['max_damage']
