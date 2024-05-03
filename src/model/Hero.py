@@ -22,7 +22,7 @@ class Hero(DungeonCharacter, ABC):
             raise TypeError("The Hero class may not be instantiated directly")
         return super().__new__(cls)
 
-    def __init__(self, the_name, the_class) -> None:
+    def __init__(self, the_name: str, the_class: str) -> None:
         """
         Constructor for the Hero class
         :param the_name: The name of the hero

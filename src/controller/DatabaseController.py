@@ -67,7 +67,7 @@ class DatabaseController:
 
 
 if __name__ == '__main__':
-    data = DatabaseController().get_all_data()
-    for char_class in data:
-        for char in data[char_class]:
+    all_data = DatabaseController().get_all_data()
+    for char_class in all_data:
+        for char in all_data[char_class]:
             print(char)

@@ -104,9 +104,11 @@ class TestModels(unittest.TestCase):
         self.assertEqual(thief.get_health(), 0, "Warrior health should be 0 when dead")
         self.assertGreater(count_block, 0, "Should have blocked at least once")
         self.assertGreaterEqual(count_block, int(count_attacks * thief.get_chance_to_block() * 0.5),
-                                f"Should have been hit at least about {int(count_block * thief.get_chance_to_block())} times")
+                                f"Should have been hit at least about "
+                                f"{int(count_block * thief.get_chance_to_block())} times")
         self.assertLessEqual(count_block, int(count_attacks * thief.get_chance_to_block() * 1.5),
-                             f"Should have been hit at most about {int(count_block * thief.get_chance_to_block())} times")
+                             f"Should have been hit at most about "
+                             f"{int(count_block * thief.get_chance_to_block())} times")
 
     # TODO: Implement the following test for every hero, when special abilities are implemented
     def test_special_ability_warrior(self):
