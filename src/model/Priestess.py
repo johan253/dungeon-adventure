@@ -17,7 +17,7 @@ class Priestess(Hero):
         Constructor for the Priestess class
         :param the_name: The name of the priestess
         """
-        super().__init__(the_name, Priestess)
+        super().__init__(the_name, Priestess.__name__)
 
     def do_special(self, other: DungeonCharacter = None) -> bool:
         """

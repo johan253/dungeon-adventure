@@ -27,7 +27,7 @@ class Monster(DungeonCharacter, ABC):
         :param the_name: The name of the monster
         :param the_class: The class that instantiated the monster
         """
-        super().__init__(the_name, the_class)
+        super().__init__(the_name, Monster.__name__, the_class)
         # incorporate SQLite driver for this?
         self.__my_chance_to_heal = 0.1
 

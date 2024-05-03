@@ -17,7 +17,7 @@ class Thief(Hero):
         Constructor for the Thief class
         :param the_name: The name of the thief
         """
-        super().__init__(the_name, Thief)
+        super().__init__(the_name, Thief.__name__)
 
     def do_special(self, other: DungeonCharacter) -> bool:
         """

@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from src.controller.DatabaseController import DatabaseController as DB
 
 
 class DungeonCharacter(ABC):
@@ -33,21 +34,22 @@ class DungeonCharacter(ABC):
             raise TypeError("DungeonCharacter class is abstract and cannot be instantiated directly")
         return super().__new__(cls)
 
-    def __init__(self, the_name: str, the_class: type) -> None:
+    def __init__(self, the_name: str, the_category: str, the_class: str) -> None:
         """
         Constructor for the abstract DungeonCharacter class
         :param the_name: the name of the character
-        :param the_class: the class that instantiated the character
+        :param the_category: the class that instantiated the character
         """
         self.__my_name = the_name
-        self.__my_class = the_class
+        self.__my_category = the_category
         # Set default values for the rest of the attributes, as sqlite3 database not yet implemented
         # TODO: Implement sqlite3 database to retrieve character attributes
-        self.__my_health = 999
-        self.__my_damage_min = 9
-        self.__my_damage_max = 99
-        self.__my_attack_speed = 9
-        self.__my_chance_to_hit = 0.9
+        stats = DB().get_stats(the_category, the_name)
+        self.__my_health = stats['health']
+        self.__my_damage_min = stats['min_damage']
+        self.__my_damage_max = stats['max_damage']
+        self.__my_attack_speed = stats['attack_speed']
+        self.__my_chance_to_hit = stats['chance_to_hit']
 
     @abstractmethod
     def attack(self, the_other_character: 'DungeonCharacter') -> bool:
@@ -132,5 +134,5 @@ class DungeonCharacter(ABC):
         return (
                 f"Name: {self.__my_name}"
                 f"\nHealth: {self.__my_health}"
-                f"\nType: {self.__my_class.__name__}\n"
+                f"\nType: {self.__my_category}\n"
                 )
