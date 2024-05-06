@@ -8,9 +8,12 @@ class Dungeon2:
         self.height = height
         self.my_root = DungeonRoom()
 
-        self.entrance = None
-        self.exit = None
-        self.pillars = None
+        self.entrance = False
+        self.exit = False
+        self.Abstraction = None
+        self.Inheritance = None
+        self.Polymorphism = None
+        self.Encapsulation = None
 
         self.generate_dungeon(self.my_root, 0, 0)
         self.place_items()  # place the entrance, exit and pillars
@@ -20,7 +23,25 @@ class Dungeon2:
         Maze generating algorithm (im unsure about implementation details, but Rooms
 		Will have some sort of “North, E, S, W” property for you to check those
         """
-        pass
+        # Start at the root of the Dungeon
+
+        # First check if the dungeon is out of bounds:
+
+        if x >= self.width or y >= self.height:
+            return
+
+        # Establish the East link if passing out of bounds
+        if x + 1 < self.width and not root.east:
+            root.east = DungeonRoom()
+            root.east.west = root  # Link the connection between west and east to root
+            self.generate_dungeon(root.__east, x + 1, y)
+
+            # Establish the East link if passing out of bounds
+            if y + 1 < self.width and not root.south:
+                root.south = DungeonRoom()
+                root.south.north = root  # Link the connection between west and east to root
+                self.generate_dungeon(root.__south, x, y + 1)
+
     def place_items(self):
         """
         Randomly place the entrance, exit and pillars in the dungeon
