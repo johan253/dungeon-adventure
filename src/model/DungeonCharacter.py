@@ -42,10 +42,7 @@ class DungeonCharacter(ABC):
         """
         self.__my_name = the_name
         self.__my_category = the_category
-        # Set default values for the rest of the attributes, as sqlite3 database not yet implemented
-        # TODO: Implement sqlite3 database to retrieve character attributes
         stats = DB().get_stats(the_category, the_class)
-        print(stats)
         self.__my_health = stats['health']
         self.__my_damage_min = stats['min_damage']
         self.__my_damage_max = stats['max_damage']

@@ -34,7 +34,6 @@ class DatabaseController:
         query = f"Select * from {character_class} where name = '{character_name}'"
         data = {}
         pointer = self.__DB.cursor()
-        print(query)
         pointer.execute(query)
         columns = [desc[0] for desc in pointer.description]
         row = pointer.fetchone()
@@ -67,7 +66,7 @@ class DatabaseController:
 
 
 if __name__ == '__main__':
-    data = DatabaseController().get_all_data()
-    for char_class in data:
-        for char in data[char_class]:
+    all_data = DatabaseController().get_all_data()
+    for char_class in all_data:
+        for char in all_data[char_class]:
             print(char)

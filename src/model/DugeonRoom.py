@@ -1,96 +1,131 @@
 import random
+from src.model.RoomItem import RoomItem
+from typing import TypeVar
 
-'''This class represents a room in the dungeon. Additionally, 
-    it stores information about the room' properties.
-
-@author Aly Badr, Johan Hernandez, Lwazi Mabota
-'''
+T = TypeVar('T', bound='DungeonRoom')
 
 
 class DungeonRoom:
+    """
+    A class that represents a room in the dungeon.
+    """
 
     SPAWN_CHANCE = 0.1
 
-    '''
-    Constructor for Dungeon Room.
-    Takes parameters: x, y, has_visual_potion, has_health_potion, monster_encountered, has_visited, has_pillar'''
-    def __init__(self, x, y, has_visual_potion=None, has_health_potion=None,
-                 monster_encountered=None, has_visited=None, has_pillar=None):
-        self.x = x
-        self.y = y
-        self.my_room = None
-        self.my_type = "basic"
-        self.has_visual_potion = has_visual_potion if has_visual_potion is not None else random.random()
-        self.has_health_potion = has_health_potion if has_health_potion is not None else random.random()
-        self.monster_encountered = monster_encountered if monster_encountered is not None else False
-        self.has_visited = has_visited if has_visited is not None else False
-        self.has_pillar = has_pillar if has_pillar is not None else False
-        self.my_monster_type = "none"
+    def __init__(self):
+        """
+        Constructor for DungeonRoom
+        """
+        self.__items: list[RoomItem] = []
+        for item in RoomItem.get_mixable_items():
+            if random.random() < DungeonRoom.SPAWN_CHANCE:
+                self.__items.append(item)
+        self.__north: DungeonRoom | None = None
+        self.__east: DungeonRoom | None = None
+        self.__south: DungeonRoom | None = None
+        self.__west: DungeonRoom | None = None
 
-    '''
-   This function sets the room name with a num.'''
-    def set_room(self, num):
-        self.my_room = f"Dungeon Room {num}.tmx"
-    '''
-   This function sets the type of the room.(entrance, exit, pillar)'''
-    def set_type(self, the_type):
-        self.my_type = the_type
-        if the_type in {"entrance", "exit"}:
-            self.set_visual_potion(False)
-            self.set_health_potion(False)
-            self.set_monster_type(False)
-        elif the_type == "pillar":
-            self.set_visual_potion(False)
-            self.set_health_potion(False)
+    def get_items(self) -> list[RoomItem]:
+        """
+        Getter for the items in the room
+        :return: the items in the room
+        """
+        return self.__items
 
-    def has_visual_potion(self):
-        return self.has_visual_potion
+    def set_items(self, items: list[RoomItem] | RoomItem) -> None:
+        """
+        Setter for the items in the room
+        :param items: the items in the room
+        """
+        self.__items = items
 
-    def set_visual_potion(self, visual_potion):
-        self.has_visual_potion = visual_potion
+    def remove_item(self, item: RoomItem) -> bool:
+        """
+        Removes an item from the room if it is present
+        :param item: the item to remove
+        :return: True if the item was removed, False otherwise
+        """
+        if item not in self.__items:
+            return False
+        self.__items.remove(item)
+        return True
 
-    def has_health_potion(self):
-        return self.has_health_potion
+    def get_north(self) -> T | None:
+        """
+        Getter for the room to the north
+        :return: the room to the north
+        """
+        return self.__north
 
-    def set_health_potion(self, health_potion):
-        self.has_health_potion = health_potion
+    def set_north(self, room: T | None):
+        """
+        Setter for the room to the north
+        :param room: the room to the north
+        """
+        self.__north = room
+        room.__south = self
 
-    def has_monster_type(self):
-        return self.my_monster_type
+    def get_east(self) -> T | None:
+        """
+        Getter for the room to the east
+        :return: the room to the east
+        """
+        return self.__east
 
-    def set_monster_type(self, monster_type):
-        self.my_monster_type = monster_type
+    def set_east(self, room: T | None):
+        """
+        Setter for the room to the east
+        :param room: the room to the east
+        """
+        self.__east = room
+        room.__west = self
 
-    def get_monster_type(self):
-        return self.my_monster_type
+    def get_south(self) -> T | None:
+        """
+        Getter for the room to the south
+        :return: the room to the south
+        """
+        return self.__south
 
-    def has_visited(self):
-        return self.has_visited
+    def set_south(self, room: T | None):
+        """
+        Setter for the room to the south
+        :param room: the room to the south
+        """
+        self.__south = room
+        room.__north = self
 
-    def set_visited(self, visited):
-        self.has_visited = visited
+    def get_west(self) -> T | None:
+        """
+        Getter for the room to the west
+        :return: the room to the west
+        """
+        return self.__west
 
-    def has_pillar(self):
-        return self.has_pillar
+    def set_west(self, room: T | None):
+        """
+        Setter for the room to the west
+        :param room: the room to the west
+        """
+        self.__west = room
+        room.__east = self
 
-    def set_pillar(self, pillar):
-        self.has_pillar = pillar
+    def __str__(self) -> str:
+        """
+        String representation of the room
+        :return: the string representation of the room
+        """
+        item_char = ' '
+        if len(self.__items) > 1:
+            item_char = 'M'
+        elif len(self.__items) == 1:
+            item_char = self.__items[0].value
 
-    '''
-    String representation of the room'''
-    def __str__(self):
-        room_str = "|++++++|\n"
+        north = '*' if self.__north is None else '-'
+        east = '*' if self.__east is None else '|'
+        south = '*' if self.__south is None else '-'
+        west = '*' if self.__west is None else '|'
 
-        for i in range(2):
-            cur_line = "|      |\n"
-            if i == 0 and self.has_health_potion():
-                cur_line = cur_line[:5] + 'H' + cur_line[6:]
-            if i == 0 and self.monster_encountered():
-                cur_line = cur_line[:1] + 'M' + cur_line[2:]
-            if i == 1 and self.has_visual_potion():
-                cur_line = cur_line[:2] + 'V' + cur_line[2:]
-            if i == 1 and self.has_health_potion():
-                cur_line = cur_line[:5] + 'H' + cur_line[6:]
-            room_str += cur_line
-        room_str += "|++++++|"
-        return room_str
+        return f"*{north}*\n" \
+               f"{west}{item_char}{east}\n" \
+               f"*{south}*"

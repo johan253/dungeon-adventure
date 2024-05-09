@@ -10,12 +10,11 @@ from model.Warrior import Warrior
 from model.Thief import Thief
 from model.Priestess import Priestess
 
-from model.Room import Room
 from model.RoomItem import RoomItem
 from model.Directions import Direction
 
 
-class TestModels(unittest.TestCase):
+class CharacterTests(unittest.TestCase):
     """
     This class tests the model classes
     """
@@ -104,47 +103,90 @@ class TestModels(unittest.TestCase):
         self.assertEqual(thief.get_health(), 0, "Warrior health should be 0 when dead")
         self.assertGreater(count_block, 0, "Should have blocked at least once")
         self.assertGreaterEqual(count_block, int(count_attacks * thief.get_chance_to_block() * 0.5),
-                                f"Should have been hit at least about {int(count_block * thief.get_chance_to_block())} times")
+                                f"Should have been hit at least about "
+                                f"{int(count_block * thief.get_chance_to_block())} times")
         self.assertLessEqual(count_block, int(count_attacks * thief.get_chance_to_block() * 1.5),
-                             f"Should have been hit at most about {int(count_block * thief.get_chance_to_block())} times")
+                             f"Should have been hit at most about "
+                             f"{int(count_block * thief.get_chance_to_block())} times")
+
+    def test_monster_chance_to_heal(self):
+        """
+        This method tests the chance to heal for monsters
+        """
+        gremlin = self.gremlin
+        count_heal = 0
+        count_attacks = 0
+        while gremlin.get_health() > 0:
+            health = gremlin.get_health()
+            gremlin.damage(5)
+            if gremlin.get_health() >= health:
+                count_heal += 1
+            count_attacks += 1
+        self.assertEqual(gremlin.get_health(), 0, "Ogre health should be 0 when dead")
+        self.assertGreater(count_heal, 0, "Should have healed at least once")
+        self.assertGreaterEqual(count_heal, int(count_attacks * gremlin.get_chance_to_heal() * 0.5),
+                                f"Should have healed at least about "
+                                f"{int(count_heal * gremlin.get_chance_to_heal())} times")
+        self.assertLessEqual(count_heal, int(count_attacks * gremlin.get_chance_to_heal() * 1.5),
+                             f"Should have healed at most about "
+                             f"{int(count_heal * gremlin.get_chance_to_heal())} times")
 
     # TODO: Implement the following test for every hero, when special abilities are implemented
     def test_special_ability_warrior(self):
         """
         This method tests the special ability of the warrior
         """
-        pass
+        war = self.war
+        ogre = self.ogre
+        count_special = 0
+        count_attacks = 0
+        while ogre.get_health() > 0:
+            health = ogre.get_health()
+            success = war.do_special(ogre)
+            if success and ogre.get_health() > 0:
+                self.assertLess(ogre.get_health(), health,
+                                "Ogre health should decrease after special ability lands")
+                self.assertGreaterEqual(health - ogre.get_health(), 75,
+                                        "Ogre health should decrease by at least 75")
+                self.assertLessEqual(health - ogre.get_health(), 175,
+                                     "Ogre health should decrease by at most 175")
+                count_special += 1
+            count_attacks += 1
+        self.assertEqual(ogre.get_health(), 0, "Ogre health should be 0 when dead")
+        self.assertGreater(count_special, 0, "Should have used special ability at least once")
+        self.assertGreaterEqual(count_special, int(count_attacks * 0.4 * 0.5),
+                                f"Should have used special ability at least about "
+                                f"{int(count_special * 0.4)} times")
+        self.assertLessEqual(count_special, int(count_attacks * 0.4 * 1.5),
+                             f"Should have used special ability at most about "
+                             f"{int(count_special * 0.4)} times")
 
-    def test_room_items(self):
+    def test_special_ability_thief(self):
         """
-        This method tests the RoomItem enum
+        This method tests the special ability of the thief
         """
-        all_items: list[str] = RoomItem.list()
-        for string in ("A", "E", "I", "P", "i", "O", "X", "H", "V", "B", "S"):
-            self.assertIn(string, all_items, f"Item {string} not found in RoomItem enum")
-            all_items.remove(string)
-        self.assertEqual(len(all_items), 0, "RoomItem enum has extra values")
+        thi = self.thi
+        ogre = self.ogre
+        count_special = 0
+        count_attempts = 0
+        for i in range(100):
+            thi = Thief("thief joe")
+            ogre = Ogre("Shrek")
+            health = ogre.get_health()
+            thi.do_special(ogre)
+            result = health > ogre.get_health()
+            print(count_special)
+            if result:
+                count_special += 1
+            count_attempts += 1
+        self.assertTrue(0.75 * thi.get_chance_to_hit() * count_attempts <= count_special <=
+                        0.85 * count_attempts * thi.get_chance_to_hit(),
+                        f"Special ability landed {count_special} times out of {count_attempts} attempts")
 
-    def test_directions(self):
-        """
-        This method tests the Directions enum
-        """
-        all_directions: list[int] = Direction.list()
-        for direction in (1, 2, 3, 4):
-            self.assertIn(direction, all_directions, f"Direction {direction} not found in Directions enum")
-            all_directions.remove(direction)
-        self.assertEqual(len(all_directions), 0, "Directions enum has extra values")
 
-    # TODO: Implement the following tests for the Room and Dungeon classes when they are implemented
-    def test_room(self):
+    def test_special_ability_priestess(self):
         """
-        This method tests the Room class
-        """
-        pass
-
-    def test_dungeon(self):
-        """
-        This method tests the Dungeon class
+        This method tests the special ability of the priestess
         """
         pass
 

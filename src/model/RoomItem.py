@@ -44,3 +44,11 @@ class RoomItem(Enum):
         :return: a list of the values of the RoomItem enum
         """
         return list(map(lambda c: c.value, RoomItem))
+
+    @classmethod
+    def get_mixable_items(cls) -> [str]:
+        """
+        Returns a list of the values of the RoomItem enum that can be mixed
+        :return: a list of the values of the RoomItem enum that can be mixed
+        """
+        return [RoomItem.HealingPotion, RoomItem.VisionPotion, RoomItem.Pit]
