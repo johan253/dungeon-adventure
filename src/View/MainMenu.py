@@ -101,7 +101,7 @@ def select_hero(player_name: str):
                                      color_1="white", color_2="red")
 
         play_priestess_button = Button(image=None, position=(640, 560), text_input='Priestess', font=get_font(15),
-                                    color_1="white", color_2="red")
+                                       color_1="white", color_2="red")
 
         play_back_button = Button(image=None, position=(640, 660), text_input='Back', font=get_font(15),
                                   color_1="white", color_2="red")
@@ -185,18 +185,18 @@ def load():
 
 
 def about():
-    info = """Welcome to Dungeon Adventure!\n\n
+    info = """Welcome to Dungeon Adventure!
     
-    Dungeon Adventure v1.0\n\n
+    Dungeon Adventure v1.0
     
-    This game was created by Aly Badr, Johan Hernandez, Lwazi Mabota.\n\n
+    This game was created by Aly Badr, Johan Hernandez, Lwazi Mabota.
     
     In this game a user will have the option to select from three classes(Thief, Warrior, Wizard) with which they
     will explore the dungeon and attempt to escape. The user will have to find the four pillars of OOP before they
     can escape. While trying to find these pillars they will encounter a few things that could either progress the
     game or halt the game should their health fall to 0. The user can encounter monsters and pits which will take
     away from their health, but they can also find potions that will restore their health or expose parts of the
-    dungeon that they have yet to explore.\n\n
+    dungeon that they have yet to explore.
     
     Good luck!"""
 
@@ -205,16 +205,16 @@ def about():
 
         Screen.fill("black")
 
-        lines = info.split('\n')
-        offset = 100
+        lines = info.split('\n')  # Split the text into lines
+        y_offset = 100  # Initial Y offset for the first line
 
         for line in lines:
-            about_text = get_font(15).render(info, True, (0, 255, 0))
-            about_rect = about_text.get_rect(center=(640, 260))
+            about_text = get_font(10).render(line, True, (0, 255, 0))  # Render each line separately
+            about_rect = about_text.get_rect(center=(640, y_offset))
             Screen.blit(about_text, about_rect)
-            offset += about_rect.height + 10
+            y_offset += about_rect.height + 10  # Update Y offset for the next line
 
-        about_back = Button(image=None, position=(640, 460), text_input='Back', font=get_font(15),
+        about_back = Button(image=None, position=(655, 660), text_input='Back', font=get_font(15),
                             color_1="white", color_2="red")
 
         about_back.change_color(about_mouse_position)

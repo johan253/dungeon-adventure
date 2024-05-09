@@ -2,6 +2,18 @@ from controller.DungeonAdventure import DungeonAdventure
 from model.Warrior import Warrior
 from model.Thief import Thief
 from model.Priestess import Priestess
+import pygame
+from SaveLoadManager import SaveLoadSystem
+from View import MainMenu
+
+pygame.init()
+
+
+saveLoadManager = SaveLoadSystem(".save", "save_data")
+
+
+MainMenu = MainMenu()
+
 
 
 print("Welcome to Dungeon Adventure!")
@@ -34,6 +46,7 @@ while True:
     print("3. Move East")
     print("4. Move West")
     print("5. QUIT GAME")
+
     direction = input("Enter the number of the direction you want to move: ")
     valid = direction in ["1", "2", "3", "4", "5"]
     while not valid:
