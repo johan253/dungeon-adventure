@@ -7,6 +7,7 @@ Screen = pygame.display.set_mode((1280, 720))
 pygame.display.set_caption('Main Menu')
 
 background = pygame.image.load('Assets/mainmenu.png')
+background = pygame.transform.scale(background, (1280, 720))
 
 
 def get_font(size):
@@ -119,14 +120,14 @@ def main_menu():
 
         mouse_position = pygame.mouse.get_pos()
 
-        menu_text = get_font(50).render("Main Menu", True, "White")
-        menu_rect = menu_text.get_rect(center=(600, 100))
+        menu_text = get_font(50).render("Dungeon Adventure", True, "White")
+        menu_rect = menu_text.get_rect(center=(650, 100))
 
-        play_button = Button(image=pygame.image.load('Assets/play.png'), position=(600, 260), text_input="PLAY",
+        play_button = Button(image=pygame.image.load('Assets/play.png'), position=(650, 260), text_input="PLAY",
                              font=get_font(30), color_1="White", color_2="White")
-        load_button = Button(image=pygame.image.load('Assets/load.png'), position=(600, 460), text_input="LOAD",
+        load_button = Button(image=pygame.image.load('Assets/load.png'), position=(650, 460), text_input="LOAD",
                              font=get_font(30), color_1="White", color_2="White")
-        about_button = Button(image=pygame.image.load('Assets/about.png'), position=(600, 660), text_input="ABOUT",
+        about_button = Button(image=pygame.image.load('Assets/about.png'), position=(650, 660), text_input="ABOUT",
                               font=get_font(30), color_1="White", color_2="White")
 
         Screen.blit(menu_text, menu_rect)
