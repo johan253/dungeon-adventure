@@ -10,46 +10,65 @@ class Dungeon2:
         self.adventurer_location = None
         self.pillars = ["Abstraction", "Inheritance", "Polymorphism", "Encapsulation"]
 
-        self.generate_dungeon(self.my_root, 0, 0)
-        self.ensure_transferability()
-        self.place_items()
+        self.generate_dungeon()
+        # self.ensure_transferability()
+        # self.place_items()
 
-    def generate_dungeon(self, root, x, y):
-        if x < 0 or x >= self.width or y < 0 or y >= self.height:
-            return
+    def generate_dungeon(self):
+        def connect_rooms(room1, room2, dr, dc):
+            if room1 and room2:
+                if dr == -1 and room1.get_north() is None and room2.get_south() is None:
+                    room1.set_north(room2)
+                    room2.set_south(room1)
+                elif dr == 1 and room1.get_south() is None and room2.get_north() is None:
+                    room1.set_south(room2)
+                    room2.set_north(room1)
+                elif dc == 1 and room1.get_east() is None and room2.get_west() is None:
+                    room1.set_east(room2)
+                    room2.set_west(room1)
+                elif dc == -1 and room1.get_west() is None and room2.get_east() is None:
+                    room1.set_west(room2)
+                    room2.set_east(room1)
 
-        if x + 1 < self.width and not root.get_east():
-            east_room = DungeonRoom()
-            root.set_east(east_room)
-            east_room.set_west(root)
-            self.generate_dungeon(east_room, x + 1, y)
+        def dfs(room, row, col):
+            visited[row][col] = True
+            directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]  # East, South, West, North
+            random.shuffle(directions)
+            for dr, dc in directions:
+                next_row, next_col = row + dr, col + dc
+                if 0 <= next_row < self.height and 0 <= next_col < self.width and not visited[next_row][next_col]:
+                    next_room = DungeonRoom()
+                    connect_rooms(room, next_room, dr, dc)
+                    dfs(next_room, next_row, next_col)
 
-        if y + 1 < self.height and not root.get_south():
-            south_room = DungeonRoom()
-            south_room.set_north(root)
-            self.generate_dungeon(south_room, x, y + 1)
+        visited = [[False for _ in range(self.width)] for _ in range(self.height)]
+        dfs(self.my_root, 0, 0)
+
+        while self.my_root.get_north():
+            self.my_root = self.my_root.get_north()
+        while self.my_root.get_west():
+            self.my_root = self.my_root.get_west()
 
     def ensure_transferability(self):
         while not self.check_maze_completeness(self.my_root):
             self.my_root = DungeonRoom()
-            self.generate_dungeon(self.my_root, 0, 0)
+            self.generate_dungeon()
 
     def check_maze_completeness(self, root):
         visited = set()
-        queue = [root]
-        directions = ['get_north', 'get_east', 'get_south', 'get_west']
+        self.dfs(root, visited)
+        print(f"Visited rooms: {len(visited)}")
+        return len(visited) == self.width * self.height
 
-        while queue:
-            current_room = queue.pop(0)
-            if current_room not in visited:
-                visited.add(current_room)
-                for direction in directions:
-                    adjacent_room = getattr(current_room, direction)()
-                    if adjacent_room and adjacent_room not in visited:
-                        queue.append(adjacent_room)
+    def dfs(self, root, visited):
+        if root in visited:
+            return
+        visited.add(root)
 
-        total_rooms = self.width * self.height
-        return len(visited) == total_rooms
+        if root.get_east():
+            self.dfs(root.get_east(), visited)
+        if root.get_south():
+            self.dfs(root.get_south(), visited)
 
     def place_items(self):
         self.entrance = self.my_root
@@ -79,8 +98,23 @@ class Dungeon2:
         pass
 
     def __str__(self):
-        return (f"Dungeon dimensions: {self.width}x{self.height}\n"
-                f"Entrance located at: {self.entrance}\n"
-                f"Exit located at: {self.exit}\n"
-                f"Pillars: {', '.join(self.pillars)}\n"
-                f"Adventurer's current location: {self.adventurer_location}")
+        string = "*"
+        prev_row = []
+        current: DungeonRoom = self.my_root
+        while current:
+            string += "**" if not current.get_north() else "-*"
+            current = current.get_east()
+        string += "\n"
+        current = self.my_root
+        while current:
+            first = current
+            string += "*"
+            bottom = "*"
+            while current:
+                string += " |" if current.get_east() else " *"
+                bottom += "-*" if current.get_south() else "**"
+                current = current.get_east()
+            string += "\n" + bottom + "\n"
+            current = first.get_south()
+        return string
+

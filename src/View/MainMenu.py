@@ -1,5 +1,5 @@
 import pygame, sys
-from Button import Button
+from View.Button import Button
 from View.TextField import TextField
 from src.controller.DungeonAdventure import DungeonAdventure
 from src.model.Warrior import Warrior
@@ -56,18 +56,21 @@ def play():
 
 def select_name():
     text_field = TextField(440, 360, 400, 50)
-    name = ""
-    Screen.fill("black")
-    while True:
-        name = text_field.get_text()
-        continue_button = Button(image=None, position=(640, 460), text_input='Continue', font=get_font(15),
-                                 color_1="white", color_2="red")
-        back_button = Button(image=None, position=(640, 560), text_input='Back', font=get_font(15),
+    continue_button = Button(image=None, position=(640, 460), text_input='Continue', font=get_font(15),
                              color_1="white", color_2="red")
+    back_button = Button(image=None, position=(640, 560), text_input='Back', font=get_font(15),
+                         color_1="white", color_2="red")
+    name = ""
+    while True:
+        Screen.fill("black")
+        name = text_field.get_text()
+
         continue_button.change_color([pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1]])
         continue_button.update(Screen)
+
         back_button.change_color([pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1]])
         back_button.update(Screen)
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -85,50 +88,48 @@ def select_name():
 
 
 def select_hero(player_name: str):
+    buttons: dict[str, Button] = {
+        "thief": Button(image=None, position=(640, 360), text_input='Thief', font=get_font(15),
+                        color_1="white", color_2="red"),
+
+        "warrior": Button(image=None, position=(640, 460), text_input='Warrior', font=get_font(15),
+                          color_1="white", color_2="red"),
+
+        "priestess": Button(image=None, position=(640, 560), text_input='Priestess', font=get_font(15),
+                            color_1="white", color_2="red"),
+
+        "back": Button(image=None, position=(640, 660), text_input='Back', font=get_font(15),
+                       color_1="white", color_2="red")
+    }
+    play_text = get_font(15).render(f'Welcome {player_name}! Select a Hero:', True, (0, 255, 0))
+    play_rect = play_text.get_rect(center=(640, 260))
     while True:
         play_mouse_position = pygame.mouse.get_pos()
 
         Screen.fill("black")
 
-        play_text = get_font(15).render(f'Welcome {player_name}! Select a Hero:', True, (0, 255, 0))
-        play_rect = play_text.get_rect(center=(640, 260))
         Screen.blit(play_text, play_rect)
 
-        play_thief_button = Button(image=None, position=(640, 360), text_input='Thief', font=get_font(15),
-                                   color_1="white", color_2="red")
-
-        play_warrior_button = Button(image=None, position=(640, 460), text_input='Warrior', font=get_font(15),
-                                     color_1="white", color_2="red")
-
-        play_priestess_button = Button(image=None, position=(640, 560), text_input='Priestess', font=get_font(15),
-                                       color_1="white", color_2="red")
-
-        play_back_button = Button(image=None, position=(640, 660), text_input='Back', font=get_font(15),
-                                  color_1="white", color_2="red")
-
-        play_back_button.change_color([play_mouse_position[0], play_mouse_position[1]])
-        play_thief_button.change_color([play_mouse_position[0], play_mouse_position[1]])
-        play_warrior_button.change_color([play_mouse_position[0], play_mouse_position[1]])
-        play_priestess_button.change_color([play_mouse_position[0], play_mouse_position[1]])
-
-        play_back_button.update(Screen)
-        play_thief_button.update(Screen)
-        play_warrior_button.update(Screen)
-        play_priestess_button.update(Screen)
+        for button in buttons.values():
+            button.change_color([play_mouse_position[0], play_mouse_position[1]])
+            button.update(Screen)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if play_back_button.check_input(play_mouse_position):
+                if buttons["back"].check_input(play_mouse_position):
                     play()
-                if play_thief_button.check_input(play_mouse_position):
+                if buttons["thief"].check_input(play_mouse_position):
                     game = DungeonAdventure("Thief", Thief)
-                if play_warrior_button.check_input(play_mouse_position):
+                    gameplay()
+                if buttons["warrior"].check_input(play_mouse_position):
                     game = DungeonAdventure("Warrior", Warrior)
-                if play_priestess_button.check_input(play_mouse_position):
+                    gameplay()
+                if buttons["priestess"].check_input(play_mouse_position):
                     game = DungeonAdventure("Priestess", Priestess)
+                    gameplay()
         pygame.display.update()
 
 
@@ -162,26 +163,26 @@ def load():
     while True:
         play_mouse_position = pygame.mouse.get_pos()
 
-    Screen.fill("black")
+        Screen.fill("black")
 
-    load_text = get_font(15).render('Load', True, (0, 255, 0))
-    load_rect = load_text.get_rect(center=(640, 260))
-    Screen.blit(load_text, load_rect)
+        load_text = get_font(15).render('Load', True, (0, 255, 0))
+        load_rect = load_text.get_rect(center=(640, 260))
+        Screen.blit(load_text, load_rect)
 
-    load_back_button = Button(image=None, position=(640, 460), text_input='Back', font=get_font(15),
-                              color_1="white", color_2="black")
+        load_back_button = Button(image=None, position=(640, 460), text_input='Back', font=get_font(15),
+                                  color_1="white", color_2="black")
 
-    load_back_button.change_color(load_back_button)
-    load_back_button.update(Screen)
+        load_back_button.change_color(load_back_button)
+        load_back_button.update(Screen)
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if play_back_button.check_mouse_pos(play_mouse_position):
-                main_menu()
-    pygame.display.update()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if play_back_button.check_mouse_pos(play_mouse_position):
+                    main_menu()
+        pygame.display.update()
 
 
 def about():
@@ -200,23 +201,22 @@ def about():
     
     Good luck!"""
 
+
+    Screen.fill("black")
+
+    lines = info.split('\n')  # Split the text into lines
+    y_offset = 100  # Initial Y offset for the first line
+
+    for line in lines:
+        about_text = get_font(10).render(line, True, (0, 255, 0))  # Render each line separately
+        about_rect = about_text.get_rect(center=(640, y_offset))
+        Screen.blit(about_text, about_rect)
+        y_offset += about_rect.height + 10  # Update Y offset for the next line
+
+    about_back = Button(image=None, position=(655, 660), text_input='Back', font=get_font(15),
+                        color_1="white", color_2="red")
     while True:
         about_mouse_position = pygame.mouse.get_pos()
-
-        Screen.fill("black")
-
-        lines = info.split('\n')  # Split the text into lines
-        y_offset = 100  # Initial Y offset for the first line
-
-        for line in lines:
-            about_text = get_font(10).render(line, True, (0, 255, 0))  # Render each line separately
-            about_rect = about_text.get_rect(center=(640, y_offset))
-            Screen.blit(about_text, about_rect)
-            y_offset += about_rect.height + 10  # Update Y offset for the next line
-
-        about_back = Button(image=None, position=(655, 660), text_input='Back', font=get_font(15),
-                            color_1="white", color_2="red")
-
         about_back.change_color(about_mouse_position)
         about_back.update(Screen)
 
@@ -232,20 +232,19 @@ def about():
 
 
 def main_menu():
+    menu_text = get_font(50).render("Dungeon Adventure", True, "White")
+    menu_rect = menu_text.get_rect(center=(650, 100))
+
+    play_button = Button(image=pygame.image.load('Assets/play.png'), position=(650, 260), text_input="PLAY",
+                         font=get_font(30), color_1="White", color_2="red")
+    load_button = Button(image=pygame.image.load('Assets/load.png'), position=(650, 460), text_input="LOAD",
+                         font=get_font(30), color_1="White", color_2="red")
+    about_button = Button(image=pygame.image.load('Assets/about.png'), position=(650, 660), text_input="ABOUT",
+                          font=get_font(30), color_1="White", color_2="red")
     while True:
         Screen.blit(background, (0, 0))
 
         mouse_position = pygame.mouse.get_pos()
-
-        menu_text = get_font(50).render("Dungeon Adventure", True, "White")
-        menu_rect = menu_text.get_rect(center=(650, 100))
-
-        play_button = Button(image=pygame.image.load('Assets/play.png'), position=(650, 260), text_input="PLAY",
-                             font=get_font(30), color_1="White", color_2="White")
-        load_button = Button(image=pygame.image.load('Assets/load.png'), position=(650, 460), text_input="LOAD",
-                             font=get_font(30), color_1="White", color_2="White")
-        about_button = Button(image=pygame.image.load('Assets/about.png'), position=(650, 660), text_input="ABOUT",
-                              font=get_font(30), color_1="White", color_2="White")
 
         Screen.blit(menu_text, menu_rect)
 
@@ -267,4 +266,5 @@ def main_menu():
         pygame.display.update()
 
 
-main_menu()
+if __name__ == '__main__':
+    main_menu()
