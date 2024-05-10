@@ -14,6 +14,7 @@ class DungeonAdventure:
         - __my_inventory (List[RoomItem]): The inventory of the player
         - __my_dungeon (Dungeon): The dungeon object
     """
+
     def __init__(self, player_name: str, player_class: type):
         """
         This method initializes the Dungeon Adventure game.
@@ -113,5 +114,9 @@ class DungeonAdventure:
         """
         return self.__my_inventory
 
-
-
+    def get_state(self):
+        """
+        This method returns the state of current game.
+        :return: The state of the game
+        """
+        return [self.__my_player, self.__my_inventory, self.__my_dungeon]

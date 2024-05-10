@@ -9,10 +9,10 @@ class SaveLoadSystem:
         self.save_folder = save_folder
 
     def save_data(self, data, name):
-        date_file = open(self.save_folder + "/" + name + self.file_extension, "wb")
+        date_file = open('../' + self.save_folder + '/' + name + self.file_extension, "wb")
         pickle.dump(data, date_file)
 
     def load_data(self, name):
-        data_file = open(self.save_folder + "/" + name + self.file_extension, "rb")
+        data_file = open('../' + self.save_folder + '/' + name + self.file_extension, "rb")
         data = pickle.load(data_file)
         return data

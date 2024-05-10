@@ -5,6 +5,8 @@ from src.controller.DungeonAdventure import DungeonAdventure
 from src.model.Warrior import Warrior
 from src.model.Thief import Thief
 from src.model.Priestess import Priestess
+from SaveLoadManager import SaveLoadSystem
+
 
 pygame.init()
 
@@ -13,6 +15,8 @@ pygame.display.set_caption('Main Menu')
 
 background = pygame.image.load('Assets/mainmenu.png')
 background = pygame.transform.scale(background, (1280, 720))
+
+saveLoadManager = SaveLoadSystem(".save", "save_data")
 
 game: DungeonAdventure | None = None
 
@@ -44,6 +48,7 @@ def play():
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                saveLoadManager.save_data(game.get_state(), "current_state")
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -70,6 +75,7 @@ def select_name():
         back_button.update(Screen)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+
                 pygame.quit()
                 sys.exit()
             text_field.handle_event(event)
@@ -121,35 +127,43 @@ def select_hero(player_name: str):
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
+                global game
                 if play_back_button.check_input(play_mouse_position):
-                    play()
+                    gameplay()
                 if play_thief_button.check_input(play_mouse_position):
-                    game = DungeonAdventure("Thief", Thief)
+                    game = DungeonAdventure(player_name, Thief)
+                    saveLoadManager.save_data(game.get_state(), "current_state")
+                    gameplay()
                 if play_warrior_button.check_input(play_mouse_position):
-                    game = DungeonAdventure("Warrior", Warrior)
+                    game = DungeonAdventure(player_name, Warrior)
+                    gameplay()
                 if play_priestess_button.check_input(play_mouse_position):
-                    game = DungeonAdventure("Priestess", Priestess)
+                    game = DungeonAdventure(player_name, Priestess)
+                    gameplay()
         pygame.display.update()
 
 
 def gameplay():
+    print(game.get_state())
     while True:
         play_mouse_position = pygame.mouse.get_pos()
 
         Screen.fill("gray")
 
-        play_text = get_font(15).render('Gameplay', True, (0, 255, 0))
-        play_rect = play_text.get_rect(center=(640, 260))
-        Screen.blit(play_text, play_rect)
 
-        play_back_button = Button(image=None, position=(640, 460), text_input='Back', font=get_font(15),
-                                  color_1="white", color_2="grey")
-
-        play_back_button.change_color([play_back_button.x_position, play_back_button.y_position])
-        play_back_button.update(Screen)
+        # play_text = get_font(15).render('Gameplay', True, (0, 255, 0))
+        # play_rect = play_text.get_rect(center=(640, 260))
+        # Screen.blit(play_text, play_rect)
+        #
+        # play_back_button = Button(image=None, position=(640, 460), text_input='Back', font=get_font(15),
+        #                           color_1="white", color_2="grey")
+        #
+        # play_back_button.change_color([play_back_button.x_position, play_back_button.y_position])
+        # play_back_button.update(Screen)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                # saveLoadManager()
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -214,7 +228,7 @@ def about():
             Screen.blit(about_text, about_rect)
             y_offset += about_rect.height + 10  # Update Y offset for the next line
 
-        about_back = Button(image=None, position=(655, 660), text_input='Back', font=get_font(15),
+        about_back = Button(image=None, position=(655 , 660), text_input='Back', font=get_font(15),
                             color_1="white", color_2="red")
 
         about_back.change_color(about_mouse_position)
