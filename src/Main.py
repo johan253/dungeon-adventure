@@ -4,5 +4,5 @@ from model.Thief import Thief
 from model.Priestess import Priestess
 from model.Dungeon2 import Dungeon2
 
-dungeon = Dungeon2(3, 3)
+dungeon = Dungeon2(7, 7)
 print(dungeon)
