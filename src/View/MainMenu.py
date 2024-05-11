@@ -161,7 +161,6 @@ def gameplay(game: DungeonAdventure):
             screen.blit(get_font(10).render(f"{room_char}", True, (0, 255, 0)),
                         (x * room_size + room_size // 2, y * room_size + room_size // 2))
 
-
             # Draw a line to the room to the east
             if room.get_east():
                 pygame.draw.line(screen, (0, 255, 0),
@@ -191,7 +190,6 @@ def gameplay(game: DungeonAdventure):
         dungeon = game.get_dungeon()
         # draw_dungeon(Screen, dungeon, 50)
         play_mouse_position = pygame.mouse.get_pos()
-
 
         # Screen.blit(play_text, play_rect)
 
@@ -240,18 +238,18 @@ def load():
 
 def about():
     info = """Welcome to Dungeon Adventure!
-    
+
     Dungeon Adventure v1.0
-    
+
     This game was created by Aly Badr, Johan Hernandez, Lwazi Mabota.
-    
+
     In this game a user will have the option to select from three classes(Thief, Warrior, Wizard) with which they
     will explore the dungeon and attempt to escape. The user will have to find the four pillars of OOP before they
     can escape. While trying to find these pillars they will encounter a few things that could either progress the
     game or halt the game should their health fall to 0. The user can encounter monsters and pits which will take
     away from their health, but they can also find potions that will restore their health or expose parts of the
     dungeon that they have yet to explore.
-    
+
     Good luck!"""
 
     Screen.fill("black")

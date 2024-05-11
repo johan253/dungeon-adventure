@@ -71,15 +71,17 @@ class Dungeon2:
         self.exit.set_items([RoomItem.Exit])
 
         # TODO: Fix placing pillars
+        # Not placing all of items
         for pillar in self.pillars:
-            while True:
+            placed = False
+            while not placed:
                 pillar_room = self.random_room()
                 if pillar_room != self.entrance and pillar_room != self.exit:
-                    for item in pillar_room.get_items():
-                        if item in self.pillars:
-                            continue
-                    pillar_room.set_items([pillar])
-                    break
+                    existing_items = pillar_room.get_items()
+                    if not any(item in self.pillars for item in existing_items):
+                        pillar_room.set_items([pillar])
+                        placed = True
+                        print(f"Pillar {pillar} placed in {pillar_room}")
 
     def random_room(self) -> DungeonRoom:
         room = None
