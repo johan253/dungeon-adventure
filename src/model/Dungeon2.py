@@ -3,8 +3,6 @@ from collections import deque
 from src.model.DugeonRoom import DungeonRoom
 import random
 from src.model.RoomItem import RoomItem
-
-
 class Dungeon2:
     def __init__(self, width, height):
         self.width = width
@@ -15,7 +13,6 @@ class Dungeon2:
         self.adventurer_location = None
         self.pillars = [RoomItem.PillarOfAbstraction, RoomItem.PillarOfEncapsulation,
                         RoomItem.PillarOfInheritance, RoomItem.PillarOfPolymorphism]
-
         self.__generate_dungeon()
         while not self.__valid():
             self.__generate_dungeon()
@@ -70,18 +67,37 @@ class Dungeon2:
 
         self.exit.set_items([RoomItem.Exit])
 
-        # TODO: Fix placing pillars
-        # Not placing all of items
-        for pillar in self.pillars:
+        for index in range(len(self.pillars)):
+            pillar = self.pillars[index]
             placed = False
-            while not placed:
+            attempt_count = 0
+            max_attempts = 100  # Prevent infinite loop
+
+            # Debug: Print which pillar is being placed
+            print(f"Placing pillar: {pillar}")
+
+            while not placed and attempt_count < max_attempts:
                 pillar_room = self.random_room()
+                attempt_count += 1
+
+                # Debug: Print the selected room for this attempt
+                print(f"Attempt {attempt_count}: Trying to place {pillar} in room: {pillar_room}")
+
                 if pillar_room != self.entrance and pillar_room != self.exit:
                     existing_items = pillar_room.get_items()
+
+                    # Debug: Print existing items in the room
+                    print(f"Room {pillar_room} has items: {existing_items}")
+
                     if not any(item in self.pillars for item in existing_items):
                         pillar_room.set_items([pillar])
                         placed = True
-                        print(f"Pillar {pillar} placed in {pillar_room}")
+
+                        # Debug: Confirm placement
+                        print(f"Pillar {pillar} placed in room: {pillar_room}")
+
+            if not placed:
+                print(f"Failed to place {pillar} after {attempt_count} attempts.")
 
     def random_room(self) -> DungeonRoom:
         room = None
