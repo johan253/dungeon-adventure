@@ -32,7 +32,7 @@ class DungeonRoom:
         """
         return self.__items
 
-    def set_items(self, items: list[RoomItem] | RoomItem) -> None:
+    def set_items(self, items: list[RoomItem]) -> None:
         """
         Setter for the items in the room
         :param items: the items in the room
@@ -63,7 +63,8 @@ class DungeonRoom:
         :param room: the room to the north
         """
         self.__north = room
-        room.__south = self
+        if room:
+            room.__south = self
 
     def get_east(self) -> T | None:
         """
@@ -78,7 +79,8 @@ class DungeonRoom:
         :param room: the room to the east
         """
         self.__east = room
-        room.__west = self
+        if room:
+            room.__west = self
 
     def get_south(self) -> T | None:
         """
@@ -93,7 +95,8 @@ class DungeonRoom:
         :param room: the room to the south
         """
         self.__south = room
-        room.__north = self
+        if room:
+            room.__north = self
 
     def get_west(self) -> T | None:
         """
@@ -108,7 +111,8 @@ class DungeonRoom:
         :param room: the room to the west
         """
         self.__west = room
-        room.__east = self
+        if room:
+            room.__east = self
 
     def __str__(self) -> str:
         """

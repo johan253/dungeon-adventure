@@ -1,5 +1,8 @@
+from collections import deque
+
 from src.model.DugeonRoom import DungeonRoom
 import random
+from src.model.RoomItem import RoomItem
 class Dungeon2:
     def __init__(self, width, height):
         self.width = width
@@ -8,79 +11,168 @@ class Dungeon2:
         self.entrance = None
         self.exit = None
         self.adventurer_location = None
-        self.pillars = ["Abstraction", "Inheritance", "Polymorphism", "Encapsulation"]
-
-        self.generate_dungeon(self.my_root, 0, 0)
-        self.ensure_transferability()
+        self.pillars = [RoomItem.PillarOfAbstraction, RoomItem.PillarOfEncapsulation,
+                        RoomItem.PillarOfInheritance, RoomItem.PillarOfPolymorphism]
+        self.__generate_dungeon()
+        while not self.__valid():
+            self.__generate_dungeon()
         self.place_items()
 
-    def generate_dungeon(self, root, x, y):
-        if x < 0 or x >= self.width or y < 0 or y >= self.height:
-            return
+    def get_root(self) -> DungeonRoom:
+        return self.my_root
 
-        if x + 1 < self.width and not root.get_east():
-            east_room = DungeonRoom()
-            root.set_east(east_room)
-            east_room.set_west(root)
-            self.generate_dungeon(east_room, x + 1, y)
+    def __generate_dungeon(self):
+        dungeon = [[DungeonRoom() for _ in range(self.width)] for _ in range(self.height)]
+        for x, row in enumerate(dungeon):
+            for y, room in enumerate(row):
+                if random.random() < 0.30 and not room.get_north() and x > 0:
+                    room.set_north(dungeon[x - 1][y])
+                if random.random() < 0.30 and not room.get_south() and x < self.height - 1:
+                    room.set_south(dungeon[x + 1][y])
+                if random.random() < 0.30 and not room.get_east() and y < self.width - 1:
+                    room.set_east(dungeon[x][y + 1])
+                if random.random() < 0.30 and not room.get_west() and y > 0:
+                    room.set_west(dungeon[x][y - 1])
+        self.my_root = dungeon[0][0]
 
-        if y + 1 < self.height and not root.get_south():
-            south_room = DungeonRoom()
-            south_room.set_north(root)
-            self.generate_dungeon(south_room, x, y + 1)
+    def __valid(self):
+        return self.check_room_number()
 
-    def ensure_transferability(self):
-        while not self.check_maze_completeness(self.my_root):
-            self.my_root = DungeonRoom()
-            self.generate_dungeon(self.my_root, 0, 0)
-
-    def check_maze_completeness(self, root):
+    def check_room_number(self):
         visited = set()
-        queue = [root]
-        directions = ['get_north', 'get_east', 'get_south', 'get_west']
+        self.dfs(self.my_root, visited)
+        return len(visited) == self.width * self.height
 
-        while queue:
-            current_room = queue.pop(0)
-            if current_room not in visited:
-                visited.add(current_room)
-                for direction in directions:
-                    adjacent_room = getattr(current_room, direction)()
-                    if adjacent_room and adjacent_room not in visited:
-                        queue.append(adjacent_room)
+    def dfs(self, root, visited):
+        if root in visited:
+            return
+        visited.add(root)
 
-        total_rooms = self.width * self.height
-        return len(visited) == total_rooms
+        if root.get_east():
+            self.dfs(root.get_east(), visited)
+        if root.get_south():
+            self.dfs(root.get_south(), visited)
+        if root.get_west():
+            self.dfs(root.get_west(), visited)
+        if root.get_north():
+            self.dfs(root.get_north(), visited)
 
     def place_items(self):
         self.entrance = self.my_root
+        self.my_root.set_items([RoomItem.Entrance])
         self.adventurer_location = self.entrance
 
-        while True:
-            exit_room = self.random_room()
-            if exit_room != self.entrance:
-                self.exit = exit_room
-                break
+        while self.exit == self.entrance or not self.exit:
+            self.exit = self.random_room()
 
-        placed_pillars = set()
-        for pillar in self.pillars:
-            while True:
+        self.exit.set_items([RoomItem.Exit])
+
+        for index in range(len(self.pillars)):
+            pillar = self.pillars[index]
+            placed = False
+            attempt_count = 0
+            max_attempts = 100  # Prevent infinite loop
+
+            # Debug: Print which pillar is being placed
+            print(f"Placing pillar: {pillar}")
+
+            while not placed and attempt_count < max_attempts:
                 pillar_room = self.random_room()
-                if pillar_room != self.entrance and pillar_room != self.exit and pillar_room not in placed_pillars:
-                    placed_pillars.add(pillar)
-                    break
+                attempt_count += 1
 
-    def random_room(self):
-        x = random.randint(0, self.width - 1)
-        y = random.randint(0, self.height - 1)
-        return self.get_room(x, y)
+                # Debug: Print the selected room for this attempt
+                print(f"Attempt {attempt_count}: Trying to place {pillar} in room: {pillar_room}")
 
-    def get_room(self, x, y):
-        # Implement a method to retrieve room at (x, y).
-        pass
+                if pillar_room != self.entrance and pillar_room != self.exit:
+                    existing_items = pillar_room.get_items()
+
+                    # Debug: Print existing items in the room
+                    print(f"Room {pillar_room} has items: {existing_items}")
+
+                    if not any(item in self.pillars for item in existing_items):
+                        pillar_room.set_items([pillar])
+                        placed = True
+
+                        # Debug: Confirm placement
+                        print(f"Pillar {pillar} placed in room: {pillar_room}")
+
+            if not placed:
+                print(f"Failed to place {pillar} after {attempt_count} attempts.")
+
+    def random_room(self) -> DungeonRoom:
+        room = None
+        while not room:
+            x = random.randint(0, self.width - 1)
+            y = random.randint(0, self.height - 1)
+            room = self.get_room(self.my_root, x, y, set(), 0, 0)
+        return room
+
+    def get_room(self, root, x, y, visited, cur_x, cur_y):
+        if not root or root in visited:
+            return None
+        visited.add(root)
+        if x == cur_x and y == cur_y:
+            return root
+        return (self.get_room(root.get_north(), x, y, visited, cur_x, cur_y + 1) or
+                self.get_room(root.get_south(), x, y, visited, cur_x, cur_y - 1) or
+                self.get_room(root.get_east(), x, y, visited, cur_x + 1, cur_y) or
+                self.get_room(root.get_west(), x, y, visited, cur_x - 1, cur_y))
 
     def __str__(self):
-        return (f"Dungeon dimensions: {self.width}x{self.height}\n"
-                f"Entrance located at: {self.entrance}\n"
-                f"Exit located at: {self.exit}\n"
-                f"Pillars: {', '.join(self.pillars)}\n"
-                f"Adventurer's current location: {self.adventurer_location}")
+        visited = set()
+
+        def get_number_of_rooms(root):
+            if not root or root in visited:
+                return 0
+            visited.add(root)
+            return (1 + get_number_of_rooms(root.get_north()) + get_number_of_rooms(root.get_south()) +
+                    get_number_of_rooms(root.get_east()) + get_number_of_rooms(root.get_west()))
+
+        def get_x_y_dimensions(root, x, y):
+            if not root or root in visited:
+                return 0, 0
+            visited.add(root)
+            max_x = x + 1
+            max_y = y + 1
+            for dx, dy in ((0, 1), (1, 0), (0, -1), (-1, 0)):
+                if dx == -1:
+                    temp_x, temp_y = get_x_y_dimensions(root.get_west(), x - 1, y)
+                    max_x, max_y = max(max_x, temp_x), max(max_y, temp_y)
+                if dx == 1:
+                    temp_x, temp_y = get_x_y_dimensions(root.get_east(), x + 1, y)
+                    max_x, max_y = max(max_x, temp_x), max(max_y, temp_y)
+                if dy == 1:
+                    temp_x, temp_y = get_x_y_dimensions(root.get_south(), x, y + 1)
+                    max_x, max_y = max(max_x, temp_x), max(max_y, temp_y)
+                if dy == -1:
+                    temp_x, temp_y = get_x_y_dimensions(root.get_north(), x, y - 1)
+                    max_x, max_y = max(max_x, temp_x), max(max_y, temp_y)
+            return max_x, max_y
+
+        def visualize(root, num):
+            if not root or root in visited:
+                return ""
+            visited.add(root)
+            string = (f"\n{"\t|" * num}ROOM: {num + 1} {"EXIT" if root == self.exit else ''}"
+                      f"{"ENTRANCE" if root == self.entrance else ''}\n")
+            for dx, dy in ((0, -1), (1, 0), (0, 1), (-1, 0)):
+                if dy == -1:
+                    string += f"|{"\t|" * (num + 1)}north: ({visualize(root.get_north(), num + 1)}|{"\t" * (num + 2)})\n"
+                if dx == 1:
+                    string += f"|{"\t|" * (num + 1)}east: ({visualize(root.get_east(), num + 1)}|{"\t" * (num + 2)})\n"
+                if dy == 1:
+                    string += f"|{"\t|" * (num + 1)}south: ({visualize(root.get_south(), num + 1)}|{"\t" * (num + 2)})\n"
+                if dx == -1:
+                    string += f"|{"\t|" * (num + 1)}west: ({visualize(root.get_west(), num + 1)}|{"\t" * (num + 2)})\n"
+            return string
+
+        x_dim, y_dim = get_x_y_dimensions(self.my_root, 0, 0)
+        visited.clear()
+        num_rooms = get_number_of_rooms(self.my_root)
+        visited.clear()
+        visual = visualize(self.my_root, 0)
+        return (f"{num_rooms} rooms in the dungeon\n" +
+                f"{x_dim} by {y_dim} dungeon\n"+
+                f"visual:\n{visual}"
+                f"Entrance: {self.entrance}\n"
+                f"Exit: {self.exit}\n")
