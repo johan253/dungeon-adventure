@@ -2,7 +2,7 @@ from controller.DungeonAdventure import DungeonAdventure
 from model.Warrior import Warrior
 from model.Thief import Thief
 from model.Priestess import Priestess
-from model.Dungeon2 import Dungeon2
+from model.Dungeon import Dungeon
 
-dungeon = Dungeon2(4, 4)
+dungeon = Dungeon(3, 3)
 print(dungeon)

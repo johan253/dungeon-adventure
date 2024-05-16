@@ -3,7 +3,7 @@ from model.Skeleton import Skeleton
 from model.Ogre import Ogre
 from model.Gremlin import Gremlin
 from model.DungeonCharacter import DungeonCharacter
-from model.Dungeon2 import Dungeon2
+from model.Dungeon import Dungeon
 
 
 class DungeonAdventure:
@@ -26,7 +26,7 @@ class DungeonAdventure:
         self.__my_player = player_class(player_name)
         print(self.__my_player)
         self.__my_inventory = []  # RoomItem
-        self.__my_dungeon = Dungeon2(5, 5)  # Dungeon
+        self.__my_dungeon = Dungeon(5, 5)  # Dungeon
 
     def move_player(self, dx, dy) -> bool:
         """
@@ -112,7 +112,7 @@ class DungeonAdventure:
         """
         This method resets the dungeon object.
         """
-        self.__my_dungeon = Dungeon2(dim, dim)
+        self.__my_dungeon = Dungeon(dim, dim)
 
     def get_inventory(self):
         """
