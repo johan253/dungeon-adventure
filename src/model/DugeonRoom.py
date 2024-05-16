@@ -50,6 +50,14 @@ class DungeonRoom:
         self.__items.remove(item)
         return True
 
+    def get_all_adjacent_rooms(self) -> list[T]:
+        """
+        Returns a list of all adjacent rooms. Guaranteed to be in the order [north, east, south, west] even
+        if a room is None.
+        :return: a list of all adjacent rooms
+        """
+        return [self.__north, self.__east, self.__south, self.__west]
+
     def get_north(self) -> T | None:
         """
         Getter for the room to the north

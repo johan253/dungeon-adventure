@@ -40,6 +40,8 @@ class Dungeon:
         while not self.__valid():
             self.__generate_dungeon()
         self.__place_items()
+        while not self.__check_items():
+            self.__place_items()
 
     def get_root(self) -> DungeonRoom:
         """
@@ -68,11 +70,10 @@ class Dungeon:
 
     def __valid(self) -> bool:
         """
-        Checks if the dungeon is valid by checking if all rooms are connected, within the bounds of the dungeon, and
-        that all the necessary items are placed in the dungeon.
+        Checks if the dungeon is valid by checking if all rooms are connected and within the bounds of the dungeon.
         :return: True if the dungeon is valid, False otherwise
         """
-        return self.__check_room_number()
+        return self.__check_room_number() and self.__check_dimensions(self.__my_root, set(), 0, 0)
 
     def __check_room_number(self) -> bool:
         """
@@ -83,6 +84,67 @@ class Dungeon:
         self.__dfs(self.__my_root, visited)
         return len(visited) == self.__width * self.__height
 
+    def __check_dimensions(self, root: DungeonRoom, visited: set, cur_x: int, cur_y: int) -> bool:
+        """
+        Checks if the dimensions of the dungeon are correct
+        :param root: The current room being visited
+        :param visited: The set of visited rooms
+        :param cur_x: The current x coordinate of the room being visited
+        :param cur_y: The current y coordinate of the room being visited
+        :return: True if the dimensions are correct, False otherwise
+        """
+        if not root or root in visited:
+            return True
+        visited.add(root)
+        if cur_x >= self.__width or cur_y >= self.__height or cur_x < 0 or cur_y < 0:
+            return False
+        for dx, dy in ((0, 1), (1, 0), (0, -1), (-1, 0)):
+            if dx == -1:
+                if not self.__check_dimensions(root.get_west(), visited, cur_x - 1, cur_y):
+                    return False
+            if dx == 1:
+                if not self.__check_dimensions(root.get_east(), visited, cur_x + 1, cur_y):
+                    return False
+            if dy == 1:
+                if not self.__check_dimensions(root.get_south(), visited, cur_x, cur_y + 1):
+                    return False
+            if dy == -1:
+                if not self.__check_dimensions(root.get_north(), visited, cur_x, cur_y - 1):
+                    return False
+        return True
+
+    def __check_items(self) -> bool:
+        """
+        Checks if all the necessary items are placed in the dungeon
+        :return: True if all the necessary items are placed, False otherwise
+        """
+        visited = set()
+        self.__dfs(self.__my_root, visited)
+        has_entrance = False
+        has_exit = False
+        has_abstraction = False
+        has_encapsulation = False
+        has_inheritance = False
+        has_polymorphism = False
+        for room in visited:
+            items = room.get_items()
+            print(items)
+            if RoomItem.Entrance in items:
+                has_entrance = True
+            if RoomItem.Exit in items:
+                has_exit = True
+            if RoomItem.PillarOfAbstraction in items:
+                has_abstraction = True
+            if RoomItem.PillarOfEncapsulation in items:
+                has_encapsulation = True
+            if RoomItem.PillarOfInheritance in items:
+                has_inheritance = True
+            if RoomItem.PillarOfPolymorphism in items:
+                has_polymorphism = True
+        print(has_entrance, has_exit, has_abstraction, has_encapsulation, has_inheritance, has_polymorphism)
+        return has_entrance and has_exit and has_abstraction and has_encapsulation and has_inheritance\
+            and has_polymorphism
+
     def __dfs(self, root: DungeonRoom, visited: set) -> None:
         """
         Depth-first search to visit all rooms in the dungeon
@@ -92,15 +154,9 @@ class Dungeon:
         if root in visited:
             return
         visited.add(root)
-
-        if root.get_east():
-            self.__dfs(root.get_east(), visited)
-        if root.get_south():
-            self.__dfs(root.get_south(), visited)
-        if root.get_west():
-            self.__dfs(root.get_west(), visited)
-        if root.get_north():
-            self.__dfs(root.get_north(), visited)
+        for room in root.get_all_adjacent_rooms():
+            if room:
+                self.__dfs(room, visited)
 
     def __place_items(self) -> None:
         """
@@ -133,13 +189,10 @@ class Dungeon:
         :return: A random room in the dungeon
         """
         room: DungeonRoom | None = None
-        x = 0
-        y = 0
         while not room:
             x = random.randint(0, self.__width - 1)
             y = random.randint(0, self.__height - 1)
             room = self.__get_room(self.__my_root, x, y, set(), 0, 0)
-        print(f"DEBUG: Random room selected from x: {x}, y: {y}")
         return room
 
     def __get_room(self, root: DungeonRoom, x: int, y: int, visited: set, cur_x: int, cur_y: int) -> DungeonRoom | None:
