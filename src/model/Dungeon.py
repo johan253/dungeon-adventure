@@ -127,7 +127,6 @@ class Dungeon:
         has_polymorphism = False
         for room in visited:
             items = room.get_items()
-            print(items)
             if RoomItem.Entrance in items:
                 has_entrance = True
             if RoomItem.Exit in items:
@@ -140,7 +139,6 @@ class Dungeon:
                 has_inheritance = True
             if RoomItem.PillarOfPolymorphism in items:
                 has_polymorphism = True
-        print(has_entrance, has_exit, has_abstraction, has_encapsulation, has_inheritance, has_polymorphism)
         return has_entrance and has_exit and has_abstraction and has_encapsulation and has_inheritance\
             and has_polymorphism
 

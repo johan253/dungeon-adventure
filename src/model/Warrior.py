@@ -39,8 +39,6 @@ class Warrior(Hero):
         if random.random() <= 0.4:  # 40% chance to succeed
             damage = random.randint(75, 175)  # Corrected to use randint for a range of integers
             other.damage(damage)  # Assuming `damage` method processes damage and checks for character death
-            print(f"{self.get_name()} successfully hits a Crushing Blow dealing {damage} damage!")
             return True
         else:
-            print(f"{self.get_name()} failed to land a Crushing Blow.")
             return False

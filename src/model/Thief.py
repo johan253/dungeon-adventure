@@ -54,7 +54,6 @@ class Thief(Hero):
         :param other: The character to attack
         :return: True if the attack was successful, False otherwise
         """
-        # print(f"{self.get_name()} launches a double attack on {other.get_name()}!")
         res1 = self.attack(other)  # First attack
         res2 = self.attack(other)  # Second attack
         return res1 or res2
@@ -65,7 +64,6 @@ class Thief(Hero):
         :param other: The character to attack
         :return: False, as the thief is caught and cannot make an attack
         """
-        # print(f"{self.get_name()} is caught and cannot make an attack!")
         return False
 
     def __normal_attack(self, other: DungeonCharacter) -> bool:
@@ -74,5 +72,4 @@ class Thief(Hero):
         :param other: The character to attack
         :return: True if the attack was successful, False otherwise
         """
-        # print(f"{self.get_name()} performs a normal attack on {other.get_name()}.")
         return self.attack(other)
