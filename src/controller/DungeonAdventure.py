@@ -1,3 +1,4 @@
+import pickle
 from random import random, choice
 from model.Skeleton import Skeleton
 from model.Ogre import Ogre
