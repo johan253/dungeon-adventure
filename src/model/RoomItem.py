@@ -1,6 +1,7 @@
 from enum import Enum
-
 import random
+
+
 class RoomItem(Enum):
     """
     Enum for the different types of items that can be found in a room.
@@ -52,3 +53,11 @@ class RoomItem(Enum):
         :return: a list of the values of the RoomItem enum that can be mixed
         """
         return [RoomItem.HealingPotion, RoomItem.VisionPotion, RoomItem.Pit]
+
+    @classmethod
+    def get_pillars(cls) -> [str]:
+        """
+        Returns a list of the values of the RoomItem enum that are pillars
+        :return: a list of the values of the RoomItem enum that are pillars
+        """
+        return [RoomItem.PillarOfAbstraction, RoomItem.PillarOfEncapsulation, RoomItem.PillarOfInheritance, RoomItem.PillarOfPolymorphism]
