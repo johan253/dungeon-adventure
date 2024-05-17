@@ -10,9 +10,6 @@ from model.Warrior import Warrior
 from model.Thief import Thief
 from model.Priestess import Priestess
 
-from model.RoomItem import RoomItem
-from model.Directions import Direction
-
 
 class CharacterTests(unittest.TestCase):
     """

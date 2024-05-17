@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from src.controller.DatabaseController import DatabaseController as DB
 
 
 class DungeonCharacter(ABC):
@@ -34,20 +33,23 @@ class DungeonCharacter(ABC):
             raise TypeError("DungeonCharacter class is abstract and cannot be instantiated directly")
         return super().__new__(cls)
 
-    def __init__(self, the_name: str, the_category: str, the_class: str) -> None:
+    def __init__(self, the_name: str, the_health: int, the_min_damage: int, the_max_damage: int,
+                 the_attack_speed: int, the_chance_to_hit: int) -> None:
         """
         Constructor for the abstract DungeonCharacter class
         :param the_name: the name of the character
-        :param the_category: the class that instantiated the character
+        :param the_health: the health of the character
+        :param the_min_damage: the minimum damage the character can deal
+        :param the_max_damage: the maximum damage the character can deal
+        :param the_attack_speed: the attack speed of the character
+        :param the_chance_to_hit: the chance to hit of the character
         """
         self.__my_name = the_name
-        self.__my_category = the_category
-        stats = DB().get_stats(the_category, the_class)
-        self.__my_health = stats['health']
-        self.__my_damage_min = stats['min_damage']
-        self.__my_damage_max = stats['max_damage']
-        self.__my_attack_speed = stats['attack_speed']
-        self.__my_chance_to_hit = stats['chance_to_hit']
+        self.__my_health = the_health
+        self.__my_damage_min = the_min_damage
+        self.__my_damage_max = the_max_damage
+        self.__my_attack_speed = the_attack_speed
+        self.__my_chance_to_hit = the_chance_to_hit
 
     @abstractmethod
     def attack(self, the_other_character: 'DungeonCharacter') -> bool:
@@ -74,13 +76,6 @@ class DungeonCharacter(ABC):
         :return: the name of the character
         """
         return self.__my_name
-
-    def get_category(self) -> str:
-        """
-        Getter for the class of the character
-        :return: the class that instantiated the character
-        """
-        return self.__my_category
 
     def get_health(self) -> int:
         """
@@ -132,5 +127,4 @@ class DungeonCharacter(ABC):
         return (
                 f"Name: {self.__my_name}"
                 f"\nHealth: {self.__my_health}"
-                f"\nType: {self.__my_category}\n"
                 )

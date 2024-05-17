@@ -12,12 +12,20 @@ class Thief(Hero):
     """
     DEFAULT_NAME: str = "Thief"
 
-    def __init__(self, the_name=DEFAULT_NAME) -> None:
+    def __init__(self, the_name: str, the_health: int, the_min_damage: int, the_max_damage: int,
+                 the_attack_speed: int, the_chance_to_hit: int, the_chance_to_block: int) -> None:
         """
         Constructor for the Thief class
         :param the_name: The name of the thief
+        :param the_health: The health of the thief
+        :param the_min_damage: The minimum damage the thief can deal
+        :param the_max_damage: The maximum damage the thief can deal
+        :param the_attack_speed: The attack speed of the thief
+        :param the_chance_to_hit: The chance to hit of the thief
+        :param the_chance_to_block: The chance to block of the thief
         """
-        super().__init__(the_name, Thief.__name__)
+        super().__init__(the_name, the_health, the_min_damage, the_max_damage, the_attack_speed, the_chance_to_hit,
+                         the_chance_to_block)
 
     def do_special(self, other: DungeonCharacter) -> bool:
         """

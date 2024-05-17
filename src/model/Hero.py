@@ -1,7 +1,6 @@
 from src.model.DungeonCharacter import DungeonCharacter
 from random import random
 from abc import ABC, abstractmethod
-from src.controller.DatabaseController import DatabaseController as DB
 
 
 class Hero(DungeonCharacter, ABC):
@@ -22,14 +21,20 @@ class Hero(DungeonCharacter, ABC):
             raise TypeError("The Hero class may not be instantiated directly")
         return super().__new__(cls)
 
-    def __init__(self, the_name: str, the_class: str) -> None:
+    def __init__(self, the_name: str, the_health: int, the_min_damage: int, the_max_damage: int,
+                 the_attack_speed: int, the_chance_to_hit: int, the_chance_to_block: int) -> None:
         """
         Constructor for the Hero class
         :param the_name: The name of the hero
-        :param the_class: The class that instantiated the hero
+        :param the_health: The health of the hero
+        :param the_min_damage: The minimum damage the hero can deal
+        :param the_max_damage: The maximum damage the hero can deal
+        :param the_attack_speed: The attack speed of the hero
+        :param the_chance_to_hit: The chance to hit of the hero
+        :param the_chance_to_block: The chance that the hero will block an attack
         """
-        super().__init__(the_name, Hero.__name__, the_class)
-        self.__my_chance_to_block = DB().get_stats(Hero.__name__, the_class)['chance_to_block']
+        super().__init__(the_name, the_health, the_min_damage, the_max_damage, the_attack_speed, the_chance_to_hit)
+        self.__my_chance_to_block = the_chance_to_block
 
     @abstractmethod
     def do_special(self, other: DungeonCharacter) -> bool:

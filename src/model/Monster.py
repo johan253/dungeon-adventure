@@ -1,7 +1,6 @@
 from src.model.DungeonCharacter import DungeonCharacter
 from random import random
 from abc import ABC
-from src.controller.DatabaseController import DatabaseController as DB
 
 
 class Monster(DungeonCharacter, ABC):
@@ -22,18 +21,25 @@ class Monster(DungeonCharacter, ABC):
             raise TypeError("The Monster class may not be instantiated directly")
         return super().__new__(cls)
 
-    def __init__(self, the_name: str, the_class: str) -> None:
+    def __init__(self, the_name: str, the_health: int, the_min_damage: int, the_max_damage: int,
+                 the_attack_speed: int, the_chance_to_hit: int, the_chance_to_heal: int,
+                 the_min_heal: int, the_max_heal: int) -> None:
         """
         Constructor for the Monster class
         :param the_name: The name of the monster
-        :param the_class: The class that instantiated the monster
+        :param the_health: The health of the monster
+        :param the_min_damage: The minimum damage the monster can deal
+        :param the_max_damage: The maximum damage the monster can deal
+        :param the_attack_speed: The attack speed of the monster
+        :param the_chance_to_hit: The chance to hit of the monster
+        :param the_chance_to_heal: The chance that the monster will heal itself
+        :param the_min_heal: The minimum amount that the monster can heal
+        :param the_max_heal: The maximum amount that the monster can heal
         """
-        super().__init__(the_name, Monster.__name__, the_class)
-        # incorporate SQLite driver for this?
-        data = DB().get_stats(Monster.__name__, the_class)
-        self.__my_chance_to_heal = data['chance_to_heal']
-        self.__my_min_heal = data['min_heal']
-        self.__my_max_heal = data['max_heal']
+        super().__init__(the_name, the_health, the_min_damage, the_max_damage, the_attack_speed, the_chance_to_hit)
+        self.__my_chance_to_heal = the_chance_to_heal
+        self.__my_min_heal = the_min_heal
+        self.__my_max_heal = the_max_heal
 
     def get_chance_to_heal(self) -> float:
         """
