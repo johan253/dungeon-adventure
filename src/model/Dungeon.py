@@ -14,7 +14,6 @@ class Dungeon:
         __entrance (DungeonRoom): The entrance room of the dungeon
         __exit (DungeonRoom): The exit room of the dungeon
         __adventurer_location (DungeonRoom): The room the adventurer is currently in
-        __pillars (list): The list of pillars that need to be placed in the dungeon
     """
     CHANCE_FOR_ROOM = 0.30
     MIN_DIMENSION = 3
@@ -27,14 +26,12 @@ class Dungeon:
         """
         if width < self.MIN_DIMENSION or height < self.MIN_DIMENSION:
             raise ValueError("Dungeon must be at least 4x4")
-        self.__width = width
-        self.__height = height
-        self.__my_root = DungeonRoom()
-        self.__entrance = None
-        self.__exit = None
-        self.__adventurer_location = None
-        self.__pillars = [RoomItem.PillarOfAbstraction, RoomItem.PillarOfEncapsulation,
-                          RoomItem.PillarOfInheritance, RoomItem.PillarOfPolymorphism]
+        self.__width: int = width
+        self.__height: int = height
+        self.__my_root: DungeonRoom | None = DungeonRoom()
+        self.__entrance: DungeonRoom | None = None
+        self.__exit: DungeonRoom | None = None
+        self.__adventurer_location: DungeonRoom | None = None
         self.__generate_dungeon()
         while not self.__valid():
             self.__generate_dungeon()
@@ -168,15 +165,15 @@ class Dungeon:
 
         self.__exit.set_items([RoomItem.Exit])
 
-        for index in range(len(self.__pillars)):
-            pillar = self.__pillars[index]
+        for index in range(len(RoomItem.get_pillars())):
+            pillar = RoomItem.get_pillars()[index]
             placed = False
 
             while not placed:
                 pillar_room = self.__random_room()
                 if pillar_room != self.__entrance and pillar_room != self.__exit:
                     existing_items = pillar_room.get_items()
-                    if not any(item in self.__pillars for item in existing_items):
+                    if not any(item in RoomItem.get_pillars() for item in existing_items):
                         pillar_room.set_items([pillar])
                         placed = True
 

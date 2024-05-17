@@ -45,13 +45,13 @@ class DungeonCharacter(ABC):
         :param the_attack_speed: the attack speed of the character
         :param the_chance_to_hit: the chance to hit of the character
         """
-        self.__my_name = the_name
-        self.__my_health = the_health
-        self.__my_max_health = the_health
-        self.__my_damage_min = the_min_damage
-        self.__my_damage_max = the_max_damage
-        self.__my_attack_speed = the_attack_speed
-        self.__my_chance_to_hit = the_chance_to_hit
+        self.__my_name: str = the_name
+        self.__my_health: int = the_health
+        self.__my_max_health: int = the_health
+        self.__my_damage_min: int = the_min_damage
+        self.__my_damage_max: int = the_max_damage
+        self.__my_attack_speed: int = the_attack_speed
+        self.__my_chance_to_hit: float = the_chance_to_hit
 
     def attack(self, the_other_character: 'DungeonCharacter') -> bool:
         """

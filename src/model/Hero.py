@@ -34,7 +34,7 @@ class Hero(DungeonCharacter, ABC):
         :param the_chance_to_block: The chance that the hero will block an attack
         """
         super().__init__(the_name, the_health, the_min_damage, the_max_damage, the_attack_speed, the_chance_to_hit)
-        self.__my_chance_to_block = the_chance_to_block
+        self.__my_chance_to_block: float = the_chance_to_block
 
     @abstractmethod
     def do_special(self, other: DungeonCharacter) -> bool:
