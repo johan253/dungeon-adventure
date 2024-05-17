@@ -4,6 +4,16 @@ import os
 
 class DatabaseController:
     __instance = None
+    NAME = "name"
+    HEALTH = "health"
+    MIN_DAMAGE = "min_damage"
+    MAX_DAMAGE = "max_damage"
+    ATTACK_SPEED = "attack_speed"
+    CHANCE_TO_HIT = "chance_to_hit"
+    CHANCE_TO_BLOCK = "chance_to_block"
+    CHANCE_TO_HEAL = "chance_to_heal"
+    MIN_HEAL = "min_heal"
+    MAX_HEAL = "max_heal"
 
     def __new__(cls, *args, **kwargs):
         """
