@@ -67,7 +67,8 @@ class Monster(DungeonCharacter, ABC):
         This method heals the monster based on chance to heal and healing range
         """
         if random() <= self.__my_chance_to_heal:
-            self.set_health(int(random() * (self.__my_max_heal - self.__my_min_heal) + self.__my_min_heal))
+            self.set_health(min(int(random() * (self.__my_max_heal - self.__my_min_heal) + self.__my_min_heal),
+                                self.get_max_health()))
 
     def attack(self, other: DungeonCharacter) -> bool:
         """
@@ -77,15 +78,16 @@ class Monster(DungeonCharacter, ABC):
         """
         if random() <= self.get_chance_to_hit():
             damage: int = int(random() * (self.get_damage_max() - self.get_damage_min()) + self.get_damage_min())
-            return other.damage(damage)
+            other.damage(damage)
+            return True
+        return False
 
-    def damage(self, the_damage: int) -> bool:
+    def damage(self, the_damage: int) -> None:
         """
         This method allows the monster to take damage
         :param the_damage: The amount of damage to take
         :return: True if the monster is still alive, False otherwise
         """
-        if not super().damage(the_damage):
+        super().damage(the_damage)
+        if self.is_alive():
             self.heal()
-            return False
-        return True

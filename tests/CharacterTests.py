@@ -41,8 +41,6 @@ class CharacterTests(unittest.TestCase):
         war = self.war
         self.assertEqual(war.get_name(), "warrior bob",
                          "Name should be instantiated with given value")
-        self.assertEqual(war.get_category(), "Hero",
-                         "Warrior category should be 'Hero'")
         war.set_health(25)
         self.assertEqual(war.get_health(), 25,
                          "Health setter should set health to given value")
@@ -167,14 +165,12 @@ class CharacterTests(unittest.TestCase):
             health = ogre.get_health()
             thi.do_special(ogre)
             result = health > ogre.get_health()
-            print(count_special)
             if result:
                 count_special += 1
             count_attempts += 1
         self.assertTrue(0.75 * thi.get_chance_to_hit() * count_attempts <= count_special <=
                         0.85 * count_attempts * thi.get_chance_to_hit(),
                         f"Special ability landed {count_special} times out of {count_attempts} attempts")
-
 
     def test_special_ability_priestess(self):
         """

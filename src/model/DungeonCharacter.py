@@ -46,6 +46,7 @@ class DungeonCharacter(ABC):
         """
         self.__my_name = the_name
         self.__my_health = the_health
+        self.__my_max_health = the_health
         self.__my_damage_min = the_min_damage
         self.__my_damage_max = the_max_damage
         self.__my_attack_speed = the_attack_speed
@@ -60,15 +61,16 @@ class DungeonCharacter(ABC):
         """
         pass
 
-    def damage(self, damage: int) -> bool:
+    def damage(self, damage: int) -> None:
         """
         This method damages the character by a certain amount
         :param damage: The amount of damage to deal to the character
         :return: True if the character is dead, False otherwise
         """
+        if damage < 0:
+            raise ValueError("Damage cannot be negative")
         self.__my_health -= damage
         self.__my_health = max(0, self.__my_health)
-        return self.__my_health <= 0
 
     def get_name(self) -> str:
         """
@@ -84,11 +86,27 @@ class DungeonCharacter(ABC):
         """
         return self.__my_health
 
+    def get_max_health(self) -> int:
+        """
+        Getter for the maximum health of the character
+        :return: the maximum health of the character
+        """
+        return self.__my_max_health
+
+    def is_alive(self) -> bool:
+        """
+        This method checks if the character is alive
+        :return: True if the character is alive, False otherwise
+        """
+        return self.__my_health > 0
+
     def set_health(self, health: int) -> None:
         """
         Setter for the health of the character
         :param health: the new health of the character
         """
+        if health < 0 or health > self.__my_max_health:
+            raise ValueError("Health must be between 0 and the max health")
         self.__my_health = health
 
     def get_damage_min(self) -> int:
@@ -127,4 +145,5 @@ class DungeonCharacter(ABC):
         return (
                 f"Name: {self.__my_name}"
                 f"\nHealth: {self.__my_health}"
+                f"\nType: {type(self).__name__}"
                 )

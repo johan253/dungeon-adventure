@@ -60,13 +60,14 @@ class Hero(DungeonCharacter, ABC):
         """
         if random() <= self.get_chance_to_hit():
             damage: int = int(random() * (self.get_damage_max() - self.get_damage_min()) + self.get_damage_min())
-            return other.damage(damage)
+            other.damage(damage)
+            return True
+        return False
 
-    def damage(self, amount: int) -> bool:
+    def damage(self, amount: int) -> None:
         """
         This method damages the hero by a certain amount
         :param amount: The amount of damage to deal to the hero
         """
         if random() >= self.__my_chance_to_block:
-            return super().damage(amount)
-        return False
+            super().damage(amount)
