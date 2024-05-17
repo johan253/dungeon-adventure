@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from random import random
 
 
 class DungeonCharacter(ABC):
@@ -52,14 +53,17 @@ class DungeonCharacter(ABC):
         self.__my_attack_speed = the_attack_speed
         self.__my_chance_to_hit = the_chance_to_hit
 
-    @abstractmethod
     def attack(self, the_other_character: 'DungeonCharacter') -> bool:
         """
         This method allows the character to attack another character
         :param the_other_character: the character to attack
         :return: True if the attack was successful, False otherwise
         """
-        pass
+        if random() <= self.get_chance_to_hit():
+            damage: int = int(random() * (self.get_damage_max() - self.get_damage_min()) + self.get_damage_min())
+            the_other_character.damage(damage)
+            return True
+        return False
 
     def damage(self, damage: int) -> None:
         """

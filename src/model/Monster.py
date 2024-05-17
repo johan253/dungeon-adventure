@@ -70,18 +70,6 @@ class Monster(DungeonCharacter, ABC):
             self.set_health(min(int(random() * (self.__my_max_heal - self.__my_min_heal) + self.__my_min_heal),
                                 self.get_max_health()))
 
-    def attack(self, other: DungeonCharacter) -> bool:
-        """
-        This method allows the monster to attack a hero
-        :param other: The hero to attack
-        :return: True if the attack was successful, False otherwise
-        """
-        if random() <= self.get_chance_to_hit():
-            damage: int = int(random() * (self.get_damage_max() - self.get_damage_min()) + self.get_damage_min())
-            other.damage(damage)
-            return True
-        return False
-
     def damage(self, the_damage: int) -> None:
         """
         This method allows the monster to take damage

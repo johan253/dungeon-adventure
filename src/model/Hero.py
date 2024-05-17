@@ -52,18 +52,6 @@ class Hero(DungeonCharacter, ABC):
         """
         return self.__my_chance_to_block
 
-    def attack(self, other: DungeonCharacter) -> bool:
-        """
-        This method allows the hero to attack a monster
-        :param other: The monster to attack
-        :return: True if the attack was successful, False otherwise
-        """
-        if random() <= self.get_chance_to_hit():
-            damage: int = int(random() * (self.get_damage_max() - self.get_damage_min()) + self.get_damage_min())
-            other.damage(damage)
-            return True
-        return False
-
     def damage(self, amount: int) -> None:
         """
         This method damages the hero by a certain amount
