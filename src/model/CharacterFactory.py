@@ -1,4 +1,3 @@
-from src.model.DungeonCharacter import DungeonCharacter
 from src.model.Hero import Hero
 from src.model.Monster import Monster
 from src.model.Skeleton import Skeleton
@@ -15,12 +14,22 @@ class CharacterFactory:
     """
     This class is responsible for creating characters in the game.
     """
+    __instance = None
     GREMLIN = "Gremlin"
     OGRE = "Ogre"
     SKELETON = "Skeleton"
     THIEF = "Thief"
     WARRIOR = "Warrior"
     PRIESTESS = "Priestess"
+
+    def __new__(cls):
+        """
+        This method overrides the __new__ method to make the CharacterFactory class a singleton
+        :return: The new instance of the CharacterFactory class
+        """
+        if cls.__instance is None:
+            cls.__instance = super().__new__(cls)
+        return cls.__instance
 
     def __init__(self):
         """

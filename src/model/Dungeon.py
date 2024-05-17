@@ -1,4 +1,3 @@
-from collections import deque
 from src.model.DugeonRoom import DungeonRoom
 import random
 from src.model.RoomItem import RoomItem
@@ -271,13 +270,17 @@ class Dungeon:
                       f"{"ENTRANCE" if root == self.__entrance else ''}\n")
             for dx, dy in ((0, -1), (1, 0), (0, 1), (-1, 0)):
                 if dy == -1:
-                    string += f"|{"\t|" * (num + 1)}north: ({visualize(root.get_north(), num + 1)}|{"\t" * (num + 2)})\n"
+                    string += (f"|{"\t|" * (num + 1)}north: ({visualize(root.get_north(), num + 1)}"
+                               f"|{"\t" * (num + 2)})\n")
                 if dx == 1:
-                    string += f"|{"\t|" * (num + 1)}east: ({visualize(root.get_east(), num + 1)}|{"\t" * (num + 2)})\n"
+                    string += (f"|{"\t|" * (num + 1)}east: ({visualize(root.get_east(), num + 1)}"
+                               f"|{"\t" * (num + 2)})\n")
                 if dy == 1:
-                    string += f"|{"\t|" * (num + 1)}south: ({visualize(root.get_south(), num + 1)}|{"\t" * (num + 2)})\n"
+                    string += (f"|{"\t|" * (num + 1)}south: ({visualize(root.get_south(), num + 1)}"
+                               f"|{"\t" * (num + 2)})\n")
                 if dx == -1:
-                    string += f"|{"\t|" * (num + 1)}west: ({visualize(root.get_west(), num + 1)}|{"\t" * (num + 2)})\n"
+                    string += (f"|{"\t|" * (num + 1)}west: ({visualize(root.get_west(), num + 1)}"
+                               f"|{"\t" * (num + 2)})\n")
             return string
 
         x_dim, y_dim = get_x_y_dimensions(self.__my_root, 0, 0)
