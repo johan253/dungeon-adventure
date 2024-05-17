@@ -16,3 +16,20 @@ class SaveLoadSystem:
         data_file = open('../' + self.save_folder + '/' + name + self.file_extension, "rb")
         data = pickle.load(data_file)
         return data
+
+    def check_for_file(self, name):
+        return os.path.exists('../' + self.save_folder + '/' + name + self.file_extension)
+
+    def load_save(self, files_to_load, default_data):
+        variables = []
+        for file in files_to_load:
+            if self.check_for_file(file):
+                variables.append(self.load_data(file))
+            else:
+                variables.append(default_data)
+
+        return tuple(variables)  # Return a tuple containing all loaded data
+
+    def save_game_data(self, data_to_save, file_name):
+        for index, file in enumerate(data_to_save):
+            self.save_data(file, file_name[index])
