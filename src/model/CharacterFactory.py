@@ -1,4 +1,6 @@
 from src.model.DungeonCharacter import DungeonCharacter
+from src.model.Hero import Hero
+from src.model.Monster import Monster
 from src.model.Skeleton import Skeleton
 from src.model.Ogre import Ogre
 from src.model.Gremlin import Gremlin
@@ -26,7 +28,7 @@ class CharacterFactory:
         """
         self.__DB = DatabaseController()
 
-    def create_character(self, character_class: str, user_name: str) -> DungeonCharacter:
+    def create_character(self, character_class: str, user_name: str) -> Monster | Hero:
         """
         This method creates a character based on the character class and username.
         :param character_class: The class of the character
@@ -51,7 +53,7 @@ class CharacterFactory:
         else:
             raise ValueError("Invalid character class.")
 
-    def create_random_monster(self, user_name: str) -> DungeonCharacter:
+    def create_random_monster(self, user_name: str) -> Monster:
         """
         This method creates a random monster for the user
         :param user_name: The name of the user
@@ -59,7 +61,7 @@ class CharacterFactory:
         """
         return self.create_character(choice([self.GREMLIN, self.OGRE, self.SKELETON]), user_name)
 
-    def __get_monster(self, char_type: type, user_name: str) -> DungeonCharacter:
+    def __get_monster(self, char_type: type, user_name: str) -> Monster:
         """
         This method retrieves a monster from the database
         :param char_type: The type of the monster
@@ -77,7 +79,7 @@ class CharacterFactory:
                          data[self.__DB.MIN_HEAL],
                          data[self.__DB.MAX_HEAL])
 
-    def __get_hero(self, char_type: type, user_name: str) -> DungeonCharacter:
+    def __get_hero(self, char_type: type, user_name: str) -> Hero:
         """
         This method retrieves a hero from the database
         :param char_type: The type of the hero

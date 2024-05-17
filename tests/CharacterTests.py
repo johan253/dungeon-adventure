@@ -3,12 +3,7 @@ import unittest
 from model.DungeonCharacter import DungeonCharacter
 from model.Hero import Hero
 from model.Monster import Monster
-from model.Skeleton import Skeleton
-from model.Ogre import Ogre
-from model.Gremlin import Gremlin
-from model.Warrior import Warrior
-from model.Thief import Thief
-from model.Priestess import Priestess
+from model.CharacterFactory import CharacterFactory
 
 
 class CharacterTests(unittest.TestCase):
@@ -20,13 +15,13 @@ class CharacterTests(unittest.TestCase):
         """
         This method is called before each test. It initializes all the characters
         """
-        self.war: Warrior = Warrior("warrior bob")
-        self.thi: Thief = Thief("thief joe")
-        self.pri: Priestess = Priestess("priest alice")
+        self.war: Hero = CharacterFactory().create_character(CharacterFactory.WARRIOR, "warrior bob")
+        self.thi: Hero = CharacterFactory().create_character(CharacterFactory.THIEF, "thief joe")
+        self.pri: Hero = CharacterFactory().create_character(CharacterFactory.PRIESTESS, "priestess jane")
 
-        self.ogre: Ogre = Ogre("Shrek")
-        self.skeleton: Skeleton = Skeleton("Bones")
-        self.gremlin: Gremlin = Gremlin("Gizmo")
+        self.ogre: Monster = CharacterFactory().create_character(CharacterFactory.OGRE, "ogre shrek")
+        self.skeleton: Monster = CharacterFactory().create_character(CharacterFactory.SKELETON, "skeleton jack")
+        self.gremlin: Monster = CharacterFactory().create_character(CharacterFactory.GREMLIN, "gremlin greg")
 
     def test_abstract_character_instantiation(self):
         """
@@ -167,8 +162,8 @@ class CharacterTests(unittest.TestCase):
         count_special = 0
         count_attempts = 0
         for i in range(100):
-            thi = Thief("thief joe")
-            ogre = Ogre("Shrek")
+            thi = CharacterFactory().create_character(CharacterFactory.THIEF, "thief joe")
+            ogre = CharacterFactory().create_character(CharacterFactory.OGRE, "ogre shrek")
             health = ogre.get_health()
             thi.do_special(ogre)
             result = health > ogre.get_health()

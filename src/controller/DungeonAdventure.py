@@ -1,9 +1,7 @@
-from random import random, choice
-from model.Skeleton import Skeleton
-from model.Ogre import Ogre
-from model.Gremlin import Gremlin
+from random import random
 from model.DungeonCharacter import DungeonCharacter
 from model.Dungeon import Dungeon
+from model.CharacterFactory import CharacterFactory
 
 
 class DungeonAdventure:
@@ -16,15 +14,15 @@ class DungeonAdventure:
         - __my_dungeon (Dungeon): The dungeon object
     """
 
-    def __init__(self, player_name: str, player_class: type):
+    def __init__(self, player_name: str, player_class: str):
         """
         This method initializes the Dungeon Adventure game.
         :param player_name: The name of the player
         :param player_class: The class of the player
         """
-        print("Initializing Game...")
-        self.__my_player = player_class(player_name)
-        print(self.__my_player)
+        print("DA: Initializing Game...")
+        self.__my_player = CharacterFactory().create_character(player_class, player_name)
+        print("DA: \n", self.__my_player)
         self.__my_inventory = []  # RoomItem
         self.__my_dungeon = Dungeon(5, 5)  # Dungeon
 
@@ -36,7 +34,8 @@ class DungeonAdventure:
         :return:
         """
         if random() <= 0.5:
-            return self.__battle(self.__my_player, choice([Skeleton("skelly"), Ogre("shrek"), Gremlin("gremmy")]))
+            monst = CharacterFactory().create_random_monster(self.__my_player.get_name())
+            return self.__battle(self.__my_player, monst)
         print()
         if dy == -1:
             print("Moving North")

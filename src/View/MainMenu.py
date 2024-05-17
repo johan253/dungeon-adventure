@@ -3,10 +3,8 @@ from Button import Button
 from View.TextField import TextField
 from model.DugeonRoom import DungeonRoom
 from src.controller.DungeonAdventure import DungeonAdventure
-from src.model.Warrior import Warrior
-from src.model.Thief import Thief
-from src.model.Priestess import Priestess
 from SaveLoadManager import SaveLoadSystem
+from src.model.CharacterFactory import CharacterFactory
 
 from src.model.Dungeon import Dungeon
 
@@ -129,13 +127,13 @@ def select_hero(player_name: str):
                 if buttons["back"].check_input(play_mouse_position):
                     play()
                 if buttons["thief"].check_input(play_mouse_position):
-                    game = DungeonAdventure("Thief", Thief)
+                    game = DungeonAdventure(player_name, CharacterFactory.THIEF)
                     gameplay(game)
                 if buttons["warrior"].check_input(play_mouse_position):
-                    game = DungeonAdventure("Warrior", Warrior)
+                    game = DungeonAdventure(player_name, CharacterFactory.WARRIOR)
                     gameplay(game)
                 if buttons["priestess"].check_input(play_mouse_position):
-                    game = DungeonAdventure("Priestess", Priestess)
+                    game = DungeonAdventure(player_name, CharacterFactory.PRIESTESS)
                     gameplay(game)
         pygame.display.update()
 
