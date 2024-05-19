@@ -155,21 +155,19 @@ class CharacterTests(unittest.TestCase):
         """
         This method tests the special ability of the thief
         """
-        thi = self.thi
-        ogre = self.ogre
         count_special = 0
         count_attempts = 0
         for i in range(100):
-            thi = CharacterFactory().create_character(CharacterFactory.THIEF, "thief joe")
+            self.thi = CharacterFactory().create_character(CharacterFactory.THIEF, "thief joe")
             ogre = CharacterFactory().create_character(CharacterFactory.OGRE, "ogre shrek")
             health = ogre.get_health()
-            thi.do_special(ogre)
+            self.thi.do_special(ogre)
             result = health > ogre.get_health()
             if result:
                 count_special += 1
             count_attempts += 1
-        self.assertTrue(0.75 * thi.get_chance_to_hit() * count_attempts <= count_special <=
-                        0.85 * count_attempts * thi.get_chance_to_hit(),
+        self.assertTrue(0.75 * self.thi.get_chance_to_hit() * count_attempts <= count_special <=
+                        0.85 * count_attempts * self.thi.get_chance_to_hit(),
                         f"Special ability landed {count_special} times out of {count_attempts} attempts")
 
     def test_special_ability_priestess(self):

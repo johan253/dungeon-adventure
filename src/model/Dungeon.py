@@ -39,6 +39,13 @@ class Dungeon:
         while not self.__check_items():
             self.__place_items()
 
+    def get_dimensions(self) -> tuple[int, int]:
+        """
+        Getter for the dimensions of the dungeon
+        :return: The dimensions of the dungeon
+        """
+        return self.__width, self.__height
+
     def get_root(self) -> DungeonRoom:
         """
         Getter for the root room of the dungeon (the top left room)
