@@ -19,7 +19,7 @@ class Dungeon:
         __adventurer_location (DungeonRoom): The room the adventurer is currently in
     """
     CHANCE_FOR_ROOM = 0.30
-    MIN_DIMENSION = 3
+    MIN_DIMENSION = 4
 
     def __init__(self, the_width: int, the_height: int) -> None:
         """
@@ -63,7 +63,8 @@ class Dungeon:
         """
         if the_x < 0 or the_x >= self.__width or the_y < 0 or the_y >= self.__height:
             raise ValueError("Invalid x or y coordinate")
-        return self.__get_room_helper(self.__root, the_x, the_y, set(), 0, 0)
+        result = self.__get_room_helper(self.__root, the_x, the_y, set(), 0, 0)
+        return result if result else ArithmeticError("Room not found")
 
     def __generate_dungeon(self) -> None:
         """
@@ -196,8 +197,7 @@ class Dungeon:
             result = self.__get_room_helper(room, target_x, target_y, visited, cur_x + dx, cur_y + dy)
             if result:
                 return result
-        raise ArithmeticError("Room not found")
-
+        return None
     def __str__(self) -> str:
         """
         String representation of the dungeon
