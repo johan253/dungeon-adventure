@@ -25,31 +25,31 @@ class DungeonAdventure:
         print("DA: \n", self.__my_player)
         self.__my_inventory = []  # RoomItem
         self.__my_dungeon = Dungeon(5, 5)  # Dungeon
+        self.locations = {self.__my_player: self.__my_dungeon.get_root()} # keys are instances and values are currrent rooms
+        # dungeon
 
-    def move_player(self, dx, dy) -> bool:
+    def move_player(self, direction) -> bool:
         """
-        This method moves the player in the specified direction.
-        :param dx: The change in x-coordinate
-        :param dy: The change in y-coordinate
-        :return:
+            This method moves the player in the specified direction.
+            :param direction: The direction to move ('north', 'south', 'east', 'west')
+            :return: True if the move was successful and False otherwise.
         """
+        current_room = self.locations[self.__my_player]
+        next_room = getattr(current_room, f'get_{direction}')()
+
+        if next_room is None:
+            print(f"DA: No room with {direction}")
+
+        self.locations[self.__my_player] = next_room
+        print(f"Moved{direction} to a new room.")
+
         if random() <= 0.5:
-            monst = CharacterFactory().create_random_monster(self.__my_player.get_name())
-            return self.__battle(self.__my_player, monst)
-        print()
-        if dy == -1:
-            print("Moving North")
-        elif dy == 1:
-            print("Moving South")
-        elif dx == 1:
-            print("Moving East")
-        elif dx == -1:
-            print("Moving West")
-        else:
-            raise ValueError("Invalid direction")
-        print()
-        # To be implemented
-        return False
+            monster = CharacterFactory().create_random_monster(self.__my_player.get_name())
+            if not self.__battle(self.__my_player, monster):
+                print("Battle lost or fled.")
+                self.locations[self.__my_player] = current_room  # Optionally move back
+                return False
+        return True
 
     def use_item(self, item) -> bool:  # item = Room-Item
         """
@@ -57,7 +57,8 @@ class DungeonAdventure:
         :param item: The item to use
         :return: True if the item was used successfully, False otherwise
         """
-        pass
+        current_room = self.locations[self.__my_player]  # Access current room from the ma
+
 
     def __battle(self, char1: DungeonCharacter, char2: DungeonCharacter) -> bool:
         """
@@ -126,3 +127,13 @@ class DungeonAdventure:
         :return: The state of the game
         """
         return [self.__my_player, self.__my_inventory, self.__my_dungeon]
+
+    def add_item_to_inventory(self, item):
+        """
+        Adds an item to the player's inventory
+        :param item: the iden to be added to the inventory
+        :return: None
+        """
+        self.__my_inventory.append(item)
+        print(f"Added {item.name} to the inventory.")
+
