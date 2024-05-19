@@ -75,6 +75,37 @@ class DungeonTest(unittest.TestCase):
         self.assertTrue(RoomItem.Entrance in all_items, f"Entrance not in dungeon")
         self.assertTrue(RoomItem.Exit in all_items, "Exit not in dungeon")
 
+    def test_dungeon_traversable(self):
+        """
+        This method tests that the dungeon is traversable
+        """
+        visited = set()
+
+        found_entrance = False
+        found_exit = False
+
+        def dfs(the_room):
+            """
+            This method performs a depth first search on the dungeon
+            :param the_room:
+            :return:
+            """
+            nonlocal found_entrance, found_exit
+            if the_room is None:
+                return
+            visited.add(the_room)
+            if RoomItem.Entrance in the_room.get_items():
+                found_entrance = True
+            if RoomItem.Exit in the_room.get_items():
+                found_exit = True
+            for adjacent in the_room.get_all_adjacent_rooms():
+                if adjacent not in visited and adjacent is not None:
+                    dfs(adjacent)
+
+        root = self.dungeon.get_root()
+        dfs(root)
+        self.assertTrue(found_entrance and found_exit, "Dungeon not traversable")
+
     def test_dungeon_room_constructor(self):
         """
         This method tests the dungeon class
