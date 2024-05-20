@@ -8,7 +8,7 @@ class SaveLoadSystem:
         self.file_extension = file_extension
         self.save_folder = save_folder
 
-    def save_data(self, data, name):
+    def save_data_from(self, data, name):
         date_file = open('../' + self.save_folder + '/' + name + self.file_extension, "wb")
         pickle.dump(data, date_file)
 
