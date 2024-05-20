@@ -201,6 +201,7 @@ def gameplay(game: DungeonAdventure):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 saveLoadManager.save_data(game.get_state(), "save_data")
+                print("data saved")
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -234,7 +235,7 @@ def load():
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if play_back_button.check_mouse_pos(play_mouse_position):
+                if load_back_button.check_input(play_mouse_position):
                     main_menu()
         pygame.display.update()
 
