@@ -108,7 +108,7 @@ class DungeonAdventure:
         original_speed = player.get_attack_speed()
         new_speed = original_speed + 5
         player.__my_attack_speed = new_speed
-        print(f"{player.get_name()}'s speed increased from {original_speed} to {increased_speed}.")
+        print(f"{player.get_name()}'s speed increased from {original_speed} to {new_speed}.")
 
     def __battle(self, player, monster):
         """
@@ -204,7 +204,7 @@ class DungeonAdventure:
         """
         return self.__my_inventory
 
-    def get_state(self):
+    def get_game_data(self):
         """
         This method returns the state of current game.
         :return: The state of the game

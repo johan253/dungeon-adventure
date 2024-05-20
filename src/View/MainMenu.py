@@ -216,7 +216,7 @@ def gameplay(game: DungeonAdventure):
 
 def load():
     while True:
-        play_mouse_position = pygame.mouse.get_pos()
+        load_mouse_position = pygame.mouse.get_pos()
 
         Screen.fill("black")
 
@@ -235,8 +235,8 @@ def load():
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if load_back_button.check_input(play_mouse_position):
-                    main_menu()
+                if load_back_button.check_input(load_mouse_position):
+                    sys.exit()
         pygame.display.update()
 
 
