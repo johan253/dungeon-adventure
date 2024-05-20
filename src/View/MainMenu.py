@@ -200,7 +200,7 @@ def gameplay(game: DungeonAdventure):
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                # saveLoadManager()
+                saveLoadManager.save_data(game.get_state(), "save_data")
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
