@@ -47,9 +47,10 @@ class DungeonAdventure:
 
         if next_room is None:
             print(f"DA: No room with {direction}")
+            return False
 
         self.locations[self.__my_player] = next_room
-        print(f"Moved{direction} to a new room.")
+        print(f"Moved {direction} to a new room.")
 
         monster = next_room.get_monster()
         if monster:
@@ -126,7 +127,8 @@ class DungeonAdventure:
                 f"\n{player.get_name()} Health: {player.get_health()} | {monster.get_name()} Health: {monster.get_health()}")
             print("Choose your action:")
             print("1. Attack")
-            print("2. Attempt to flee")
+            print("2. Use Special Ability")
+            print("3. Attempt to flee")
 
             battle_choice = input("Enter the number of the action you want to take: ")
             while battle_choice not in ["1", "2"]:
@@ -135,20 +137,22 @@ class DungeonAdventure:
 
             if battle_choice == "1":
                 print(f"\n{player.get_name()} attacks {monster.get_name()}!")
+                prev_health = monster.get_health()
                 if player.attack(monster):
-                    damage = player.get_damage_max() - player.get_damage_min()
+                    damage = prev_health - player.get_health()
                     print(f"Successful hit! {monster.get_name()} takes {damage} damage.")
                 else:
                     print(f"{player.get_name()} missed the attack!")
 
                 if monster.get_health() > 0:
                     print(f"\n{monster.get_name()} counterattacks!")
+                    prev_health = player.get_health()
                     if monster.attack(player):
-                        damage = monster.get_damage_max() - monster.get_damage_min()
+                        damage = prev_health - player.get_health()
                         print(f"Monster hits! {player.get_name()} takes {damage} damage.")
                     else:
                         print(f"{monster.get_name()} missed the attack!")
-            elif battle_choice == "2":
+            elif battle_choice == "3":
                 if random() < 0.5:
                     print("Successfully fled the battle!")
                     return True
@@ -157,6 +161,21 @@ class DungeonAdventure:
                     if monster.attack(player):
                         damage = monster.get_damage_max() - monster.get_damage_min()
                         print(f"Monster hits during your attempt to flee! {player.get_name()} takes {damage} damage.")
+            elif battle_choice == "2":
+                print(f"\n{player.get_name()} uses a special ability!")
+                prev_health = monster.get_health()
+                if player.do_special(monster):
+                    damage = prev_health - monster.get_health()
+                    print(f"Successful special ability! {monster.get_name()} takes {damage} damage.")
+                else:
+                    print(f"{player.get_name()}'s special ability failed!")
+                if monster.is_alive():
+                    print(f"\n{monster.get_name()} counterattacks!")
+                    if monster.attack(player):
+                        damage = monster.get_damage_max() - monster.get_damage_min()
+                        print(f"Monster hits! {player.get_name()} takes {damage} damage.")
+                    else:
+                        print(f"{monster.get_name()} missed the attack!")
 
         if player.get_health() <= 0:
             print(f"\n{player.get_name()} has been defeated by {monster.get_name()}!")

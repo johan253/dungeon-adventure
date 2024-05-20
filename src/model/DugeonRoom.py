@@ -35,7 +35,7 @@ class DungeonRoom:
         Getter for the monster in the room
         :return: the monster in the room
         """
-        if not self.__monster.is_alive():
+        if self.__monster and not self.__monster.is_alive():
             self.__monster = None
         return self.__monster
 
