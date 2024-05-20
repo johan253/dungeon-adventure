@@ -31,7 +31,7 @@ def play():
 
         Screen.fill("black")
 
-        play_text = get_font(15).render('Play', True, (0, 255, 0))
+        play_text = get_font(15).render('Play', True, (255, 255, 0))
         play_rect = play_text.get_rect(center=(640, 260))
         Screen.blit(play_text, play_rect)
 
@@ -93,20 +93,20 @@ def select_name():
 
 def select_hero(player_name: str):
     buttons: dict[str, Button] = {
-        "thief": Button(image=None, position=(640, 360), text_input='Thief', font=get_font(15),
+        "thief": Button(image=None, position=(640, 260), text_input='Thief', font=get_font(15),
                         color_1="white", color_2="red"),
 
-        "warrior": Button(image=None, position=(640, 460), text_input='Warrior', font=get_font(15),
+        "warrior": Button(image=None, position=(640, 360), text_input='Warrior', font=get_font(15),
                           color_1="white", color_2="red"),
 
-        "priestess": Button(image=None, position=(640, 560), text_input='Priestess', font=get_font(15),
+        "priestess": Button(image=None, position=(640, 460), text_input='Priestess', font=get_font(15),
                             color_1="white", color_2="red"),
 
         "back": Button(image=None, position=(640, 660), text_input='Back', font=get_font(15),
                        color_1="white", color_2="red")
     }
-    play_text = get_font(15).render(f'Welcome {player_name}! Select a Hero:', True, (0, 255, 0))
-    play_rect = play_text.get_rect(center=(640, 260))
+    play_text = get_font(15).render(f'Welcome {player_name}! Select a Hero:', True, (255, 255, 0))
+    play_rect = play_text.get_rect(center=(640, 160))
     while True:
         play_mouse_position = pygame.mouse.get_pos()
 
@@ -295,7 +295,7 @@ def main_menu():
                          font=get_font(30), color_1="White", color_2="red")
     load_button = Button(image=pygame.image.load('Assets/load.png'), position=(650, 460), text_input="LOAD",
                          font=get_font(30), color_1="White", color_2="red")
-    about_button = Button(image=pygame.image.load('Assets/about.png'), position=(650, 660), text_input="ABOUT",
+    about_button = Button(image=pygame.image.load('Assets/about.png'), position=(650, 650), text_input="ABOUT",
                           font=get_font(30), color_1="White", color_2="red")
     while True:
         Screen.blit(background, (0, 0))
