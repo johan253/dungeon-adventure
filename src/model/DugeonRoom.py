@@ -1,4 +1,6 @@
 import random
+from src.model.CharacterFactory import CharacterFactory
+from src.model.Monster import Monster
 from src.model.RoomItem import RoomItem
 from typing import TypeVar
 
@@ -20,10 +22,22 @@ class DungeonRoom:
         for item in RoomItem.get_mixable_items():
             if random.random() < DungeonRoom.SPAWN_CHANCE:
                 self.__items.append(item)
+        self.__monster: Monster | None = None
+        if random.random() < DungeonRoom.SPAWN_CHANCE:
+            self.__monster = CharacterFactory().create_random_monster()
         self.__north: DungeonRoom | None = None
         self.__east: DungeonRoom | None = None
         self.__south: DungeonRoom | None = None
         self.__west: DungeonRoom | None = None
+
+    def get_monster(self) -> Monster | None:
+        """
+        Getter for the monster in the room
+        :return: the monster in the room
+        """
+        if not self.__monster.is_alive():
+            self.__monster = None
+        return self.__monster
 
     def get_items(self) -> list[RoomItem]:
         """

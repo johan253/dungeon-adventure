@@ -16,7 +16,6 @@ class Dungeon:
         __root (DungeonRoom): The root room of the dungeon
         __entrance (DungeonRoom): The entrance room of the dungeon
         __exit (DungeonRoom): The exit room of the dungeon
-        __adventurer_location (DungeonRoom): The room the adventurer is currently in
     """
     CHANCE_FOR_ROOM = 0.30
     MIN_DIMENSION = 4
@@ -34,7 +33,6 @@ class Dungeon:
         self.__root: DungeonRoom | None = DungeonRoom()
         self.__entrance: DungeonRoom | None = None
         self.__exit: DungeonRoom | None = None
-        self.__adventurer_location: DungeonRoom | None = None
         self.__generate_dungeon()
         while not self.__valid():
             self.__generate_dungeon()
@@ -65,6 +63,51 @@ class Dungeon:
             raise ValueError("Invalid x or y coordinate")
         result = self.__get_room_helper(self.__root, the_x, the_y, set(), 0, 0)
         return result if result else ArithmeticError("Room not found")
+
+    def __get_room_helper(self, root: DungeonRoom, target_x: int, target_y: int, visited: set, cur_x: int, cur_y: int)\
+            -> DungeonRoom | None:
+        """
+        Helper function to get a room at a specific x, y coordinate in the dungeon
+        :param root: The current room being visited
+        :param target_x: The x coordinate of the room to find
+        :param target_y: The y coordinate of the room to find
+        :param visited: The set of visited rooms
+        :param cur_x: The current x coordinate of the room being visited
+        :param cur_y: The current y coordinate of the room being visited
+        :return: The room at the x, y coordinate in the dungeon
+        """
+        if not root or root in visited:
+            return None
+        visited.add(root)
+        if target_x == cur_x and target_y == cur_y:
+            return root
+        directions = [(0, -1), (1, 0), (0, 1), (-1, 0)]
+        for index, room in enumerate(root.get_all_adjacent_rooms()):
+            dx, dy = directions[index]
+            result = self.__get_room_helper(room, target_x, target_y, visited, cur_x + dx, cur_y + dy)
+            if result:
+                return result
+        return None
+
+    def __place_items(self) -> None:
+        """
+        Places the entrance, exit, and pillars in random rooms in the dungeon.
+        """
+        # TODO: Possibly make entrance randomly placed as well
+        self.__entrance = self.__root
+        self.__entrance.set_items([RoomItem.Entrance])
+
+        # Get all rooms in the dungeon, filter out the entrance, and randomly place the exit and pillars
+        all_rooms = set()
+        self.__dfs(self.__root, all_rooms)
+        valid_rooms = [room for room in all_rooms if room != self.__entrance]
+        random.shuffle(valid_rooms)
+
+        self.__exit = valid_rooms.pop()
+        self.__exit.set_items([RoomItem.Exit])
+
+        for pillar in RoomItem.get_pillars():
+            valid_rooms.pop().set_items([pillar])
 
     def __generate_dungeon(self) -> None:
         """
@@ -153,89 +196,36 @@ class Dungeon:
             if room:
                 self.__dfs(room, visited)
 
-    def __place_items(self) -> None:
+    def __str__(self):
         """
-        Places the entrance, exit, and pillars in random rooms in the dungeon.
-        """
-        # TODO: Possibly make entrance randomly placed as well
-        self.__entrance = self.__root
-        self.__entrance.set_items([RoomItem.Entrance])
-        self.__adventurer_location = self.__entrance
-
-        # Get all rooms in the dungeon, filter out the entrance, and randomly place the exit and pillars
-        all_rooms = set()
-        self.__dfs(self.__root, all_rooms)
-        valid_rooms = [room for room in all_rooms if room != self.__entrance]
-        random.shuffle(valid_rooms)
-
-        self.__exit = valid_rooms.pop()
-        self.__exit.set_items([RoomItem.Exit])
-
-        for pillar in RoomItem.get_pillars():
-            valid_rooms.pop().set_items([pillar])
-
-    def __get_room_helper(self, root: DungeonRoom, target_x: int, target_y: int, visited: set, cur_x: int, cur_y: int)\
-            -> DungeonRoom | None:
-        """
-        Helper function to get a room at a specific x, y coordinate in the dungeon
-        :param root: The current room being visited
-        :param target_x: The x coordinate of the room to find
-        :param target_y: The y coordinate of the room to find
-        :param visited: The set of visited rooms
-        :param cur_x: The current x coordinate of the room being visited
-        :param cur_y: The current y coordinate of the room being visited
-        :return: The room at the x, y coordinate in the dungeon
-        """
-        if not root or root in visited:
-            return None
-        visited.add(root)
-        if target_x == cur_x and target_y == cur_y:
-            return root
-        directions = [(0, -1), (1, 0), (0, 1), (-1, 0)]
-        for index, room in enumerate(root.get_all_adjacent_rooms()):
-            dx, dy = directions[index]
-            result = self.__get_room_helper(room, target_x, target_y, visited, cur_x + dx, cur_y + dy)
-            if result:
-                return result
-        return None
-    def __str__(self) -> str:
-        """
-        String representation of the dungeon
+        String representation of the dungeon and its rooms
         :return: The string representation of the dungeon
         """
-        visited = set()
+        string = "*" + "**" * self.__width + "\n"
+        for row in range(self.__height):
+            string += "*"
+            bottom_string = "*"
+            for col in range(self.__width):
+                room = self.get_room(col, row)
+                item_char = ' '
 
-        def visualize(root, num) -> str:
-            """
-            Visualizes the dungeon in a tree format
-            :param root: The current room being visited
-            :param num: The current room number
-            :return: The string representation of the dungeon
-            """
-            if not root or root in visited:
-                return ""
-            visited.add(root)
-            string = (f"\n{"\t|" * num}ROOM: {num + 1} {"EXIT" if root == self.__exit else ''}"
-                      f"{"ENTRANCE" if root == self.__entrance else ''}\n")
-            for dx, dy in ((0, -1), (1, 0), (0, 1), (-1, 0)):
-                if dy == -1:
-                    string += (f"|{"\t|" * (num + 1)}north: ({visualize(root.get_north(), num + 1)}"
-                               f"|{"\t" * (num + 2)})\n")
-                if dx == 1:
-                    string += (f"|{"\t|" * (num + 1)}east: ({visualize(root.get_east(), num + 1)}"
-                               f"|{"\t" * (num + 2)})\n")
-                if dy == 1:
-                    string += (f"|{"\t|" * (num + 1)}south: ({visualize(root.get_south(), num + 1)}"
-                               f"|{"\t" * (num + 2)})\n")
-                if dx == -1:
-                    string += (f"|{"\t|" * (num + 1)}west: ({visualize(root.get_west(), num + 1)}"
-                               f"|{"\t" * (num + 2)})\n")
-            return string
+                if len(room.get_items()) > 1:
+                    item_char = 'M'
+                elif len(room.get_items()) == 1:
+                    item_char = room.get_items()[0].value
 
-        visual = visualize(self.__root, 0)
-        num_rooms = len(visited)
-        return (f"{num_rooms} rooms in the dungeon\n" +
-                f"{self.__width} by {self.__height} dungeon\n" +
-                f"visual:\n{visual}\n"
-                f"Entrance:\n{self.__entrance}\n"
-                f"Exit:\n{self.__exit}\n")
+                string += f"{item_char}"
+
+                if room.get_east():
+                    string += "|"
+                else:
+                    string += "*"
+
+                if room.get_south():
+                    bottom_string += "-*"
+                else:
+                    bottom_string += "**"
+
+            string += "\n"
+            string += bottom_string + "\n"
+        return string

@@ -37,14 +37,14 @@ class CharacterFactory:
         """
         self.__DB = DatabaseController()
 
-    def create_character(self, character_class: str, user_name: str) -> Monster | Hero:
+    def create_character(self, character_class: str, user_name="") -> Monster | Hero:
         """
         This method creates a character based on the character class and username.
         :param character_class: The class of the character
         :param user_name: The name of the user
         :return: The character object
         """
-        if not character_class.strip() or not user_name.strip():
+        if not character_class.strip():
             raise ValueError("Character class or user name cannot be empty.")
 
         if character_class == self.GREMLIN:
@@ -62,13 +62,13 @@ class CharacterFactory:
         else:
             raise ValueError("Invalid character class.")
 
-    def create_random_monster(self, user_name: str) -> Monster:
+    def create_random_monster(self, monster_name="") -> Monster:
         """
         This method creates a random monster for the user
-        :param user_name: The name of the user
+        :param monster_name: The name of the user
         :return: The monster object
         """
-        return self.create_character(choice([self.GREMLIN, self.OGRE, self.SKELETON]), user_name)
+        return self.create_character(choice([self.GREMLIN, self.OGRE, self.SKELETON]), monster_name)
 
     def __get_monster(self, char_type: type, user_name: str) -> Monster:
         """
@@ -77,7 +77,7 @@ class CharacterFactory:
         :param user_name: The name of the user
         :return: The monster object
         """
-        data = self.__DB.get_stats("Monster", char_type.__name__)
+        data = self.__DB.get_stats(self.__DB.MONSTER, char_type.__name__)
         return char_type(user_name,
                          data[self.__DB.HEALTH],
                          data[self.__DB.MIN_DAMAGE],
@@ -95,7 +95,7 @@ class CharacterFactory:
         :param user_name: The name of the user
         :return: The hero object
         """
-        data = self.__DB.get_stats("Hero", char_type.__name__)
+        data = self.__DB.get_stats(self.__DB.HERO, char_type.__name__)
         return char_type(user_name,
                          data[self.__DB.HEALTH],
                          data[self.__DB.MIN_DAMAGE],

@@ -24,9 +24,11 @@ class Warrior(Hero):
         :param the_chance_to_hit: The chance to hit of the warrior
         :param the_chance_to_block: The chance to block of the warrior
         """
-        if not any([the_name, the_health, the_min_damage, the_max_damage, the_attack_speed, the_chance_to_hit,
+        if not any([the_health, the_min_damage, the_max_damage, the_attack_speed, the_chance_to_hit,
                     the_chance_to_block]):
             raise ValueError("All parameters must be provided to create a Priestess")
+        if the_name.strip() == "":
+            the_name = self.DEFAULT_NAME
         super().__init__(the_name, the_health, the_min_damage, the_max_damage, the_attack_speed, the_chance_to_hit,
                          the_chance_to_block)
 

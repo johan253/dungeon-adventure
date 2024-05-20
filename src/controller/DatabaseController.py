@@ -4,6 +4,8 @@ import os
 
 class DatabaseController:
     __instance = None
+    MONSTER = "Monster"
+    HERO = "Hero"
     NAME = "name"
     HEALTH = "health"
     MIN_DAMAGE = "min_damage"
