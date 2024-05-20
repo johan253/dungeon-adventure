@@ -2,6 +2,7 @@ from random import random
 from model.DungeonCharacter import DungeonCharacter
 from model.Dungeon import Dungeon
 from model.CharacterFactory import CharacterFactory
+from model.RoomItem import RoomItem
 
 
 class DungeonAdventure:
@@ -25,8 +26,15 @@ class DungeonAdventure:
         print("DA: \n", self.__my_player)
         self.__my_inventory = []  # RoomItem
         self.__my_dungeon = Dungeon(5, 5)  # Dungeon
-        self.locations = {self.__my_player: self.__my_dungeon.get_root()} # keys are instances and values are currrent rooms
+        self.locations = {self.__my_player: self.__my_dungeon.get_root()}  # keys are instances and values are
+        # currrent rooms
         # dungeon
+        self.item_effects = {
+            RoomItem.HealingPotion: lambda player: self.use_healing_potion(player),
+            RoomItem.VisionPotion: lambda player, room: self.use_vision_potion(player, room),
+            RoomItem.BombPotion: lambda player, room: self.use_bomb_potion(player, room),
+            RoomItem.SpeedPotion: lambda player: self.use_speed_potion(player)
+        }
 
     def move_player(self, direction) -> bool:
         """
@@ -43,62 +51,118 @@ class DungeonAdventure:
         self.locations[self.__my_player] = next_room
         print(f"Moved{direction} to a new room.")
 
-        if random() <= 0.5:
-            monster = CharacterFactory().create_random_monster(self.__my_player.get_name())
+        monster = next_room.get_monster()
+        if monster:
             if not self.__battle(self.__my_player, monster):
                 print("Battle lost or fled.")
                 self.locations[self.__my_player] = current_room  # Optionally move back
                 return False
         return True
 
-    def use_item(self, item) -> bool:  # item = Room-Item
+    def use_item(self, item_type: RoomItem) -> bool:  # item = Room-Item
         """
         This method uses the specified item.
-        :param item: The item to use
+        :param item_type: Room item to be used
         :return: True if the item was used successfully, False otherwise
         """
-        current_room = self.locations[self.__my_player]  # Access current room from the ma
+        # Find item in inventory
 
+        item = next((item for item in self.__my_inventory if item == item_type), None)
+        if not item:
+            print(f"Item {item_type} not found in inventory")
+            return False
 
-    def __battle(self, char1: DungeonCharacter, char2: DungeonCharacter) -> bool:
+        # call the effect if the item exists within the map
+
+        effect_function = self.item_effects.get(item_type)
+        if effect_function:
+            effect_function(self.__my_player)
+            self.__my_inventory.remove(item)
+            print("fUsed {item_type}")
+            return True
+        else:
+            print(f"No effect defined for {item_type}")
+            return False
+
+    def use_healing_potion(self,player):
+        heal_amount = 50
+        new_health = min(player.get_health() + heal_amount, player.get_max_health())
+        player.set_health(new_health)
+        print(f"{player.get_name()} healed by {heal_amount}, current health: {new_health}.")
+
+    def use_vision_potion(self, player, current_room):
+        # This is a placeholder
+        print(f"{player.get_name()} uses a vision potion, revealing secrets in the room.")
+
+    def use_bomb_potion(self,player,current_room):
+        damage = 30
+        if hasattr(current_room,'monsters'):
+            for monster in current_room.monsters:
+                monster.damage(damage)
+                if not monster.is_alive():
+                    print(f"The monster {monster.get_name()} has been defeated")
+        print(f"{player.get_name()} uses a bomb potion, dealing {damage} damage to all enemies in the room.")
+
+    def use_speed_potion(self,player):
+        original_speed = player.get_attack_speed()
+        new_speed = original_speed + 5
+        player.__my_attack_speed = new_speed
+        print(f"{player.get_name()}'s speed increased from {original_speed} to {increased_speed}.")
+
+    def __battle(self, player, monster):
         """
-        This method handles a battle between two characters.
-        :param char1: One of the characters
-        :param char2: The other character
-        :return: TBD
+        This method handles a battle between the player and a monster.
+        :param player: The player character
+        :param monster: The monster character
+        :return: True if the player wins or escapes, False if the player is defeated.
         """
-        print("You encountered a monster!")
-        print("You must battle it to proceed.\n")
-        while char1.get_health() > 0 and char2.get_health() > 0:
-            prev_hero_health = char1.get_health()
-            prev_monster_health = char2.get_health()
-            print(f"{char1}\n{char2}\n")
-            print("Enter one of the following choices")
+        if monster is None:
+            print("No monster to fight.")
+            return True
+
+        print(f"You have encountered a {monster.get_name()}! Prepare for battle.")
+        while player.get_health() > 0 and monster.get_health() > 0:
+            print(
+                f"\n{player.get_name()} Health: {player.get_health()} | {monster.get_name()} Health: {monster.get_health()}")
+            print("Choose your action:")
             print("1. Attack")
             print("2. Attempt to flee")
+
             battle_choice = input("Enter the number of the action you want to take: ")
-            valid = battle_choice in ["1", "2"]
-            while not valid:
-                print("Invalid input. Please enter a number between 1 and 2.")
+            while battle_choice not in ["1", "2"]:
+                print("Invalid input. Please enter 1 to attack or 2 to flee.")
                 battle_choice = input("Enter the number of the action you want to take: ")
-                valid = battle_choice in ["1", "2"]
+
             if battle_choice == "1":
-                print("You attack the monster!\n")
-                char1.attack(char2)
-            else:
-                if random() <= 0.5:
-                    print("You successfully fled the battle!\n")
-                    return False
+                print(f"\n{player.get_name()} attacks {monster.get_name()}!")
+                if player.attack(monster):
+                    damage = player.get_damage_max() - player.get_damage_min()
+                    print(f"Successful hit! {monster.get_name()} takes {damage} damage.")
                 else:
-                    print("You failed to flee the battle!\n")
-            char2.attack(char1)
-            print(f"{char1.get_name()} took {prev_hero_health - char1.get_health()} damage.")
-            print(f"{char2.get_name()} took {prev_monster_health - char2.get_health()} damage.\n")
-        # To be implemented
-        if not self.__my_player.get_health() <= 0:
-            print("You defeated the monster!")
+                    print(f"{player.get_name()} missed the attack!")
+
+                if monster.get_health() > 0:
+                    print(f"\n{monster.get_name()} counterattacks!")
+                    if monster.attack(player):
+                        damage = monster.get_damage_max() - monster.get_damage_min()
+                        print(f"Monster hits! {player.get_name()} takes {damage} damage.")
+                    else:
+                        print(f"{monster.get_name()} missed the attack!")
+            elif battle_choice == "2":
+                if random() < 0.5:
+                    print("Successfully fled the battle!")
+                    return True
+                else:
+                    print("Failed to flee! The battle continues.")
+                    if monster.attack(player):
+                        damage = monster.get_damage_max() - monster.get_damage_min()
+                        print(f"Monster hits during your attempt to flee! {player.get_name()} takes {damage} damage.")
+
+        if player.get_health() <= 0:
+            print(f"\n{player.get_name()} has been defeated by {monster.get_name()}!")
             return False
         else:
+            print(f"\n{monster.get_name()} has been defeated!")
             return True
 
     def get_dungeon(self):
@@ -127,13 +191,3 @@ class DungeonAdventure:
         :return: The state of the game
         """
         return [self.__my_player, self.__my_inventory, self.__my_dungeon]
-
-    def add_item_to_inventory(self, item):
-        """
-        Adds an item to the player's inventory
-        :param item: the iden to be added to the inventory
-        :return: None
-        """
-        self.__my_inventory.append(item)
-        print(f"Added {item.name} to the inventory.")
-
