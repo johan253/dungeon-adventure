@@ -1,5 +1,5 @@
 import pygame, sys
-from Button import Button
+from View.Button import Button
 from View import Gameplay
 from View.TextField import TextField
 from model.DugeonRoom import DungeonRoom
@@ -131,13 +131,13 @@ def select_hero(player_name: str):
                     play()
                 if buttons["thief"].check_input(play_mouse_position):
                     game = DungeonAdventure(player_name, CharacterFactory.THIEF)
-                    Gameplay.play(game)
+                    Gameplay.play(Screen, game)
                 if buttons["warrior"].check_input(play_mouse_position):
                     game = DungeonAdventure(player_name, CharacterFactory.WARRIOR)
-                    Gameplay.play(game)
+                    Gameplay.play(Screen, game)
                 if buttons["priestess"].check_input(play_mouse_position):
                     game = DungeonAdventure(player_name, CharacterFactory.PRIESTESS)
-                    Gameplay.play(game)
+                    Gameplay.play(Screen, game)
         pygame.display.update()
 
 

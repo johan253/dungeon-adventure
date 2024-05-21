@@ -27,7 +27,7 @@ class DungeonAdventure:
         self.__my_player = CharacterFactory().create_character(player_class, player_name)
         print("DA: \n", self.__my_player)
         self.__my_inventory: list[RoomItem] = []  # RoomItem
-        self.__my_dungeon = Dungeon(5, 5)  # Dungeon
+        self.__my_dungeon = Dungeon(6, 6)  # Dungeon
         self.__my_location = self.__my_dungeon.get_root()
         self.__my_visited_rooms = set()
         self.__my_visited_rooms.add(self.__my_location)

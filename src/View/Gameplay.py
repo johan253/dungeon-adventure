@@ -2,40 +2,43 @@ import sys
 
 import pygame
 
-import Tile
-import Battle
+import View.Tile as Tile
+import View.Battle as Battle
 from SaveLoadManager import SaveLoadSystem
 from View.Button import Button
-from View.MainMenu import get_font, Screen
 from controller.DungeonAdventure import DungeonAdventure
 from model.DugeonRoom import DungeonRoom
 from model.RoomItem import RoomItem
 
 save_data = SaveLoadSystem(".save", "saved_data")
-DIFFICULTY = 1
+DIFFICULTY = 3
 
 __GAME: DungeonAdventure | None = None
 MAX_TILE_SIZE = 96
 REDUCTION_FACTOR_PER_DIFFICULTY = 8
+SCREEN: pygame.Surface | None = None
 
 
-def play(game):
+def play(screen, game):
+    global SCREEN
+    SCREEN = screen
     __gameplay(game)
 
 
 def __gameplay(game: DungeonAdventure):
     global __GAME
+    global SCREEN
     __GAME = game
-    title_text = get_font(12).render("Dungeon Adventure", True, (255, 0, 0))
-    title_text_rect = title_text.get_rect(center=(Screen.get_width() // 2, title_text.get_height() // 2))
-    Screen.fill("black")
-    Screen.blit(title_text, title_text_rect)
+    title_text = pygame.font.Font("Assets/Dungeon Depths.ttf", 12).render("Dungeon Adventure", True, (255, 0, 0))
+    title_text_rect = title_text.get_rect(center=(SCREEN.get_width() // 2, title_text.get_height() // 2))
+    SCREEN.fill("black")
+    SCREEN.blit(title_text, title_text_rect)
     tile_size = MAX_TILE_SIZE - (REDUCTION_FACTOR_PER_DIFFICULTY * (DIFFICULTY - 1))
     dungeon_width = tile_size * game.get_dungeon().get_dimensions()[0]
     dungeon_height = tile_size * game.get_dungeon().get_dimensions()[1]
-    dungeon_starting_x = (Screen.get_width() - dungeon_width) // 2
-    dungeon_starting_y = (Screen.get_height() - dungeon_height) // 2
-    draw_dungeon(Screen, game.get_dungeon(), tile_size, dungeon_starting_x // tile_size, dungeon_starting_y // tile_size)
+    dungeon_starting_x = (SCREEN.get_width() - dungeon_width) // 2
+    dungeon_starting_y = (SCREEN.get_height() - dungeon_height) // 2
+    draw_dungeon(SCREEN, game.get_dungeon(), tile_size, dungeon_starting_x // tile_size, dungeon_starting_y // tile_size)
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -52,8 +55,8 @@ def __gameplay(game: DungeonAdventure):
                 if game.get_battle_state():
                     # Battle.start(game)
                     pass
-                Screen.fill("black")
-                draw_dungeon(Screen, game.get_dungeon(), tile_size, dungeon_starting_x // tile_size, dungeon_starting_y // tile_size)
+                SCREEN.fill("black")
+                draw_dungeon(SCREEN, game.get_dungeon(), tile_size, dungeon_starting_x // tile_size, dungeon_starting_y // tile_size)
                 print(f"current inventoryL {game.get_inventory()}")
         pygame.display.flip()
         pygame.time.delay(1000 // 60)
