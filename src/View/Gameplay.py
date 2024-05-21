@@ -15,6 +15,8 @@ save_data = SaveLoadSystem(".save", "saved_data")
 DIFFICULTY = 1
 
 __GAME: DungeonAdventure | None = None
+MAX_TILE_SIZE = 96
+REDUCTION_FACTOR_PER_DIFFICULTY = 8
 
 
 def play(game):
@@ -24,16 +26,15 @@ def play(game):
 def __gameplay(game: DungeonAdventure):
     global __GAME
     __GAME = game
-    title_text = get_font(12).render("Dungeon Adventure", True, (0, 255, 0))
+    title_text = get_font(12).render("Dungeon Adventure", True, (255, 0, 0))
     title_text_rect = title_text.get_rect(center=(Screen.get_width() // 2, title_text.get_height() // 2))
     Screen.fill("black")
     Screen.blit(title_text, title_text_rect)
-    tile_size = 96 - (8 * (DIFFICULTY - 1))
+    tile_size = MAX_TILE_SIZE - (REDUCTION_FACTOR_PER_DIFFICULTY * (DIFFICULTY - 1))
     dungeon_width = tile_size * game.get_dungeon().get_dimensions()[0]
     dungeon_height = tile_size * game.get_dungeon().get_dimensions()[1]
     dungeon_starting_x = (Screen.get_width() - dungeon_width) // 2
     dungeon_starting_y = (Screen.get_height() - dungeon_height) // 2
-    print(dungeon_starting_x, dungeon_starting_y)
     draw_dungeon(Screen, game.get_dungeon(), tile_size, dungeon_starting_x // tile_size, dungeon_starting_y // tile_size)
     while True:
         for event in pygame.event.get():
@@ -53,6 +54,7 @@ def __gameplay(game: DungeonAdventure):
                     pass
                 Screen.fill("black")
                 draw_dungeon(Screen, game.get_dungeon(), tile_size, dungeon_starting_x // tile_size, dungeon_starting_y // tile_size)
+                print(f"current inventoryL {game.get_inventory()}")
         pygame.display.flip()
         pygame.time.delay(1000 // 60)
 
@@ -65,7 +67,6 @@ def draw_dungeon(screen: pygame.Surface, dungeon, room_size, x, y):
 def draw_room(screen: pygame.Surface, room: DungeonRoom, x, y, room_size, visited):
     if room is None or room in visited or room not in __GAME.get_visited_rooms():
         return
-    print(f"Drawing room with items: {room.get_items()}")
     visited.add(room)
     mini_tile_size = room_size // 3
     for i in range(3):

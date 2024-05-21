@@ -61,3 +61,11 @@ class RoomItem(Enum):
         :return: a list of the values of the RoomItem enum that are pillars
         """
         return [RoomItem.PillarOfAbstraction, RoomItem.PillarOfEncapsulation, RoomItem.PillarOfInheritance, RoomItem.PillarOfPolymorphism]
+
+    @classmethod
+    def get_static_items(cls) -> [str]:
+        """
+        Returns a list of the values of the RoomItem enum that are static and cannot be picked up by a player
+        :return: a list of the values of the RoomItem enum that are static and cannot be picked up by a player
+        """
+        return [RoomItem.Entrance.value, RoomItem.Exit.value, RoomItem.Pit.value]

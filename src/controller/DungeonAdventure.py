@@ -1,4 +1,6 @@
 from random import random
+
+from model.DugeonRoom import DungeonRoom
 from model.DungeonCharacter import DungeonCharacter
 from model.Dungeon import Dungeon
 from model.CharacterFactory import CharacterFactory
@@ -24,7 +26,7 @@ class DungeonAdventure:
         print("DA: Initializing Game...")
         self.__my_player = CharacterFactory().create_character(player_class, player_name)
         print("DA: \n", self.__my_player)
-        self.__my_inventory = []  # RoomItem
+        self.__my_inventory: list[RoomItem] = []  # RoomItem
         self.__my_dungeon = Dungeon(5, 5)  # Dungeon
         self.__my_location = self.__my_dungeon.get_root()
         self.__my_visited_rooms = set()
@@ -46,7 +48,7 @@ class DungeonAdventure:
             :return: True if the move was successful and False otherwise.
         """
         current_room = self.__my_location
-        next_room = getattr(current_room, f'get_{direction}')()
+        next_room: DungeonRoom = getattr(current_room, f'get_{direction}')()
 
         if next_room is None:
             print(f"DA: No room with {direction}")
@@ -54,6 +56,11 @@ class DungeonAdventure:
 
         self.__my_location = next_room
         self.__my_visited_rooms.add(next_room)
+        for item in next_room.get_items():
+            if item.value not in RoomItem.get_static_items():
+                self.__my_inventory.append(item)
+                print(f"DA: Picked up {item}")
+        next_room.set_items([])
         print(f"Moved {direction} to a new room.")
 
         monster = next_room.get_monster()
