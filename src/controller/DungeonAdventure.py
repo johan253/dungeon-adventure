@@ -35,10 +35,10 @@ class DungeonAdventure:
         # currrent rooms
         # dungeon
         self.item_effects = {
-            RoomItem.HealingPotion: lambda player: self.use_healing_potion(player),
-            RoomItem.VisionPotion: lambda player, room: self.use_vision_potion(player, room),
-            RoomItem.BombPotion: lambda player, room: self.use_bomb_potion(player, room),
-            RoomItem.SpeedPotion: lambda player: self.use_speed_potion(player)
+            RoomItem.HealingPotion: self.use_healing_potion,
+            RoomItem.VisionPotion:self.use_vision_potion,
+            RoomItem.BombPotion: self.use_bomb_potion,
+            RoomItem.SpeedPotion: self.use_speed_potion
         }
 
     def move_player(self, direction) -> bool:

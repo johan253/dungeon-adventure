@@ -1,16 +1,14 @@
 import sys
 
 import pygame
-
+import pickle
 import View.Tile as Tile
 import View.Battle as Battle
-from SaveLoadManager import SaveLoadSystem
 from View.Button import Button
 from controller.DungeonAdventure import DungeonAdventure
 from model.DugeonRoom import DungeonRoom
 from model.RoomItem import RoomItem
 
-save_data = SaveLoadSystem(".save", "saved_data")
 DIFFICULTY = 3
 
 __GAME: DungeonAdventure | None = None
@@ -23,6 +21,19 @@ def play(screen, game):
     global SCREEN
     SCREEN = screen
     __gameplay(game)
+
+
+def save_game_state(game_state):
+    with open("game_state.pkl", "wb") as file:
+        pickle.dump(game_state, file)
+
+
+def load_game_state():
+    try:
+        with open("game_state.pkl", "rb") as file:
+            return pickle.load(file)
+    except FileNotFoundError:
+        return None
 
 
 def __gameplay(game: DungeonAdventure):
@@ -42,6 +53,7 @@ def __gameplay(game: DungeonAdventure):
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                save_game_state(__GAME)
                 sys.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP or event.key == pygame.K_w:
@@ -109,3 +121,6 @@ def __get_appropriate_tile(room: DungeonRoom, row, col, size):
         return Tile.get_tile(Tile.EXIT, size, size)
     else:
         return Tile.get_tile(Tile.FLOOR, size, size)
+
+
+

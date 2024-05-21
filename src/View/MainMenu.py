@@ -4,9 +4,7 @@ from View import Gameplay
 from View.TextField import TextField
 from model.DugeonRoom import DungeonRoom
 from src.controller.DungeonAdventure import DungeonAdventure
-from SaveLoadManager import SaveLoadSystem
 from src.model.CharacterFactory import CharacterFactory
-from src import SaveLoadManager
 from src.model.Dungeon import Dungeon
 
 pygame.init()
@@ -18,10 +16,6 @@ background = pygame.image.load('Assets/mainmenu.png')
 background = pygame.transform.scale(background, (1280, 720))
 
 game: DungeonAdventure | None = None
-save_data = SaveLoadSystem(".save", "saved_data")
-# game_data = save_data.load_data("save_data")
-
-
 
 
 def get_font(size):
@@ -147,16 +141,18 @@ def load():
 
         Screen.fill("black")
 
-        load_text = get_font(15).render('Load', True, (0, 255, 0))
-        load_rect = load_text.get_rect(center=(640, 260))
+        load_text = get_font(15).render('Select Load to Continue a Previous game:', True, (255, 255, 0))
+        load_rect = load_text.get_rect(center=(640, 60))
         Screen.blit(load_text, load_rect)
 
-        load_back_button = Button(image=None, position=(640, 460), text_input='Back', font=get_font(15),
+        load_button = Button(image=None, position=(640, 260), text_input='LOAD', font=get_font(15),
                                   color_1="white", color_2="red")
-        load_back_button = Button(image=None, position=(640, 460), text_input='Back', font=get_font(15),
-                                  color_1="white", color_2="red")
+        load_back_button= Button(image=None, position=(640, 560), text_input='Back', font=get_font(15),
+                             color_1="white", color_2="red")
         load_back_button.change_color([load_mouse_position[0], load_mouse_position[1]])
         load_back_button.update(Screen)
+        load_button.change_color([load_mouse_position[0], load_mouse_position[1]])
+        load_button.update(Screen)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -164,7 +160,13 @@ def load():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if load_back_button.check_input(load_mouse_position):
-                    save_data.save_data_from(game_data, "save_data")
+                    main_menu()
+                if load_button.check_input(load_mouse_position):
+                    game_state = Gameplay.load_game_state()
+                    if game_state:
+                        Gameplay.play(Screen, game_state)
+                        return
+
         pygame.display.update()
 
 
