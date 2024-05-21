@@ -26,7 +26,9 @@ class DungeonAdventure:
         print("DA: \n", self.__my_player)
         self.__my_inventory = []  # RoomItem
         self.__my_dungeon = Dungeon(5, 5)  # Dungeon
-        self.locations = {self.__my_player: self.__my_dungeon.get_root()}  # keys are instances and values are
+        self.__my_location = self.__my_dungeon.get_root()
+        self.__my_visited_rooms = set()
+        self.__my_visited_rooms.add(self.__my_location)
         # currrent rooms
         # dungeon
         self.item_effects = {
@@ -42,21 +44,21 @@ class DungeonAdventure:
             :param direction: The direction to move ('north', 'south', 'east', 'west')
             :return: True if the move was successful and False otherwise.
         """
-        current_room = self.locations[self.__my_player]
+        current_room = self.__my_location
         next_room = getattr(current_room, f'get_{direction}')()
 
         if next_room is None:
             print(f"DA: No room with {direction}")
             return False
 
-        self.locations[self.__my_player] = next_room
+        self.__my_location = next_room
+        self.__my_visited_rooms.add(next_room)
         print(f"Moved {direction} to a new room.")
 
         monster = next_room.get_monster()
         if monster:
             if not self.__battle(self.__my_player, monster):
                 print("Battle lost or fled.")
-                self.locations[self.__my_player] = current_room  # Optionally move back
                 return False
         return True
 
@@ -191,11 +193,26 @@ class DungeonAdventure:
         """
         return self.__my_dungeon
 
-    def reset_dungeon(self, dim):
+    def get_player(self):
         """
-        This method resets the dungeon object.
+        This method returns the player object.
+        :return: The player object
         """
-        self.__my_dungeon = Dungeon(dim, dim)
+        return self.__my_player
+
+    def get_current_room(self):
+        """
+        This method returns the current room of the player.
+        :return: The current room of the player
+        """
+        return self.__my_location
+
+    def get_visited_rooms(self):
+        """
+        This method returns the rooms that have been visited by the player.
+        :return: The rooms that have been visited by the player
+        """
+        return self.__my_visited_rooms
 
     def get_inventory(self):
         """

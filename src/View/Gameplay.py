@@ -12,12 +12,16 @@ from model.DugeonRoom import DungeonRoom
 save_data = SaveLoadSystem(".save", "saved_data")
 DIFFICULTY = 1
 
+__GAME: DungeonAdventure | None = None
+
 
 def play(game):
     __gameplay(game)
 
 
 def __gameplay(game: DungeonAdventure):
+    global __GAME
+    __GAME = game
     title_text = get_font(12).render("Dungeon Adventure", True, (0, 255, 0))
     title_text_rect = title_text.get_rect(center=(Screen.get_width() // 2, title_text.get_height() // 2))
     Screen.fill("black")
@@ -33,6 +37,16 @@ def __gameplay(game: DungeonAdventure):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP or event.key == pygame.K_w:
+                    game.move_player("north")
+                elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
+                    game.move_player("south")
+                elif event.key == pygame.K_LEFT or event.key == pygame.K_a:
+                    game.move_player("west")
+                elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+                    game.move_player("east")
+                draw_dungeon(Screen, game.get_dungeon(), tile_size, dungeon_starting_x // tile_size, dungeon_starting_y // tile_size)
         pygame.display.update()
         pygame.time.delay(1000 // 60)
 
@@ -40,6 +54,24 @@ def __gameplay(game: DungeonAdventure):
 def draw_dungeon(screen: pygame.Surface, dungeon, room_size, x, y):
     root = dungeon.get_root()
     draw_room(screen, root, x, y, room_size, set())
+
+
+def draw_room(screen: pygame.Surface, room: DungeonRoom, x, y, room_size, visited):
+    if room is None or room in visited or room not in __GAME.get_visited_rooms():
+        return
+    visited.add(room)
+    mini_tile_size = room_size // 3
+    for i in range(3):
+        for j in range(3):
+            tile = __get_appropriate_tile(room, j, i, mini_tile_size)
+            screen.blit(tile, (x * room_size + i * mini_tile_size, y * room_size + j * mini_tile_size))
+    for dx, dy, direction in [(1, 0, room.get_east()), (0, 1, room.get_south()), (-1, 0, room.get_west()), (0, -1, room.get_north())]:
+        if direction:
+
+            # pygame.draw.line(screen, (0, 255, 0),
+            #                  (x * room_size + room_size // 2, y * room_size + room_size // 2),
+            #                  ((x + dx) * room_size + room_size // 2, (y + dy) * room_size + room_size // 2))
+            draw_room(screen, direction, x + dx, y + dy, room_size, visited)
 
 
 def __get_appropriate_tile(room, row, col, size):
@@ -61,54 +93,3 @@ def __get_appropriate_tile(room, row, col, size):
         return Tile.get_tile(Tile.WALL_RIGHT, size, size) if not room.get_east() else Tile.get_tile(Tile.FLOOR, size, size)
     else:
         return Tile.get_tile(Tile.FLOOR, size, size)
-
-
-def draw_room(screen: pygame.Surface, room: DungeonRoom, x, y, room_size, visited):
-    if room is None or room in visited:
-        return
-    visited.add(room)
-    mini_tile_size = room_size // 3
-    for i in range(3):
-        for j in range(3):
-            tile = __get_appropriate_tile(room, j, i, mini_tile_size)
-            screen.blit(tile, (x * room_size + i * mini_tile_size, y * room_size + j * mini_tile_size))
-    for dx, dy, direction in [(1, 0, room.get_east()), (0, 1, room.get_south()), (-1, 0, room.get_west()), (0, -1, room.get_north())]:
-        if direction:
-            pygame.draw.line(screen, (0, 255, 0),
-                             (x * room_size + room_size // 2, y * room_size + room_size // 2),
-                             ((x + dx) * room_size + room_size // 2, (y + dy) * room_size + room_size // 2))
-            draw_room(screen, direction, x + dx, y + dy, room_size, visited)
-
-    # tile = Tile.get_tile(Tile.FLOOR, room_size, room_size)
-    # Screen.blit(tile, (x * room_size, y * room_size))
-    # room_char = " " if len(room.get_items()) == 0 else room.get_items()[0].value
-    # if len(room.get_items()) > 1:
-    #     room_char = "M"
-    # screen.blit(get_font(10).render(f"{room_char}", True, (0, 255, 0)),
-    #             (x * room_size + room_size // 2, y * room_size + room_size // 2))
-    #
-    # # Draw a line to the room to the east
-    # if room.get_east():
-    #     pygame.draw.line(screen, (0, 255, 0),
-    #                      (x * room_size + room_size // 2, y * room_size + room_size // 2),
-    #                      ((x + 1) * room_size + room_size // 2, y * room_size + room_size // 2))
-    #     draw_room(screen, room.get_east(), x + 1, y, room_size, visited)
-    #
-    # # Draw a line to the room to the south
-    # if room.get_south():
-    #     pygame.draw.line(screen, (0, 255, 0),
-    #                      (x * room_size + room_size // 2, y * room_size + room_size // 2),
-    #                      (x * room_size + room_size // 2, (y + 1) * room_size + room_size // 2))
-    #     draw_room(screen, room.get_south(), x, y + 1, room_size, visited)
-    #
-    # if room.get_west():
-    #     pygame.draw.line(screen, (0, 255, 0),
-    #                      (x * room_size + room_size // 2, y * room_size + room_size // 2),
-    #                      ((x - 1) * room_size + room_size // 2, y * room_size + room_size // 2))
-    #     draw_room(screen, room.get_west(), x - 1, y, room_size, visited)
-    #
-    # if room.get_north():
-    #     pygame.draw.line(screen, (0, 255, 0),
-    #                      (x * room_size + room_size // 2, y * room_size + room_size // 2),
-    #                      (x * room_size + room_size // 2, (y - 1) * room_size + room_size // 2))
-    #     draw_room(screen, room.get_north(), x, y - 1, room_size, visited)
