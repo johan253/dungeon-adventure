@@ -19,7 +19,7 @@ background = pygame.transform.scale(background, (1280, 720))
 
 game: DungeonAdventure | None = None
 save_data = SaveLoadSystem(".save", "saved_data")
-game_data = save_data.load_data("save_data")
+# game_data = save_data.load_data("save_data")
 
 
 
