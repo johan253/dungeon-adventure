@@ -29,6 +29,7 @@ class DungeonAdventure:
         self.__my_location = self.__my_dungeon.get_root()
         self.__my_visited_rooms = set()
         self.__my_visited_rooms.add(self.__my_location)
+        self.__my_battle_state = False
         # currrent rooms
         # dungeon
         self.item_effects = {
@@ -57,10 +58,16 @@ class DungeonAdventure:
 
         monster = next_room.get_monster()
         if monster:
-            if not self.__battle(self.__my_player, monster):
-                print("Battle lost or fled.")
-                return False
+            # TODO: Implement battle somehow? Gameplay.py currently just uses this state to swap to battle screen.
+            self.__my_battle_state = True
         return True
+
+    def get_battle_state(self):
+        """
+        This method returns the battle state of the game.
+        :return: The battle state of the game
+        """
+        return self.__my_battle_state
 
     def use_item(self, item_type: RoomItem) -> bool:  # item = Room-Item
         """

@@ -3,6 +3,7 @@ import sys
 import pygame
 
 import Tile
+import Battle
 from SaveLoadManager import SaveLoadSystem
 from View.Button import Button
 from View.MainMenu import get_font, Screen
@@ -46,6 +47,8 @@ def __gameplay(game: DungeonAdventure):
                     game.move_player("west")
                 elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                     game.move_player("east")
+                if game.get_battle_state():
+                    Battle.start(game)
                 draw_dungeon(Screen, game.get_dungeon(), tile_size, dungeon_starting_x // tile_size, dungeon_starting_y // tile_size)
         pygame.display.update()
         pygame.time.delay(1000 // 60)
