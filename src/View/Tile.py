@@ -1,16 +1,17 @@
 import pygame
 
 FLOOR = (4, 0)
-WALL_HORIZONTAL = (0, 5)
-WALL_VERTICAL = (1, 3)
-WALL_CORNER_NW = (3, 3)
-WALL_CORNER_NE = (4, 4)
-WALL_CORNER_SW = (1, 4)
-WALL_CORNER_SE = (0, 4)
+WALL_LEFT = (2, 1)
+WALL_RIGHT = (3, 1)
+WALL_UP = (0, 1)
+WALL_DOWN = (1, 1)
+WALL_CORNER_NW = (3, 0)
+WALL_CORNER_NE = (0, 0)
+WALL_CORNER_SW = (2, 0)
+WALL_CORNER_SE = (1, 0)
 
 
 TILE_SIZE = 8
-SCALE = 8
 TILE_SHEET = pygame.image.load("Assets/tiles.png")
 
 
