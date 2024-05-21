@@ -1,4 +1,5 @@
 import pygame
+from src.model.CharacterFactory import CharacterFactory
 
 FLOOR = (4, 0)
 WALL_LEFT = (2, 1)
@@ -9,6 +10,11 @@ WALL_CORNER_NW = (3, 0)
 WALL_CORNER_NE = (0, 0)
 WALL_CORNER_SW = (2, 0)
 WALL_CORNER_SE = (1, 0)
+PLAYER = {
+    CharacterFactory.WARRIOR: (4, 1),
+    CharacterFactory.THIEF: (5, 1),
+    CharacterFactory.PRIESTESS: (6, 1),
+}
 
 
 TILE_SIZE = 8
@@ -20,3 +26,5 @@ def get_tile(tile_type: tuple[int, int], width: int, height: int):
     image.blit(TILE_SHEET, (0, 0), (tile_type[0] * TILE_SIZE, tile_type[1] * TILE_SIZE, TILE_SIZE, TILE_SIZE))
     image = pygame.transform.scale(image, (width, height))
     return image
+
+

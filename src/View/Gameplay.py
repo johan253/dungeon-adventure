@@ -94,5 +94,8 @@ def __get_appropriate_tile(room, row, col, size):
         return Tile.get_tile(Tile.WALL_LEFT, size, size) if not room.get_west() else Tile.get_tile(Tile.FLOOR, size, size)
     elif col == 2:
         return Tile.get_tile(Tile.WALL_RIGHT, size, size) if not room.get_east() else Tile.get_tile(Tile.FLOOR, size, size)
+    elif room == __GAME.get_current_room():
+        char_name = type(__GAME.get_player()).__name__
+        return Tile.get_tile(Tile.PLAYER[char_name], size, size)
     else:
         return Tile.get_tile(Tile.FLOOR, size, size)
