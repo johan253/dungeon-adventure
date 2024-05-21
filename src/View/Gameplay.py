@@ -9,6 +9,7 @@ from View.Button import Button
 from View.MainMenu import get_font, Screen
 from controller.DungeonAdventure import DungeonAdventure
 from model.DugeonRoom import DungeonRoom
+from model.RoomItem import RoomItem
 
 save_data = SaveLoadSystem(".save", "saved_data")
 DIFFICULTY = 1
@@ -48,9 +49,11 @@ def __gameplay(game: DungeonAdventure):
                 elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                     game.move_player("east")
                 if game.get_battle_state():
-                    Battle.start(game)
+                    # Battle.start(game)
+                    pass
+                Screen.fill("black")
                 draw_dungeon(Screen, game.get_dungeon(), tile_size, dungeon_starting_x // tile_size, dungeon_starting_y // tile_size)
-        pygame.display.update()
+        pygame.display.flip()
         pygame.time.delay(1000 // 60)
 
 
@@ -62,6 +65,7 @@ def draw_dungeon(screen: pygame.Surface, dungeon, room_size, x, y):
 def draw_room(screen: pygame.Surface, room: DungeonRoom, x, y, room_size, visited):
     if room is None or room in visited or room not in __GAME.get_visited_rooms():
         return
+    print(f"Drawing room with items: {room.get_items()}")
     visited.add(room)
     mini_tile_size = room_size // 3
     for i in range(3):
@@ -77,7 +81,7 @@ def draw_room(screen: pygame.Surface, room: DungeonRoom, x, y, room_size, visite
             draw_room(screen, direction, x + dx, y + dy, room_size, visited)
 
 
-def __get_appropriate_tile(room, row, col, size):
+def __get_appropriate_tile(room: DungeonRoom, row, col, size):
     if row == 0 and col == 0:
         return Tile.get_tile(Tile.WALL_CORNER_NW, size, size)
     elif row == 0 and col == 2:
@@ -97,5 +101,7 @@ def __get_appropriate_tile(room, row, col, size):
     elif room == __GAME.get_current_room():
         char_name = type(__GAME.get_player()).__name__
         return Tile.get_tile(Tile.PLAYER[char_name], size, size)
+    elif room is __GAME.get_dungeon().get_exit():
+        return Tile.get_tile(Tile.EXIT, size, size)
     else:
         return Tile.get_tile(Tile.FLOOR, size, size)

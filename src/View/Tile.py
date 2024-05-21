@@ -15,7 +15,7 @@ PLAYER = {
     CharacterFactory.THIEF: (5, 1),
     CharacterFactory.PRIESTESS: (6, 1),
 }
-
+EXIT = (0, 2)
 
 TILE_SIZE = 8
 TILE_SHEET = pygame.image.load("Assets/tiles.png")

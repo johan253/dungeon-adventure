@@ -64,6 +64,13 @@ class Dungeon:
         result = self.__get_room_helper(self.__root, the_x, the_y, set(), 0, 0)
         return result if result else ArithmeticError("Room not found")
 
+    def get_exit(self) -> DungeonRoom:
+        """
+        Getter for the exit room of the dungeon
+        :return: The exit room of the dungeon
+        """
+        return self.__exit
+
     def __get_room_helper(self, root: DungeonRoom, target_x: int, target_y: int, visited: set, cur_x: int, cur_y: int)\
             -> DungeonRoom | None:
         """
