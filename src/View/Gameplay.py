@@ -24,13 +24,13 @@ def play(screen, game):
 
 
 def save_game_state(game_state):
-    with open("game_state.pkl", "wb") as file:
+    with open("saved_game.pkl", "wb") as file:
         pickle.dump(game_state, file)
 
 
 def load_game_state():
     try:
-        with open("game_state.pkl", "rb") as file:
+        with open("saved_game.pkl", "rb") as file:
             return pickle.load(file)
     except FileNotFoundError:
         return None
