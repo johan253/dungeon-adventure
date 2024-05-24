@@ -10,7 +10,7 @@ from src.model.Dungeon import Dungeon
 pygame.init()
 
 Screen = pygame.display.set_mode((1280, 720))
-pygame.display.set_caption('Main Menu')
+pygame.display.set_caption('DUNGEON ADVENTURE')
 
 background = pygame.image.load('Assets/mainmenu.png')
 background = pygame.transform.scale(background, (1280, 720))
@@ -24,6 +24,8 @@ def get_font(size):
 
 def play():
     while True:
+        pygame.display.set_caption('PLAY')
+
         play_mouse_position = pygame.mouse.get_pos()
 
         Screen.fill("black")
@@ -63,6 +65,7 @@ def select_name():
                          color_1="white", color_2="red")
     name = ""
     while True:
+        pygame.display.set_caption('SELECT NAME')
         Screen.fill("black")
         name = text_field.get_text()
 
@@ -105,6 +108,7 @@ def select_hero(player_name: str):
     play_text = get_font(15).render(f'Welcome {player_name}! Select a Hero:', True, (255, 255, 0))
     play_rect = play_text.get_rect(center=(640, 160))
     while True:
+        pygame.display.set_caption('SELECT HERO')
         play_mouse_position = pygame.mouse.get_pos()
 
         Screen.fill("black")
@@ -137,18 +141,20 @@ def select_hero(player_name: str):
 
 def load():
     while True:
+        pygame.display.set_caption('LOAD')
+
         load_mouse_position = pygame.mouse.get_pos()
 
         Screen.fill("black")
 
         load_text = get_font(15).render('Select Load to Continue a Previous game:', True, (255, 255, 0))
-        load_rect = load_text.get_rect(center=(640, 60))
+        load_rect = load_text.get_rect(center=(650, 60))
         Screen.blit(load_text, load_rect)
 
         load_button = Button(image=None, position=(640, 260), text_input='LOAD', font=get_font(15),
-                                  color_1="white", color_2="red")
-        load_back_button= Button(image=None, position=(640, 560), text_input='Back', font=get_font(15),
                              color_1="white", color_2="red")
+        load_back_button = Button(image=None, position=(640, 560), text_input='Back', font=get_font(15),
+                                  color_1="white", color_2="red")
         load_back_button.change_color([load_mouse_position[0], load_mouse_position[1]])
         load_back_button.update(Screen)
         load_button.change_color([load_mouse_position[0], load_mouse_position[1]])
@@ -171,6 +177,8 @@ def load():
 
 
 def about():
+    pygame.display.set_caption('ABOUT')
+
     info = """Welcome to Dungeon Adventure!
     
     Dungeon Adventure v1.0
@@ -228,6 +236,7 @@ def main_menu():
     about_button = Button(image=pygame.image.load('Assets/about.png'), position=(650, 650), text_input="ABOUT",
                           font=get_font(30), color_1="White", color_2="red")
     while True:
+        pygame.display.set_caption('MAIN MENU')
         Screen.blit(background, (0, 0))
 
         mouse_position = pygame.mouse.get_pos()
