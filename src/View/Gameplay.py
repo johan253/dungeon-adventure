@@ -9,6 +9,7 @@ from controller.DungeonAdventure import DungeonAdventure
 from model.DugeonRoom import DungeonRoom
 from model.RoomItem import RoomItem
 from View.MainMenu import main_menu
+from View.Healthbar import Healthbar
 
 pygame.init()
 DIFFICULTY = 3
@@ -57,11 +58,11 @@ def draw_pause():
     pause_rect = pause_text.get_rect(center=(640, 50))
     SCREEN.blit(pause_text, pause_rect)
 
-    save_button_rect = pygame.Rect(30, 150, 600, 50)
-    restart_button_rect = pygame.Rect(30, 250, 600, 50)
-    main_menu_button_rect = pygame.Rect(30, 350, 600, 50)
-    close_game_button_rect = pygame.Rect(30, 450, 600, 50)
-    inventory_button_rect = pygame.Rect(30, 550, 600, 50)
+    save_button_rect = pygame.Rect(30, 150, pause_width - 30, 50)
+    restart_button_rect = pygame.Rect(30, 250, pause_width - 30, 50)
+    main_menu_button_rect = pygame.Rect(30, 350, pause_width - 30, 50)
+    close_game_button_rect = pygame.Rect(30, 450, pause_width - 30, 50)
+    inventory_button_rect = pygame.Rect(30, 550, pause_width - 30, 50)
 
     # Change color based on mouse position
     save_color = 'red' if save_button_rect.collidepoint(pause_mouse_position) else 'blue'
@@ -92,19 +93,25 @@ def __gameplay(game: DungeonAdventure):
     global __GAME, pause, restart, save, main_menu_button, close_game, inventory
     global SCREEN
     __GAME = game
-    title_text = pygame.font.Font("Assets/Dungeon Depths.ttf", 12).render("Dungeon Adventure", True, (255, 0, 0))
-    title_text_rect = title_text.get_rect(center=(SCREEN.get_width() // 2, title_text.get_height() // 2))
-    SCREEN.fill("black")
-    SCREEN.blit(title_text, title_text_rect)
+    health_text = pygame.font.Font("Assets/Dungeon Depths.ttf", 12).render("Health", True, (255, 255, 255))
+    title_text_rect = health_text.get_rect(center=(SCREEN.get_width() // 2, health_text.get_height() // 2))
     tile_size = MAX_TILE_SIZE - (REDUCTION_FACTOR_PER_DIFFICULTY * (DIFFICULTY - 1))
     dungeon_width = tile_size * game.get_dungeon().get_dimensions()[0]
     dungeon_height = tile_size * game.get_dungeon().get_dimensions()[1]
     dungeon_starting_x = (SCREEN.get_width() - dungeon_width) // 2
-    dungeon_starting_y = (SCREEN.get_height() - dungeon_height) // 2
+    dungeon_starting_y = (SCREEN.get_height() - dungeon_height) // 2 + tile_size
+    SCREEN.fill("black")
     draw_dungeon(SCREEN, game.get_dungeon(), tile_size, dungeon_starting_x // tile_size,
                  dungeon_starting_y // tile_size)
+
+    healthbar_width = SCREEN.get_width() // 3
+    healthbar_height = 48
+    healthbar_starting_x = healthbar_width + 10
+    healthbar_starting_y = health_text.get_height()
+    healthbar = Healthbar(game.get_player())
+    SCREEN.blit(health_text, title_text_rect)
     while True:
-        pygame.display.set_caption('DUNGEON ADVENTURE')
+        healthbar.draw(SCREEN, (healthbar_starting_x, healthbar_starting_y), (healthbar_width, healthbar_height))
         if pause:
             save, restart, main_menu_button, close_game, inventory = draw_pause()
         for event in pygame.event.get():
@@ -132,14 +139,18 @@ def __gameplay(game: DungeonAdventure):
                         game.move_player("west")
                     elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                         game.move_player("east")
+                    elif event.key == pygame.K_x:
+                        game.get_player().damage(10)
                 if event.key == pygame.K_p or event.key == pygame.K_ESCAPE:
                     pause = not pause
                 if game.get_battle_state():
                     # Battle.start(game)
                     pass
                 SCREEN.fill("black")
+                SCREEN.blit(health_text, title_text_rect)
                 draw_dungeon(SCREEN, game.get_dungeon(), tile_size, dungeon_starting_x // tile_size,
                              dungeon_starting_y // tile_size)
+                healthbar.draw(SCREEN, (healthbar_starting_x, healthbar_starting_y), (healthbar_width, healthbar_height))
                 print(f"current inventoryL {game.get_inventory()}")
         pygame.display.flip()
         pygame.time.delay(1000 // 60)

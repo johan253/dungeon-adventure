@@ -1,4 +1,4 @@
-from random import random
+from random import random, choice
 
 from model.DugeonRoom import DungeonRoom
 from model.DungeonCharacter import DungeonCharacter
@@ -27,6 +27,7 @@ class DungeonAdventure:
         self.__my_player = CharacterFactory().create_character(player_class, player_name)
         print("DA: \n", self.__my_player)
         self.__my_inventory: list[RoomItem] = []  # RoomItem
+        dim = choice([4, 6, 8])
         self.__my_dungeon = Dungeon(6, 6)  # Dungeon
         self.__my_location = self.__my_dungeon.get_root()
         self.__my_visited_rooms = set()
