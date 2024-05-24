@@ -8,6 +8,7 @@ from View.Button import Button
 from controller.DungeonAdventure import DungeonAdventure
 from model.DugeonRoom import DungeonRoom
 from model.RoomItem import RoomItem
+from View.MainMenu import main_menu
 
 pygame.init()
 DIFFICULTY = 3
@@ -88,7 +89,7 @@ def draw_pause():
 
 
 def __gameplay(game: DungeonAdventure):
-    global __GAME, pause, restart, save, main_menu, close_game, inventory
+    global __GAME, pause, restart, save, main_menu_button, close_game, inventory
     global SCREEN
     __GAME = game
     title_text = pygame.font.Font("Assets/Dungeon Depths.ttf", 12).render("Dungeon Adventure", True, (255, 0, 0))
@@ -105,17 +106,18 @@ def __gameplay(game: DungeonAdventure):
     while True:
         pygame.display.set_caption('DUNGEON ADVENTURE')
         if pause:
-            save, restart, main_menu, close_game, inventory = draw_pause()
+            save, restart, main_menu_button, close_game, inventory = draw_pause()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            if pause and event.type == pygame.MOUSEBUTTONDOWN:
                 if save.collidepoint(event.pos):
                     save_game_state(__GAME)
                 if restart.collidepoint(event.pos):
                     pass
-                if main_menu.collidepoint(event.pos):
-                    pass
+                if main_menu_button.collidepoint(event.pos):
+                    pause = False
+                    main_menu()
                 if close_game.collidepoint(event.pos):
                     sys.exit()
                 if inventory.collidepoint(event.pos):
@@ -131,10 +133,7 @@ def __gameplay(game: DungeonAdventure):
                     elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                         game.move_player("east")
                 if event.key == pygame.K_p or event.key == pygame.K_ESCAPE:
-                    if pause:
-                        pause = False
-                    else:
-                        pause = True
+                    pause = not pause
                 if game.get_battle_state():
                     # Battle.start(game)
                     pass
