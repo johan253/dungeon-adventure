@@ -1,10 +1,16 @@
 from random import random, choice
-
+import pygame
 from model.DugeonRoom import DungeonRoom
 from model.DungeonCharacter import DungeonCharacter
 from model.Dungeon import Dungeon
 from model.CharacterFactory import CharacterFactory
 from model.RoomItem import RoomItem
+pygame.init()
+
+SPECIAL_ATTACK = pygame.USEREVENT + 1
+CUSTOM_FLEE = pygame.USEREVENT + 2
+CUSTOM_USE_ITEM = pygame.USEREVENT + 3
+
 
 
 class DungeonAdventure:
@@ -171,6 +177,7 @@ class DungeonAdventure:
                         print(f"{monster.get_name()} missed the attack!")
             elif battle_choice == "3":
                 if random() < 0.5:
+                    self.handle_flee_event()
                     print("Successfully fled the battle!")
                     return True
                 else:
@@ -201,6 +208,47 @@ class DungeonAdventure:
             print(f"\n{monster.get_name()} has been defeated!")
             return True
 
+    def process_event(self,event):
+        if event.type == SPECIAL_ATTACK:
+            self.handle_attack_event()
+        elif event.type == CUSTOM_FLEE:
+            self.handle_flee_event()
+        elif event.type == CUSTOM_USE_ITEM:
+            self.handle_use_item_event(event)
+        else:
+            print("Unknown event!")
+
+    def handle_attack_event(self):
+        """"
+        Handle the attack event
+        """
+        player = self.get_player()
+        current_room = self.get_current_room()
+        monster = current_room.get_monster()
+        if monster:
+            self.__battle(player,monster)
+
+    def handle_flee_event(self):
+        """
+        Handle the flee event by allowing the player to move to an adjacnet room.
+        :return:
+        """
+        print("Choose a direction to flee (north, south, east, west):")
+        direction = input().strip().lower()
+        if self.move_player(direction):
+            print(f"Successfully flet to the {direction}")
+        else:
+            print(f"Failed to flee in the {direction}.") # implement a way for monster to block
+        self.__my_battle_state = False
+
+
+    def handle_use_item_event(self,event):
+        """
+        Handle the use item event
+        :param event: The pygame event containing item details
+        """
+        item_type = event.item_type
+        self.use_item(item_type)
     def get_dungeon(self):
         """
         This method returns the dungeon object.
@@ -242,3 +290,21 @@ class DungeonAdventure:
         :return: The state of the game
         """
         return [self.__my_player, self.__my_inventory, self.__my_dungeon]
+
+    # Main game loop to read through events
+    runnig = True
+    dungeon_adv = DungeonAdventure('PlayerName',"Warrior") # Replace with the data from db
+    while runnig:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                runnig = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_a: # Attack button (exmaple: 'A' key)
+                    pygame.event.post(pygame.event.Event(SPECIAL_ATTACK))
+                elif event.key == pygame.K_f: # Flee button (exmaple: 'F' key)
+                    pygame.event.post(pygame.event.Event(CUSTOM_FLEE))
+                elif event.key == pygame.K_i: # Use item button (exmaple: 'I' key)
+                    item_event = pygame.event.Event(CUSTOM_USE_ITEM,item_type = RoomItem)
+                    pygame.event.post(item_event)
+            dungeon_adv.process_event(event)
+
