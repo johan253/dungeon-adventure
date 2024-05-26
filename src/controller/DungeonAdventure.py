@@ -291,20 +291,4 @@ class DungeonAdventure:
         """
         return [self.__my_player, self.__my_inventory, self.__my_dungeon]
 
-    # Main game loop to read through events
-    runnig = True
-    dungeon_adv = DungeonAdventure('PlayerName',"Warrior") # Replace with the data from db
-    while runnig:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                runnig = False
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_a: # Attack button (exmaple: 'A' key)
-                    pygame.event.post(pygame.event.Event(SPECIAL_ATTACK))
-                elif event.key == pygame.K_f: # Flee button (exmaple: 'F' key)
-                    pygame.event.post(pygame.event.Event(CUSTOM_FLEE))
-                elif event.key == pygame.K_i: # Use item button (exmaple: 'I' key)
-                    item_event = pygame.event.Event(CUSTOM_USE_ITEM,item_type = RoomItem)
-                    pygame.event.post(item_event)
-            dungeon_adv.process_event(event)
 
