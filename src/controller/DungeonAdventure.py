@@ -8,10 +8,7 @@ from model.RoomItem import RoomItem
 pygame.init()
 
 SPECIAL_ATTACK = pygame.USEREVENT + 1
-CUSTOM_FLEE = pygame.USEREVENT + 2
 CUSTOM_USE_ITEM = pygame.USEREVENT + 3
-
-
 
 class DungeonAdventure:
     """
@@ -39,20 +36,20 @@ class DungeonAdventure:
         self.__my_visited_rooms = set()
         self.__my_visited_rooms.add(self.__my_location)
         self.__my_battle_state = False
-        # currrent rooms
+        # current rooms
         # dungeon
         self.item_effects = {
             RoomItem.HealingPotion: self.use_healing_potion,
-            RoomItem.VisionPotion:self.use_vision_potion,
+            RoomItem.VisionPotion: self.use_vision_potion,
             RoomItem.BombPotion: self.use_bomb_potion,
             RoomItem.SpeedPotion: self.use_speed_potion
         }
 
     def move_player(self, direction) -> bool:
         """
-            This method moves the player in the specified direction.
-            :param direction: The direction to move ('north', 'south', 'east', 'west')
-            :return: True if the move was successful and False otherwise.
+        This method moves the player in the specified direction.
+        :param direction: The direction to move ('north', 'south', 'east', 'west')
+        :return: True if the move was successful and False otherwise.
         """
         current_room = self.__my_location
         next_room: DungeonRoom = getattr(current_room, f'get_{direction}')()
@@ -83,51 +80,58 @@ class DungeonAdventure:
         """
         return self.__my_battle_state
 
-    def use_item(self, item_type: RoomItem) -> bool:  # item = Room-Item
+    def use_item(self, item_type: RoomItem) -> bool:
         """
         This method uses the specified item.
         :param item_type: Room item to be used
         :return: True if the item was used successfully, False otherwise
         """
         # Find item in inventory
-
         item = next((item for item in self.__my_inventory if item == item_type), None)
         if not item:
             print(f"Item {item_type} not found in inventory")
             return False
 
         # call the effect if the item exists within the map
-
         effect_function = self.item_effects.get(item_type)
         if effect_function:
             effect_function(self.__my_player)
             self.__my_inventory.remove(item)
-            print("fUsed {item_type}")
+            print(f"Used {item_type}")
             return True
         else:
             print(f"No effect defined for {item_type}")
             return False
 
-    def use_healing_potion(self,player):
+    def use_healing_potion(self, player):
         heal_amount = 50
         new_health = min(player.get_health() + heal_amount, player.get_max_health())
         player.set_health(new_health)
         print(f"{player.get_name()} healed by {heal_amount}, current health: {new_health}.")
 
-    def use_vision_potion(self, player, current_room):
-        # This is a placeholder
-        print(f"{player.get_name()} uses a vision potion, revealing secrets in the room.")
+    def use_vision_potion(self, player):
+        x, y = self.get_current_room_coordinates()
+        surrounding_rooms = [
+            self.__my_dungeon.get_room(x-1, y),  # West
+            self.__my_dungeon.get_room(x+1, y),  # East
+            self.__my_dungeon.get_room(x, y-1),  # North
+            self.__my_dungeon.get_room(x, y+1)   # South
+        ]
+        for room in surrounding_rooms:
+            if room is not None:
+                self.__my_visited_rooms.add(room)
+        print(f"{player.get_name()} uses a vision potion, revealing secrets in the surrounding rooms.")
 
-    def use_bomb_potion(self,player,current_room):
+    def use_bomb_potion(self, player, current_room):
         damage = 30
-        if hasattr(current_room,'monsters'):
+        if hasattr(current_room, 'monsters'):
             for monster in current_room.monsters:
                 monster.damage(damage)
                 if not monster.is_alive():
                     print(f"The monster {monster.get_name()} has been defeated")
         print(f"{player.get_name()} uses a bomb potion, dealing {damage} damage to all enemies in the room.")
 
-    def use_speed_potion(self,player):
+    def use_speed_potion(self, player):
         original_speed = player.get_attack_speed()
         new_speed = original_speed + 5
         player.__my_attack_speed = new_speed
@@ -177,9 +181,7 @@ class DungeonAdventure:
                         print(f"{monster.get_name()} missed the attack!")
             elif battle_choice == "3":
                 if random() < 0.5:
-                    self.handle_flee_event()
                     print("Successfully fled the battle!")
-                    return True
                 else:
                     print("Failed to flee! The battle continues.")
                     if monster.attack(player):
@@ -208,11 +210,9 @@ class DungeonAdventure:
             print(f"\n{monster.get_name()} has been defeated!")
             return True
 
-    def process_event(self,event):
+    def process_event(self, event):
         if event.type == SPECIAL_ATTACK:
-            self.handle_attack_event()
-        elif event.type == CUSTOM_FLEE:
-            self.handle_flee_event()
+            self.handle_attack_event(event)
         elif event.type == CUSTOM_USE_ITEM:
             self.handle_use_item_event(event)
         else:
@@ -226,29 +226,16 @@ class DungeonAdventure:
         current_room = self.get_current_room()
         monster = current_room.get_monster()
         if monster:
-            self.__battle(player,monster)
+            self.__battle(player, monster)
 
-    def handle_flee_event(self):
-        """
-        Handle the flee event by allowing the player to move to an adjacnet room.
-        :return:
-        """
-        print("Choose a direction to flee (north, south, east, west):")
-        direction = input().strip().lower()
-        if self.move_player(direction):
-            print(f"Successfully flet to the {direction}")
-        else:
-            print(f"Failed to flee in the {direction}.") # implement a way for monster to block
-        self.__my_battle_state = False
-
-
-    def handle_use_item_event(self,event):
+    def handle_use_item_event(self, event):
         """
         Handle the use item event
         :param event: The pygame event containing item details
         """
         item_type = event.item_type
         self.use_item(item_type)
+
     def get_dungeon(self):
         """
         This method returns the dungeon object.
@@ -284,11 +271,16 @@ class DungeonAdventure:
         """
         return self.__my_inventory
 
+    def get_current_room_coordinates(self) -> tuple[int, int]:
+        for x in range(self.__my_dungeon.get_dimensions()[0]):
+            for y in range(self.__my_dungeon.get_dimensions()[1]):
+                if self.__my_dungeon.get_room(x, y) == self.__my_location:
+                    return x, y
+        raise ValueError("Current room coordinates not found.")
+
     def get_game_data(self):
         """
         This method returns the state of current game.
         :return: The state of the game
         """
         return [self.__my_player, self.__my_inventory, self.__my_dungeon]
-
-

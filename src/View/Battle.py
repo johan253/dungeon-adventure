@@ -4,7 +4,6 @@ from src.controller.DungeonAdventure import DungeonAdventure
 
 # Define custom events
 SPECIAL_ATTACK = pygame.USEREVENT + 1
-CUSTOM_FLEE = pygame.USEREVENT + 2
 CUSTOM_USE_ITEM = pygame.USEREVENT + 3
 
 
@@ -24,8 +23,6 @@ def start(screen, game: DungeonAdventure):
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_a:  # Attack button (example: 'A' key)
                     pygame.event.post(pygame.event.Event(SPECIAL_ATTACK))
-                elif event.key == pygame.K_f:  # Flee button (example: 'F' key)
-                    pygame.event.post(pygame.event.Event(CUSTOM_FLEE))
                 elif event.key == pygame.K_i:  # Use item button (example: 'I' key)
                     item_event = pygame.event.Event(CUSTOM_USE_ITEM, item_type='RoomItem')
                     pygame.event.post(item_event)
