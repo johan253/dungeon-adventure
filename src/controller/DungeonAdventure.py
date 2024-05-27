@@ -8,6 +8,7 @@ from model.RoomItem import RoomItem
 pygame.init()
 
 SPECIAL_ATTACK = pygame.USEREVENT + 1
+TRIGGER_BATTLE = pygame.USEREVENT + 2
 CUSTOM_USE_ITEM = pygame.USEREVENT + 3
 
 class DungeonAdventure:
@@ -109,14 +110,18 @@ class DungeonAdventure:
         player.set_health(new_health)
         print(f"{player.get_name()} healed by {heal_amount}, current health: {new_health}.")
 
+    def trigger_battle_event(self):
+        "This method checks if there is a monster in the adjacent rooms and triggers a battle"
+        adjacent_rooms = self.get_adjacent_rooms()
+        for room in adjacent_rooms:
+            if room and room.get_monster():
+                monster = room.get_monster()
+                self.__battle(self.__my_player, monster)
+                pygame.event.post(pygame.event.Event(TRIGGER_BATTLE))
+                return True
+        print("No monster nearby to battle.")
     def use_vision_potion(self, player):
-        x, y = self.get_current_room_coordinates()
-        surrounding_rooms = [
-            self.__my_dungeon.get_room(x-1, y),  # West
-            self.__my_dungeon.get_room(x+1, y),  # East
-            self.__my_dungeon.get_room(x, y-1),  # North
-            self.__my_dungeon.get_room(x, y+1)   # South
-        ]
+        surrounding_rooms = self.get_adjacent_rooms()
         for room in surrounding_rooms:
             if room is not None:
                 self.__my_visited_rooms.add(room)
@@ -277,6 +282,20 @@ class DungeonAdventure:
                 if self.__my_dungeon.get_room(x, y) == self.__my_location:
                     return x, y
         raise ValueError("Current room coordinates not found.")
+
+    def get_adjacent_rooms(self) -> list[DungeonRoom]:
+        """
+        This method returns a list of adjacent rooms to the current room
+        :return: List of adjacent rooms
+        """
+        x, y = self.get_current_room_coordinates()
+        adjacent_rooms = [
+            self.__my_dungeon.get_room(x-1,y), # West
+            self.__my_dungeon_get_room(x+1,y), # East
+            self.__my_dungeon.get_room(x,y-1), #North
+            self.__my_dungeon.get_room(x,y+1) # South
+        ]
+        return adjacent_rooms
 
     def get_game_data(self):
         """

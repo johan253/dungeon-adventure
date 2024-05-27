@@ -5,6 +5,7 @@ from src.controller.DungeonAdventure import DungeonAdventure
 # Define custom events
 SPECIAL_ATTACK = pygame.USEREVENT + 1
 CUSTOM_USE_ITEM = pygame.USEREVENT + 3
+TRIGGER_BATTLE = pygame.USEREVENT + 2
 
 
 def start(screen, game: DungeonAdventure):
@@ -16,6 +17,7 @@ def start(screen, game: DungeonAdventure):
     screen.fill((122, 255, 255))
     running = True
 
+
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -26,6 +28,12 @@ def start(screen, game: DungeonAdventure):
                 elif event.key == pygame.K_i:  # Use item button (example: 'I' key)
                     item_event = pygame.event.Event(CUSTOM_USE_ITEM, item_type='RoomItem')
                     pygame.event.post(item_event)
+                elif event.key == pygame.K_b:  # Battle button (example: 'B' key)
+                    game.trigger_battle_event()
+            if event.type == TRIGGER_BATTLE:
+                # show_battle_screen(screen, event.monster_name)
+                running = False
+
             game.process_event(event)
 
         pygame.display.update()
