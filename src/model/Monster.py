@@ -35,6 +35,7 @@ class Monster(DungeonCharacter, ABC):
         :param the_chance_to_heal: The chance that the monster will heal itself
         :param the_min_heal: The minimum amount that the monster can heal
         :param the_max_heal: The maximum amount that the monster can heal
+
         """
         super().__init__(the_name, the_health, the_min_damage, the_max_damage, the_attack_speed, the_chance_to_hit)
         self.__my_chance_to_heal: float = the_chance_to_heal
@@ -61,6 +62,7 @@ class Monster(DungeonCharacter, ABC):
         :return: The maximum amount that the monster can heal
         """
         return self.__my_max_heal
+
 
     def heal(self) -> None:
         """

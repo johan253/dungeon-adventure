@@ -24,6 +24,7 @@ class Ogre(Monster):
         :param the_chance_to_heal: The chance that the Ogre will heal itself
         :param the_min_heal: The minimum amount that the Ogre can heal
         :param the_max_heal: The maximum amount that the Ogre can heal
+        :param the_sprite: The sprite for the monster
         """
         if not any([the_health, the_min_damage, the_max_damage, the_attack_speed,
                     the_chance_to_hit, the_chance_to_heal, the_min_heal, the_max_heal]):

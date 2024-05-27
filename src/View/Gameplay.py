@@ -8,11 +8,16 @@ from View.Healthbar import Healthbar
 from View.MainMenu import main_menu
 from controller.DungeonAdventure import DungeonAdventure
 from model.DugeonRoom import DungeonRoom
+from src.model.Ogre import Ogre
+from src.model.Skeleton import Skeleton
+from src.model.Gremlin import Gremlin
 
 pygame.init()
 DIFFICULTY = 3
 WIDTH = 1280
 HEIGHT = 720
+SPRITE_WIDTH = 64
+SPRITE_HEIGHT = 64
 __GAME: DungeonAdventure | None = None
 MAX_TILE_SIZE = 96
 REDUCTION_FACTOR_PER_DIFFICULTY = 8
