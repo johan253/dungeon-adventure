@@ -52,7 +52,6 @@ class DungeonAdventure:
         next_room: DungeonRoom = getattr(current_room, f'get_{direction}')()
 
         if next_room is None:
-            print(f"DA: No room with {direction}")
             return False
 
         self.__my_location = next_room
@@ -62,7 +61,6 @@ class DungeonAdventure:
                 self.__my_inventory.append(item)
                 print(f"DA: Picked up {item}")
         next_room.set_items([])
-        print(f"Moved {direction} to a new room.")
 
         monster = next_room.get_monster()
         if monster:
@@ -136,16 +134,12 @@ class DungeonAdventure:
         if self.__my_battle_state:
             if event.key == pygame.K_a:
                 print("Attack!")
-                attack_ratio = (self.__my_player.get_attack_speed()
-                                // self.__my_location.get_monster().get_attack_speed())
-                if attack_ratio > 1:
-                    attack_ratio = (self.__my_location.get_monster().get_attack_speed()
-                                    // self.__my_player.get_attack_speed())
                 fast_attacker = self.__my_player
                 slow_attacker = self.__my_location.get_monster()
                 if self.__my_player.get_attack_speed() < self.__my_location.get_monster().get_attack_speed():
                     fast_attacker = self.__my_location.get_monster()
                     slow_attacker = self.__my_player
+                attack_ratio = fast_attacker.get_attack_speed() // slow_attacker.get_attack_speed()
                 for _ in range(attack_ratio):
                     fast_attacker.attack(slow_attacker)
                 if slow_attacker.is_alive():
