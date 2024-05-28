@@ -39,6 +39,13 @@ class DungeonRoom:
             self.__monster = None
         return self.__monster
 
+    def set_monster(self, monster: Monster | None) -> None:
+        """
+        Setter for the monster in the room
+        :param monster: the monster in the room
+        """
+        self.__monster = monster
+
     def get_items(self) -> list[RoomItem]:
         """
         Getter for the items in the room

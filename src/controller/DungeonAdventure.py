@@ -136,6 +136,23 @@ class DungeonAdventure:
         if self.__my_battle_state:
             if event.key == pygame.K_a:
                 print("Attack!")
+                attack_ratio = (self.__my_player.get_attack_speed()
+                                // self.__my_location.get_monster().get_attack_speed())
+                if attack_ratio > 1:
+                    attack_ratio = (self.__my_location.get_monster().get_attack_speed()
+                                    // self.__my_player.get_attack_speed())
+                fast_attacker = self.__my_player
+                slow_attacker = self.__my_location.get_monster()
+                if self.__my_player.get_attack_speed() < self.__my_location.get_monster().get_attack_speed():
+                    fast_attacker = self.__my_location.get_monster()
+                    slow_attacker = self.__my_player
+                for _ in range(attack_ratio):
+                    fast_attacker.attack(slow_attacker)
+                if slow_attacker.is_alive():
+                    slow_attacker.attack(fast_attacker)
+                if not fast_attacker.is_alive() or not slow_attacker.is_alive():
+                    self.__my_battle_state = False
+
             elif event.key == pygame.K_s:
                 print("Special Attack!")
             elif event.key == pygame.K_i:
@@ -199,10 +216,10 @@ class DungeonAdventure:
         """
         x, y = self.get_current_room_coordinates()
         adjacent_rooms = [
-            self.__my_dungeon.get_room(x-1,y), # West
-            self.__my_dungeon_get_room(x+1,y), # East
-            self.__my_dungeon.get_room(x,y-1), #North
-            self.__my_dungeon.get_room(x,y+1) # South
+            self.__my_dungeon.get_room(x - 1, y),  # West
+            self.__my_dungeon_get_room(x + 1, y),  # East
+            self.__my_dungeon.get_room(x, y - 1),  #North
+            self.__my_dungeon.get_room(x, y + 1)  # South
         ]
         return adjacent_rooms
 

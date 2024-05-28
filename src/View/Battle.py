@@ -55,8 +55,10 @@ def __draw_battle_scene(player: DungeonCharacter, enemy: DungeonCharacter):
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            elif event.type == pygame.KEYDOWN:
+            if event.type == pygame.KEYDOWN:
                 GAME.handle_event(event)
+                if not GAME.get_battle_state():
+                    return
 
         pygame.display.update()
 
