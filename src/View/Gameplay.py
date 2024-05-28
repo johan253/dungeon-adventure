@@ -4,13 +4,11 @@ import sys
 import pygame
 
 import View.Tile as Tile
+from View import Battle
 from View.Healthbar import Healthbar
 from View.MainMenu import main_menu
 from controller.DungeonAdventure import DungeonAdventure
 from model.DugeonRoom import DungeonRoom
-from src.model.Ogre import Ogre
-from src.model.Skeleton import Skeleton
-from src.model.Gremlin import Gremlin
 
 pygame.init()
 DIFFICULTY = 3
@@ -182,28 +180,21 @@ def __gameplay(game: DungeonAdventure):
                     draw_help()
             if event.type == pygame.KEYDOWN:
                 if not pause:
-                    if event.key == pygame.K_UP or event.key == pygame.K_w:
-                        game.move_player("north")
-                    elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
-                        game.move_player("south")
-                    elif event.key == pygame.K_LEFT or event.key == pygame.K_a:
-                        game.move_player("west")
-                    elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-                        game.move_player("east")
-                    elif event.key == pygame.K_x:
+                    game.handle_event(event)
+                    # v For testing purposes
+                    if event.key == pygame.K_x:
                         game.get_player().damage(10)
+                    # ^ For testing purposes
                 if event.key == pygame.K_p or event.key == pygame.K_ESCAPE:
                     pause = not pause
                 if game.get_battle_state():
-                    # Battle.start(game)
-                    pass
+                    Battle.start(SCREEN, game)
                 SCREEN.fill("black")
                 SCREEN.blit(health_text, title_text_rect)
                 draw_dungeon(SCREEN, game.get_dungeon(), tile_size, dungeon_starting_x // tile_size,
                              dungeon_starting_y // tile_size)
                 healthbar.draw(SCREEN, (healthbar_starting_x, healthbar_starting_y),
                                (healthbar_width, healthbar_height))
-                print(f"current inventoryL {game.get_inventory()}")
 
         pygame.display.flip()
         pygame.time.delay(1000 // 60)

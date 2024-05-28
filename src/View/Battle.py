@@ -1,46 +1,64 @@
 import pygame
 import sys
 from src.controller.DungeonAdventure import DungeonAdventure
+from src.model.DungeonCharacter import DungeonCharacter
+from View.Healthbar import Healthbar
+from View.MainMenu import get_font
 
-# Define custom events
-SPECIAL_ATTACK = pygame.USEREVENT + 1
-CUSTOM_USE_ITEM = pygame.USEREVENT + 3
-TRIGGER_BATTLE = pygame.USEREVENT + 2
+ENEMY = None
+SCREEN: pygame.Surface | None = None
+GAME: DungeonAdventure | None = None
 
 
-def start(screen, game: DungeonAdventure):
+def start(the_screen: pygame.Surface, game: DungeonAdventure):
     """
     This method starts the battle sequence for the Dungeon Adventure game.
-    :param screen: The screen to draw the battle
+    :param the_screen: The screen to draw the battle
     :param game: The game object
     """
-    screen.fill((122, 255, 255))
+    global ENEMY, SCREEN, GAME
+    the_screen.fill((122, 255, 255))
     running = True
+    SCREEN = the_screen
+    GAME = game
+    ENEMY = game.get_current_room().get_monster()
+    if ENEMY is None:
+        raise Exception("No enemy in room")
+    __draw_battle_scene(game.get_player(), ENEMY)
 
 
-    while running:
+def __draw_battle_scene(player: DungeonCharacter, enemy: DungeonCharacter):
+    """
+    This method draws the battle scene on the screen.
+    :param player: The player object
+    :param enemy: The enemy object
+    """
+    SCREEN.fill((0, 0, 0))
+    font = get_font(12)
+    player_name = font.render(player.get_name(), True, (255, 255, 255))
+    player_healthbar = Healthbar(player)
+    player_speed = font.render(f"Speed: {player.get_attack_speed()}", True, (255, 255, 255))
+
+    enemy_name = font.render(enemy.get_name(), True, (255, 255, 255))
+    enemy_healthbar = Healthbar(enemy)
+    enemy_speed = font.render(f"Speed: {enemy.get_attack_speed()}", True, (255, 255, 255))
+    while True:
+
+        SCREEN.blit(player_name, (50, 50))
+        SCREEN.blit(player_speed, (50, 200))
+
+        SCREEN.blit(enemy_name, (SCREEN.get_width() // 2 + 50, 50))
+        SCREEN.blit(enemy_speed, (SCREEN.get_width() // 2 + 50, 200))
+        player_healthbar.draw(SCREEN, (50, 100), (250, 20))
+        enemy_healthbar.draw(SCREEN, (SCREEN.get_width() // 2 + 50, 100), (250, 20))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                pygame.quit()
+                sys.exit()
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_a:  # Attack button (example: 'A' key)
-                    pygame.event.post(pygame.event.Event(SPECIAL_ATTACK))
-                elif event.key == pygame.K_i:  # Use item button (example: 'I' key)
-                    item_event = pygame.event.Event(CUSTOM_USE_ITEM, item_type='RoomItem')
-                    pygame.event.post(item_event)
-                elif event.key == pygame.K_b:  # Battle button (example: 'B' key)
-                    game.trigger_battle_event()
-            if event.type == TRIGGER_BATTLE:
-                # show_battle_screen(screen, event.monster_name)
-                running = False
-
-            game.process_event(event)
+                GAME.handle_event(event)
 
         pygame.display.update()
-        pygame.time.delay(1000 // 60)  # Limit the loop to 60 frames per second
-
-    pygame.quit()
-    sys.exit()
 
 
 if __name__ == "__main__":

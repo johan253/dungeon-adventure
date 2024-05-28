@@ -1,15 +1,11 @@
-from random import random, choice
 import pygame
+from random import random, choice
 from model.DugeonRoom import DungeonRoom
 from model.DungeonCharacter import DungeonCharacter
 from model.Dungeon import Dungeon
 from model.CharacterFactory import CharacterFactory
 from model.RoomItem import RoomItem
-pygame.init()
 
-SPECIAL_ATTACK = pygame.USEREVENT + 1
-TRIGGER_BATTLE = pygame.USEREVENT + 2
-CUSTOM_USE_ITEM = pygame.USEREVENT + 3
 
 class DungeonAdventure:
     """
@@ -110,16 +106,6 @@ class DungeonAdventure:
         player.set_health(new_health)
         print(f"{player.get_name()} healed by {heal_amount}, current health: {new_health}.")
 
-    def trigger_battle_event(self):
-        "This method checks if there is a monster in the adjacent rooms and triggers a battle"
-        adjacent_rooms = self.get_adjacent_rooms()
-        for room in adjacent_rooms:
-            if room and room.get_monster():
-                monster = room.get_monster()
-                self.__battle(self.__my_player, monster)
-                pygame.event.post(pygame.event.Event(TRIGGER_BATTLE))
-                return True
-        print("No monster nearby to battle.")
     def use_vision_potion(self, player):
         surrounding_rooms = self.get_adjacent_rooms()
         for room in surrounding_rooms:
@@ -142,104 +128,27 @@ class DungeonAdventure:
         player.__my_attack_speed = new_speed
         print(f"{player.get_name()}'s speed increased from {original_speed} to {new_speed}.")
 
-    def __battle(self, player, monster):
+    def handle_event(self, event):
         """
-        This method handles a battle between the player and a monster.
-        :param player: The player character
-        :param monster: The monster character
-        :return: True if the player wins or escapes, False if the player is defeated.
+        This method handles the events in the game.
+        :param event: The event to be handled
         """
-        if monster is None:
-            print("No monster to fight.")
-            return True
-
-        print(f"You have encountered a {monster.get_name()}! Prepare for battle.")
-        while player.get_health() > 0 and monster.get_health() > 0:
-            print(
-                f"\n{player.get_name()} Health: {player.get_health()} | {monster.get_name()} Health: {monster.get_health()}")
-            print("Choose your action:")
-            print("1. Attack")
-            print("2. Use Special Ability")
-            print("3. Attempt to flee")
-
-            battle_choice = input("Enter the number of the action you want to take: ")
-            while battle_choice not in ["1", "2"]:
-                print("Invalid input. Please enter 1 to attack or 2 to flee.")
-                battle_choice = input("Enter the number of the action you want to take: ")
-
-            if battle_choice == "1":
-                print(f"\n{player.get_name()} attacks {monster.get_name()}!")
-                prev_health = monster.get_health()
-                if player.attack(monster):
-                    damage = prev_health - player.get_health()
-                    print(f"Successful hit! {monster.get_name()} takes {damage} damage.")
-                else:
-                    print(f"{player.get_name()} missed the attack!")
-
-                if monster.get_health() > 0:
-                    print(f"\n{monster.get_name()} counterattacks!")
-                    prev_health = player.get_health()
-                    if monster.attack(player):
-                        damage = prev_health - player.get_health()
-                        print(f"Monster hits! {player.get_name()} takes {damage} damage.")
-                    else:
-                        print(f"{monster.get_name()} missed the attack!")
-            elif battle_choice == "3":
-                if random() < 0.5:
-                    print("Successfully fled the battle!")
-                else:
-                    print("Failed to flee! The battle continues.")
-                    if monster.attack(player):
-                        damage = monster.get_damage_max() - monster.get_damage_min()
-                        print(f"Monster hits during your attempt to flee! {player.get_name()} takes {damage} damage.")
-            elif battle_choice == "2":
-                print(f"\n{player.get_name()} uses a special ability!")
-                prev_health = monster.get_health()
-                if player.do_special(monster):
-                    damage = prev_health - monster.get_health()
-                    print(f"Successful special ability! {monster.get_name()} takes {damage} damage.")
-                else:
-                    print(f"{player.get_name()}'s special ability failed!")
-                if monster.is_alive():
-                    print(f"\n{monster.get_name()} counterattacks!")
-                    if monster.attack(player):
-                        damage = monster.get_damage_max() - monster.get_damage_min()
-                        print(f"Monster hits! {player.get_name()} takes {damage} damage.")
-                    else:
-                        print(f"{monster.get_name()} missed the attack!")
-
-        if player.get_health() <= 0:
-            print(f"\n{player.get_name()} has been defeated by {monster.get_name()}!")
-            return False
+        if self.__my_battle_state:
+            if event.key == pygame.K_a:
+                print("Attack!")
+            elif event.key == pygame.K_s:
+                print("Special Attack!")
+            elif event.key == pygame.K_i:
+                print("Use Item!")
         else:
-            print(f"\n{monster.get_name()} has been defeated!")
-            return True
-
-    def process_event(self, event):
-        if event.type == SPECIAL_ATTACK:
-            self.handle_attack_event(event)
-        elif event.type == CUSTOM_USE_ITEM:
-            self.handle_use_item_event(event)
-        else:
-            print("Unknown event!")
-
-    def handle_attack_event(self):
-        """"
-        Handle the attack event
-        """
-        player = self.get_player()
-        current_room = self.get_current_room()
-        monster = current_room.get_monster()
-        if monster:
-            self.__battle(player, monster)
-
-    def handle_use_item_event(self, event):
-        """
-        Handle the use item event
-        :param event: The pygame event containing item details
-        """
-        item_type = event.item_type
-        self.use_item(item_type)
+            if event.key == pygame.K_w:
+                self.move_player('north')
+            elif event.key == pygame.K_s:
+                self.move_player('south')
+            elif event.key == pygame.K_a:
+                self.move_player('west')
+            elif event.key == pygame.K_d:
+                self.move_player('east')
 
     def get_dungeon(self):
         """
