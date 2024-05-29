@@ -118,20 +118,65 @@ class Dungeon:
 
     def __generate_dungeon(self) -> None:
         """
-        Generates a random dungeon layout with rooms connected by doors at the root, given the width and height of the
-        dungeon.
+        Generates a dungeon with a random layout of rooms and connects them with each other. Uses a disjoint set data
+        structure to connect the rooms using Kruskal's algorithm.
         """
         dungeon = [[DungeonRoom() for _ in range(self.__width)] for _ in range(self.__height)]
+        edges = []
+        equivalency = {}
         for x, row in enumerate(dungeon):
             for y, room in enumerate(row):
-                if random.random() < self.CHANCE_FOR_ROOM and not room.get_north() and x > 0:
-                    room.set_north(dungeon[x - 1][y])
-                if random.random() < self.CHANCE_FOR_ROOM and not room.get_south() and x < self.__height - 1:
-                    room.set_south(dungeon[x + 1][y])
-                if random.random() < self.CHANCE_FOR_ROOM and not room.get_east() and y < self.__width - 1:
-                    room.set_east(dungeon[x][y + 1])
-                if random.random() < self.CHANCE_FOR_ROOM and not room.get_west() and y > 0:
-                    room.set_west(dungeon[x][y - 1])
+                for dx, dy in ((0, 1), (1, 0), (0, -1), (-1, 0)):
+                    if 0 <= x + dx < self.__width and 0 <= y + dy < self.__height:
+                        # Add all the plausible edges to the list
+                        edges.append( ((room, x, y), (dungeon[x + dx][y + dy], x + dx, y + dy)) )
+                equivalency[room] = room
+
+        # Shuffle the edges to randomize the dungeon
+        random.shuffle(edges)
+
+        def find(the_room: DungeonRoom) -> DungeonRoom:
+            """
+            Find the parent of the room. Used to find the parent of a room in the disjoint set data structure.
+            :param the_room: The room to find the parent of
+            :return: The parent of the room
+            """
+            if the_room != equivalency[the_room]:
+                equivalency[the_room] = find(equivalency[the_room])
+            return equivalency[the_room]
+
+        def union(r1: DungeonRoom, r2: DungeonRoom):
+            """
+            Unites two rooms in the disjoint set data structure
+            :param r1: The first room to unite
+            :param r2: The second room to unite
+            """
+            equivalency[find(r1)] = find(r2)
+
+        connections = 0
+        # Connect the rooms using Kruskal's algorithm
+        while connections < self.__width * self.__height - 1:
+            (room1, x1, y1), (room2, x2, y2) = edges.pop()
+            # If the rooms are not connected by the same set, connect them
+            if find(room1) != find(room2):
+                union(room1, room2)
+                connections += 1
+                # Determine the direction of the rooms and connect them
+                if x1 == x2:
+                    if y1 < y2:
+                        room1.set_south(room2)
+                        room2.set_north(room1)
+                    else:
+                        room1.set_north(room2)
+                        room2.set_south(room1)
+                else:
+                    if x1 < x2:
+                        room1.set_east(room2)
+                        room2.set_west(room1)
+                    else:
+                        room1.set_west(room2)
+                        room2.set_east(room1)
+
         self.__root = dungeon[0][0]
 
     def __valid(self) -> bool:
