@@ -1,4 +1,5 @@
 import pygame
+import src.controller.DungeonEvent as DungeonEvent
 from random import random, choice
 from model.DugeonRoom import DungeonRoom
 from model.DungeonCharacter import DungeonCharacter
@@ -132,8 +133,7 @@ class DungeonAdventure:
         :param event: The event to be handled
         """
         if self.__my_battle_state:
-            if event.key == pygame.K_a:
-                print("Attack!")
+            if event == DungeonEvent.BATTLE_ATTACK:
                 fast_attacker = self.__my_player
                 slow_attacker = self.__my_location.get_monster()
                 if self.__my_player.get_attack_speed() < self.__my_location.get_monster().get_attack_speed():
@@ -147,18 +147,18 @@ class DungeonAdventure:
                 if not fast_attacker.is_alive() or not slow_attacker.is_alive():
                     self.__my_battle_state = False
 
-            elif event.key == pygame.K_s:
+            elif event == DungeonEvent.BATTLE_SPECIAL:
                 print("Special Attack!")
-            elif event.key == pygame.K_i:
-                print("Use Item!")
+            elif event == DungeonEvent.BATTLE_HEAL:
+                print("Use Heal!")
         else:
-            if event.key == pygame.K_w:
+            if event == DungeonEvent.GAMEPLAY_MOVE_NORTH:
                 self.move_player('north')
-            elif event.key == pygame.K_s:
+            elif event == DungeonEvent.GAMEPLAY_MOVE_SOUTH:
                 self.move_player('south')
-            elif event.key == pygame.K_a:
+            elif event == DungeonEvent.GAMEPLAY_MOVE_WEST:
                 self.move_player('west')
-            elif event.key == pygame.K_d:
+            elif event == DungeonEvent.GAMEPLAY_MOVE_EAST:
                 self.move_player('east')
 
     def get_dungeon(self):

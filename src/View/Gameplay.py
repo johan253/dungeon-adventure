@@ -2,6 +2,7 @@ import pickle
 import sys
 
 import pygame
+import src.controller.DungeonEvent as DungeonEvent
 
 import View.Tile as Tile
 from View import Battle
@@ -180,11 +181,14 @@ def __gameplay(game: DungeonAdventure):
                     draw_help()
             if event.type == pygame.KEYDOWN:
                 if not pause:
-                    game.handle_event(event)
-                    # v For testing purposes
-                    if event.key == pygame.K_x:
-                        game.get_player().damage(10)
-                    # ^ For testing purposes
+                    if event.key == pygame.K_w:
+                        __GAME.handle_event(DungeonEvent.GAMEPLAY_MOVE_NORTH)
+                    elif event.key == pygame.K_s:
+                        __GAME.handle_event(DungeonEvent.GAMEPLAY_MOVE_SOUTH)
+                    elif event.key == pygame.K_a:
+                        __GAME.handle_event(DungeonEvent.GAMEPLAY_MOVE_WEST)
+                    elif event.key == pygame.K_d:
+                        __GAME.handle_event(DungeonEvent.GAMEPLAY_MOVE_EAST)
                 if event.key == pygame.K_p or event.key == pygame.K_ESCAPE:
                     pause = not pause
                 if game.get_battle_state():
