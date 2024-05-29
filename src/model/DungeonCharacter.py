@@ -21,6 +21,7 @@ class DungeonCharacter(ABC):
         - my_chance_to_hit: Float
             The chance to hit of the character, expressed as a float between 0 and 1
     """
+    DEFAULT_NAME = "DungeonCharacter"
 
     def __new__(cls, *args, **kwargs) -> 'DungeonCharacter':
         """

@@ -4,6 +4,7 @@ from src.controller.DungeonAdventure import DungeonAdventure
 from src.model.DungeonCharacter import DungeonCharacter
 from View.Healthbar import Healthbar
 from View.MainMenu import get_font
+from View import Sprite
 
 ENEMY = None
 SCREEN: pygame.Surface | None = None
@@ -35,20 +36,25 @@ def __draw_battle_scene(player: DungeonCharacter, enemy: DungeonCharacter):
     """
     SCREEN.fill((0, 0, 0))
     font = get_font(12)
+    player_image = Sprite.get_sprite(player.DEFAULT_NAME)
     player_name = font.render(player.get_name(), True, (255, 255, 255))
     player_healthbar = Healthbar(player)
     player_speed = font.render(f"Speed: {player.get_attack_speed()}", True, (255, 255, 255))
 
+    enemy_image = Sprite.get_sprite(enemy.DEFAULT_NAME)
     enemy_name = font.render(enemy.get_name(), True, (255, 255, 255))
     enemy_healthbar = Healthbar(enemy)
     enemy_speed = font.render(f"Speed: {enemy.get_attack_speed()}", True, (255, 255, 255))
     while True:
 
         SCREEN.blit(player_name, (50, 50))
-        SCREEN.blit(player_speed, (50, 200))
+        SCREEN.blit(player_speed, (50, 150))
+        SCREEN.blit(player_image, (50, 200))
 
         SCREEN.blit(enemy_name, (SCREEN.get_width() // 2 + 50, 50))
-        SCREEN.blit(enemy_speed, (SCREEN.get_width() // 2 + 50, 200))
+        SCREEN.blit(enemy_speed, (SCREEN.get_width() // 2 + 50, 150))
+        SCREEN.blit(enemy_image, (SCREEN.get_width() // 2 + 50, 200))
+
         player_healthbar.draw(SCREEN, (50, 100), (250, 20))
         enemy_healthbar.draw(SCREEN, (SCREEN.get_width() // 2 + 50, 100), (250, 20))
         for event in pygame.event.get():
