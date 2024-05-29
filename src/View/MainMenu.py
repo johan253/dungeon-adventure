@@ -51,7 +51,7 @@ def play():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if play_back_button.check_input(play_mouse_position):
-                    main_menu()
+                    return
                 if play_new_game_button.check_input(play_mouse_position):
                     select_name()
         pygame.display.update()
@@ -82,10 +82,11 @@ def select_name():
             text_field.handle_event(event)
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if back_button.check_input(pygame.mouse.get_pos()):
-                    play()
+                    return
                 if continue_button.check_input(pygame.mouse.get_pos()):
                     if name.strip() != "":
                         select_hero(name.strip())
+                        return
 
         text_field.draw(Screen)
         pygame.display.update()
@@ -126,16 +127,19 @@ def select_hero(player_name: str):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 global game
                 if buttons["back"].check_input(play_mouse_position):
-                    play()
+                    return
                 if buttons["thief"].check_input(play_mouse_position):
                     game = DungeonAdventure(player_name, CharacterFactory.THIEF)
                     Gameplay.play(Screen, game)
+                    return
                 if buttons["warrior"].check_input(play_mouse_position):
                     game = DungeonAdventure(player_name, CharacterFactory.WARRIOR)
                     Gameplay.play(Screen, game)
+                    return
                 if buttons["priestess"].check_input(play_mouse_position):
                     game = DungeonAdventure(player_name, CharacterFactory.PRIESTESS)
                     Gameplay.play(Screen, game)
+                    return
         pygame.display.update()
 
 
@@ -166,7 +170,7 @@ def load():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if load_back_button.check_input(load_mouse_position):
-                    main_menu()
+                    return
                 if load_button.check_input(load_mouse_position):
                     game_state = Gameplay.load_game_state()
                     if game_state:
@@ -220,7 +224,7 @@ def about():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if about_back.check_input(about_mouse_position):
-                    main_menu()
+                    return
 
         pygame.display.update()
 

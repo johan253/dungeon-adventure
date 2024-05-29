@@ -17,7 +17,7 @@ class Healthbar:
         width, height = size
         damaged = self.__player.get_health() / self.__player.get_max_health()
         pygame.draw.rect(screen, (255, 0, 0), (x, y, width, height))
-        pygame.draw.rect(screen, (0, 255, 0), (x, y, width * damaged, height))
-        pygame.draw.rect(screen, (0, 0, 0), (x, y, width, height), 1)
+        pygame.draw.rect(screen, (0, 150, 0), (x, y, width * damaged, height))
+        pygame.draw.rect(screen, (0, 100, 0), (x, y, width, height), 3)
         screen.blit(pygame.font.Font(None, (height * 2) // 3).render(f"{self.__player.get_health()}/{self.__player.get_max_health()}",
                                                       True, "black"), (x + 5, y + height // 2))

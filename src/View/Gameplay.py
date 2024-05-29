@@ -6,6 +6,7 @@ import src.controller.DungeonEvent as DungeonEvent
 
 import View.Tile as Tile
 from View import Battle
+from View import GameOver
 from View.Healthbar import Healthbar
 from View.MainMenu import main_menu, get_font
 from controller.DungeonAdventure import DungeonAdventure
@@ -196,7 +197,7 @@ def __gameplay(game: DungeonAdventure) -> None:
                     pass
                 if main_menu_button.collidepoint(event.pos):
                     pause = False
-                    main_menu()
+                    return
                 if close_game.collidepoint(event.pos):
                     sys.exit()
                 if help_option.collidepoint(event.pos):
@@ -215,6 +216,9 @@ def __gameplay(game: DungeonAdventure) -> None:
                     pause = not pause
                 if game.get_battle_state():
                     Battle.start(SCREEN, game)
+                    if not game.get_player().is_alive():
+                        GameOver.start(SCREEN)
+                        return
                 SCREEN.fill("black")
                 SCREEN.blit(health_text, title_text_rect)
                 draw_dungeon(SCREEN, game.get_dungeon(), tile_size, dungeon_starting_x // tile_size,
