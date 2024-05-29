@@ -1,5 +1,6 @@
 import pickle
 import sys
+from collections import defaultdict
 
 import pygame
 import src.controller.DungeonEvent as DungeonEvent
@@ -11,6 +12,7 @@ from View.Healthbar import Healthbar
 from View.MainMenu import main_menu, get_font
 from controller.DungeonAdventure import DungeonAdventure
 from model.DugeonRoom import DungeonRoom
+from model.RoomItem import RoomItem
 
 pygame.init()
 DIFFICULTY = 3
@@ -182,6 +184,7 @@ def __gameplay(game: DungeonAdventure) -> None:
     SCREEN.blit(health_text, title_text_rect)
     while True:
         pygame.display.set_caption('DUNGEON ADVENTURE')
+        draw_inventory(game.get_inventory())
         if not pause:
             healthbar.draw(SCREEN, (healthbar_starting_x, healthbar_starting_y), (healthbar_width, healthbar_height))
         if pause:
@@ -228,6 +231,43 @@ def __gameplay(game: DungeonAdventure) -> None:
 
         pygame.display.flip()
         pygame.time.delay(1000 // 60)
+
+
+def draw_inventory(inventory: list[RoomItem]) -> None:
+    """
+    This method draws the inventory on the screen.
+    :param inventory: The inventory to draw
+    """
+    inventory_text = get_font(15).render("Inventory", True, 'yellow')
+    SCREEN.blit(inventory_text, (SCREEN.get_width() - inventory_text.get_width() - 10, 10))
+    icon_size = 32
+
+    x = SCREEN.get_width() - (icon_size + 20)
+    y = 20 + inventory_text.get_height()
+
+    count_items = defaultdict(int)
+    for item in inventory:
+        count_items[item] += 1
+    image_to_count = {
+        Tile.get_tile(Tile.INVENTORY_PILLAR_A, icon_size, icon_size): count_items[RoomItem.PillarOfAbstraction.value],
+        Tile.get_tile(Tile.INVENTORY_PILLAR_E, icon_size, icon_size): count_items[RoomItem.PillarOfEncapsulation.value],
+        Tile.get_tile(Tile.INVENTORY_PILLAR_I, icon_size, icon_size): count_items[RoomItem.PillarOfInheritance.value],
+        Tile.get_tile(Tile.INVENTORY_PILLAR_P, icon_size, icon_size): count_items[RoomItem.PillarOfPolymorphism.value],
+        Tile.get_tile(Tile.INVENTORY_HEALING_POTION, icon_size, icon_size): count_items[RoomItem.HealingPotion.value],
+        Tile.get_tile(Tile.INVENTORY_VISION_POTION, icon_size, icon_size): count_items[RoomItem.VisionPotion.value],
+    }
+    pillars = 3
+    for item_image, item_count in image_to_count.items():
+        SCREEN.blit(item_image, (x, y))
+        count_text = get_font(15).render(str(item_count), True, 'yellow')
+        SCREEN.blit(count_text, (x - icon_size, y))
+        y += icon_size
+        if pillars <= 0:
+            y += 10
+        pillars -= 1
+
+
+
 
 
 def draw_dungeon(screen: pygame.Surface, dungeon, room_size, x, y) -> None:

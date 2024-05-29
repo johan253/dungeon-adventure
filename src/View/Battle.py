@@ -185,7 +185,7 @@ def update_available_health_potions() -> None:
     """
     # Update the number of available health potions replacing the last character of the string
     health_potion_option = list(BATTLE_OPTIONS[len(BATTLE_OPTIONS) - 1])
-    health_potion_option[-1] = str(GAME.get_inventory().count(RoomItem.HealingPotion))
+    health_potion_option[-1] = str(GAME.get_inventory().count(RoomItem.HealingPotion.value))
     BATTLE_OPTIONS[len(BATTLE_OPTIONS) - 1] = "".join(health_potion_option)
 
 

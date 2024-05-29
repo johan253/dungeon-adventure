@@ -19,7 +19,7 @@ class DungeonRoom:
         - __west (DungeonRoom): The room to the west
     """
 
-    SPAWN_CHANCE = 0.25
+    SPAWN_CHANCE = 0.15
 
     def __init__(self):
         """

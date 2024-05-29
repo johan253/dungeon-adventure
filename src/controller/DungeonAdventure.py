@@ -56,7 +56,7 @@ class DungeonAdventure:
         self.__my_visited_rooms.add(next_room)
         for item in next_room.get_items():
             if item.value not in RoomItem.get_static_items():
-                self.__my_inventory.append(item)
+                self.__my_inventory.append(item.value)
                 print(f"DA: Picked up {item}")
         next_room.set_items([])
 
@@ -97,8 +97,10 @@ class DungeonAdventure:
             return False
 
     def use_healing_potion(self, player: DungeonCharacter):
+        if self.__my_player.get_health() == self.__my_player.get_max_health():
+            return
         for i, item in enumerate(self.__my_inventory):
-            if item.value == RoomItem.HealingPotion.value:
+            if item == RoomItem.HealingPotion.value:
                 self.__my_inventory.pop(i)
                 heal_amount = int(5 + random() * 10)
                 new_health = min(player.get_health() + heal_amount, player.get_max_health())
