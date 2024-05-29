@@ -7,7 +7,7 @@ import src.controller.DungeonEvent as DungeonEvent
 import View.Tile as Tile
 from View import Battle
 from View.Healthbar import Healthbar
-from View.MainMenu import main_menu
+from View.MainMenu import main_menu, get_font
 from controller.DungeonAdventure import DungeonAdventure
 from model.DugeonRoom import DungeonRoom
 
@@ -24,18 +24,32 @@ SCREEN = pygame.display.set_mode((WIDTH, HEIGHT), pygame.SRCALPHA)
 pause = False
 
 
-def play(screen, game):
+def play(screen, game) -> None:
+    """
+    This method starts the gameplay for the Dungeon Adventure game.
+    :param screen: The screen to draw the gameplay
+    :param game: The game object
+    """
     global SCREEN
     SCREEN = screen
     __gameplay(game)
 
 
-def save_game_state(game_state):
+def save_game_state(game_state) -> None:
+    """
+    This method saves the game state to a file.
+    :param game_state: The game state to save
+    """
     with open("saved_game.pkl", "wb") as file:
         pickle.dump(game_state, file)
 
 
-def load_game_state():
+def load_game_state() -> DungeonAdventure | None:
+    # TODO: Move this method to MainMenu.py
+    """
+    This method loads the game state from a file.
+    :return: The game state
+    """
     try:
         with open("saved_game.pkl", "rb") as file:
             return pickle.load(file)
@@ -43,11 +57,11 @@ def load_game_state():
         return None
 
 
-def get_font(size):
-    return pygame.font.Font('Assets/Dungeon Depths.ttf', size)
-
-
-def draw_pause():
+def draw_pause() -> tuple[pygame.Rect, pygame.Rect, pygame.Rect, pygame.Rect, pygame.Rect]:
+    """
+    This method draws the pause menu on the screen.
+    :return: The buttons on the pause menu
+    """
     pause_mouse_position = pygame.mouse.get_pos()
 
     pause_height = 640
@@ -89,7 +103,10 @@ def draw_pause():
     return save_button_rect, restart_button_rect, main_menu_button_rect, close_game_button_rect, help_button_rect
 
 
-def draw_help():
+def draw_help() -> None:
+    """
+    This method draws the help menu on the screen.
+    """
     global SCREEN
     pygame.init()  # Initialize Pygame
     help_height = 650
@@ -136,7 +153,12 @@ def draw_help():
                     return
 
 
-def __gameplay(game: DungeonAdventure):
+def __gameplay(game: DungeonAdventure) -> None:
+    """
+    This method starts the gameplay for the Dungeon Adventure game and draws the game on the screen.
+    Also handles the events for the game.
+    :param game: The game object
+    """
     global __GAME, pause, restart, save, main_menu_button, close_game, help_option
     global SCREEN
     __GAME = game
@@ -204,12 +226,29 @@ def __gameplay(game: DungeonAdventure):
         pygame.time.delay(1000 // 60)
 
 
-def draw_dungeon(screen: pygame.Surface, dungeon, room_size, x, y):
+def draw_dungeon(screen: pygame.Surface, dungeon, room_size, x, y) -> None:
+    """
+    This method draws the dungeon on the screen.
+    :param screen: The screen to draw the dungeon
+    :param dungeon: The dungeon object
+    :param room_size: The size of the room
+    :param x: The starting x-coordinate
+    :param y: The starting y-coordinate
+    """
     root = dungeon.get_root()
     draw_room(screen, root, x, y, room_size, set())
 
 
-def draw_room(screen: pygame.Surface, room: DungeonRoom, x, y, room_size, visited):
+def draw_room(screen: pygame.Surface, room: DungeonRoom, x, y, room_size, visited) -> None:
+    """
+    Recursively draw the room and its children on the screen.
+    :param screen: The screen to draw the room
+    :param room: The room to draw
+    :param x: The x-coordinate of the room
+    :param y: The y-coordinate of the room
+    :param room_size: The size of the room
+    :param visited: The set of visited rooms when drawing
+    """
     if room is None or room in visited or room not in __GAME.get_visited_rooms():
         return
     visited.add(room)
@@ -227,7 +266,15 @@ def draw_room(screen: pygame.Surface, room: DungeonRoom, x, y, room_size, visite
             draw_room(screen, direction, x + dx, y + dy, room_size, visited)
 
 
-def __get_appropriate_tile(room: DungeonRoom, row, col, size):
+def __get_appropriate_tile(room: DungeonRoom, row, col, size) -> pygame.Surface:
+    """
+    This method returns the appropriate tile for the room based on the row and column of the room.
+    :param room: The room to get the tile for
+    :param row: The row of the room (0-2)
+    :param col: The column of the room (0-2)
+    :param size: The size of the tile
+    :return: The tile for the room
+    """
     if row == 0 and col == 0:
         return Tile.get_tile(Tile.WALL_CORNER_NW, size, size)
     elif row == 0 and col == 2:

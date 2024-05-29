@@ -10,9 +10,16 @@ T = TypeVar('T', bound='DungeonRoom')
 class DungeonRoom:
     """
     A class that represents a room in the dungeon.
+    Attributes:
+        - __items (List[RoomItem]): The items in the room
+        - __monster (Monster): The monster in the room
+        - __north (DungeonRoom): The room to the north
+        - __east (DungeonRoom): The room to the east
+        - __south (DungeonRoom): The room to the south
+        - __west (DungeonRoom): The room to the west
     """
 
-    SPAWN_CHANCE = 0.1
+    SPAWN_CHANCE = 0.25
 
     def __init__(self):
         """

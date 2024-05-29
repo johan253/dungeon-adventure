@@ -16,6 +16,9 @@ class DungeonAdventure:
         - __my_player (Player): The player object
         - __my_inventory (List[RoomItem]): The inventory of the player
         - __my_dungeon (Dungeon): The dungeon object
+        - __my_location (DungeonRoom): The current location of the player
+        - __my_visited_rooms (Set[DungeonRoom]): The rooms that have been visited by the player
+        - __my_battle_state (bool): The battle state of the game, True if there is a battle, False otherwise
     """
 
     def __init__(self, player_name: str, player_class: str):
@@ -36,12 +39,6 @@ class DungeonAdventure:
         self.__my_battle_state = False
         # current rooms
         # dungeon
-        self.item_effects = {
-            RoomItem.HealingPotion: self.use_healing_potion,
-            RoomItem.VisionPotion: self.use_vision_potion,
-            RoomItem.BombPotion: self.use_bomb_potion,
-            RoomItem.SpeedPotion: self.use_speed_potion
-        }
 
     def move_player(self, direction) -> bool:
         """
@@ -99,11 +96,14 @@ class DungeonAdventure:
             print(f"No effect defined for {item_type}")
             return False
 
-    def use_healing_potion(self, player):
-        heal_amount = 50
-        new_health = min(player.get_health() + heal_amount, player.get_max_health())
-        player.set_health(new_health)
-        print(f"{player.get_name()} healed by {heal_amount}, current health: {new_health}.")
+    def use_healing_potion(self, player: DungeonCharacter):
+        for i, item in enumerate(self.__my_inventory):
+            if item.value == RoomItem.HealingPotion.value:
+                self.__my_inventory.pop(i)
+                heal_amount = int(5 + random() * 10)
+                new_health = min(player.get_health() + heal_amount, player.get_max_health())
+                player.set_health(new_health)
+                return
 
     def use_vision_potion(self, player):
         surrounding_rooms = self.get_adjacent_rooms()
@@ -132,6 +132,7 @@ class DungeonAdventure:
         This method handles the events in the game.
         :param event: The event to be handled
         """
+        # If there is a battle, handle the battle event
         if self.__my_battle_state:
             if event == DungeonEvent.BATTLE_ATTACK:
                 fast_attacker = self.__my_player
@@ -148,9 +149,16 @@ class DungeonAdventure:
                     self.__my_battle_state = False
 
             elif event == DungeonEvent.BATTLE_SPECIAL:
-                print("Special Attack!")
+                player = self.__my_player
+                monster = self.__my_location.get_monster()
+                player.do_special(monster)
+                if monster.is_alive():
+                    monster.attack(player)
+                if not player.is_alive() or not monster.is_alive():
+                    self.__my_battle_state = False
             elif event == DungeonEvent.BATTLE_HEAL:
-                print("Use Heal!")
+                self.use_healing_potion(self.__my_player)
+        # If there is no battle, handle the gameplay event
         else:
             if event == DungeonEvent.GAMEPLAY_MOVE_NORTH:
                 self.move_player('north')
