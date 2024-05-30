@@ -1,5 +1,7 @@
 import pygame
+from View.MainMenu import get_font
 from src.View.Button import Button
+
 
 def start(screen: pygame.Surface) -> None:
     """
@@ -7,12 +9,14 @@ def start(screen: pygame.Surface) -> None:
     :param screen: The screen to draw the game over
     """
     screen.fill("black")
-    font = pygame.font.Font(None, 100)
-    text = font.render("Game Over", True, (255, 255, 255))
-    screen.blit(text, (screen.get_width() // 2 - text.get_width() // 2, screen.get_height() // 2 - text.get_height() // 2))
+    # font = get_font
+    text = get_font(45).render("Game Over", True, "red")
+    screen.blit(text, (screen.get_width() // 2 - text.get_width() // 2, screen.get_height() // 2
+                       - text.get_height() // 2))
+
     main_menu_button = Button(image=None, position=(screen.get_width() // 2, screen.get_height() // 2 + 250),
-                              text_input='Main Menu', font=pygame.font.Font(None, 32),
-                              color_1="white", color_2="red")
+                              text_input='Main Menu', font=get_font(20),
+                              color_1="red", color_2="white")
     while True:
         main_menu_button.update(screen)
         for event in pygame.event.get():

@@ -44,7 +44,7 @@ def save_game_state(game_state) -> None:
     This method saves the game state to a file.
     :param game_state: The game state to save
     """
-    with open("saved_game.pkl", "wb") as file:
+    with open("../saved_data/saved_game.pkl", "wb") as file:
         pickle.dump(game_state, file)
 
 
@@ -55,7 +55,7 @@ def load_game_state() -> DungeonAdventure | None:
     :return: The game state
     """
     try:
-        with open("saved_game.pkl", "rb") as file:
+        with open("../saved_data/saved_game.pkl", "rb") as file:
             return pickle.load(file)
     except FileNotFoundError:
         return None
@@ -184,9 +184,10 @@ def __gameplay(game: DungeonAdventure) -> None:
     healthbar = Healthbar(game.get_player())
     SCREEN.blit(health_text, title_text_rect)
     while True:
-        pygame.display.set_caption('DUNGEON ADVENTURE')
+
         draw_inventory(game.get_inventory())
         if not pause:
+            pygame.display.set_caption('DUNGEON ADVENTURE')
             healthbar.draw(SCREEN, (healthbar_starting_x, healthbar_starting_y), (healthbar_width, healthbar_height))
         if pause:
             pygame.display.set_caption('PAUSE')
