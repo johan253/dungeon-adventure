@@ -20,8 +20,11 @@ class DungeonAdventure:
         - __my_visited_rooms (Set[DungeonRoom]): The rooms that have been visited by the player
         - __my_battle_state (bool): The battle state of the game, True if there is a battle, False otherwise
     """
+    EASY = 6
+    MEDIUM = 7
+    HARD = 8
 
-    def __init__(self, player_name: str, player_class: str):
+    def __init__(self, player_name: str, player_class: str, difficulty: int = EASY):
         """
         This method initializes the Dungeon Adventure game.
         :param player_name: The name of the player
@@ -31,8 +34,7 @@ class DungeonAdventure:
         self.__my_player = CharacterFactory().create_character(player_class, player_name)
         print("DA: \n", self.__my_player)
         self.__my_inventory: list[RoomItem] = []  # RoomItem
-        dim = choice([4, 6, 8])
-        self.__my_dungeon = Dungeon(6, 6)  # Dungeon
+        self.__my_dungeon = Dungeon(difficulty, difficulty)  # Dungeon
         self.__my_location = self.__my_dungeon.get_root()
         self.__my_visited_rooms = set()
         self.__my_visited_rooms.add(self.__my_location)

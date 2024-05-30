@@ -15,7 +15,7 @@ from model.DugeonRoom import DungeonRoom
 from model.RoomItem import RoomItem
 
 pygame.init()
-DIFFICULTY = 3
+DIFFICULTY = 0
 WIDTH = 1280
 HEIGHT = 720
 SPRITE_WIDTH = 64
@@ -27,14 +27,15 @@ SCREEN = pygame.display.set_mode((WIDTH, HEIGHT), pygame.SRCALPHA)
 pause = False
 
 
-def play(screen, game) -> None:
+def play(screen: pygame.Surface, game: DungeonAdventure) -> None:
     """
     This method starts the gameplay for the Dungeon Adventure game.
     :param screen: The screen to draw the gameplay
     :param game: The game object
     """
-    global SCREEN
+    global SCREEN, DIFFICULTY
     SCREEN = screen
+    DIFFICULTY = game.get_dungeon().get_dimensions()[0] - 4
     __gameplay(game)
 
 
@@ -167,11 +168,11 @@ def __gameplay(game: DungeonAdventure) -> None:
     __GAME = game
     health_text = pygame.font.Font("Assets/Dungeon Depths.ttf", 12).render("Health", True, (255, 255, 255))
     title_text_rect = health_text.get_rect(center=(SCREEN.get_width() // 2, health_text.get_height() + 685))
-    tile_size = MAX_TILE_SIZE - (REDUCTION_FACTOR_PER_DIFFICULTY * (DIFFICULTY - 1))
+    tile_size = MAX_TILE_SIZE - (REDUCTION_FACTOR_PER_DIFFICULTY * (DIFFICULTY))
     dungeon_width = tile_size * game.get_dungeon().get_dimensions()[0]
     dungeon_height = tile_size * game.get_dungeon().get_dimensions()[1]
     dungeon_starting_x = (SCREEN.get_width() - dungeon_width) // 2
-    dungeon_starting_y = (SCREEN.get_height() - dungeon_height) // 2 + tile_size
+    dungeon_starting_y = (SCREEN.get_height() - dungeon_height) // 2 #+ tile_size
     SCREEN.fill("black")
     draw_dungeon(SCREEN, game.get_dungeon(), tile_size, dungeon_starting_x // tile_size,
                  dungeon_starting_y // tile_size)
