@@ -181,10 +181,8 @@ class DungeonAdventure:
                 if self.use_item(RoomItem.HealingPotion):
                     pygame.event.post(pygame.event.Event(pygame.USEREVENT, {"key": DungeonEvent.GAMEPLAY_USE_HEALING_POTION}))
             elif event == DungeonEvent.GAMEPLAY_USE_VISION_POTION:
-                pass
-                # currently not functioning due to "use vision potion" function
-                # if self.use_item(RoomItem.VisionPotion):
-                #     pygame.event.post(pygame.event.Event(pygame.USEREVENT, {"key": DungeonEvent.GAMEPLAY_USE_VISION_POTION}))
+                if self.use_item(RoomItem.VisionPotion):
+                    pygame.event.post(pygame.event.Event(pygame.USEREVENT, {"key": DungeonEvent.GAMEPLAY_USE_VISION_POTION}))
 
     def get_dungeon(self):
         """
@@ -234,12 +232,11 @@ class DungeonAdventure:
         :return: List of adjacent rooms
         """
         x, y = self.get_current_room_coordinates()
-        adjacent_rooms = [
-            self.__my_dungeon.get_room(x - 1, y),  # West
-            self.__my_dungeon_get_room(x + 1, y),  # East
-            self.__my_dungeon.get_room(x, y - 1),  #North
-            self.__my_dungeon.get_room(x, y + 1)  # South
-        ]
+        adjacent_rooms: list[DungeonRoom] = []
+        for dx, dy in [(0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (-1, 1), (1, -1), (-1, -1)]:
+            new_x, new_y = x + dx, y + dy
+            if 0 <= new_x < self.__my_dungeon.get_dimensions()[0] and 0 <= new_y < self.__my_dungeon.get_dimensions()[1]:
+                adjacent_rooms.append(self.__my_dungeon.get_room(new_x, new_y))
         return adjacent_rooms
 
     def get_game_data(self):

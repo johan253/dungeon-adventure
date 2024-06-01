@@ -15,6 +15,20 @@ PLAYER = {
     CharacterFactory.THIEF: (5, 1),
     CharacterFactory.PRIESTESS: (6, 1),
 }
+MONSTER = {
+    CharacterFactory.GREMLIN: (1, 2),
+    CharacterFactory.OGRE: (2, 2),
+    CharacterFactory.SKELETON: (3, 2),
+
+}
+HEALING_POTION = (4, 2)
+VISION_POTION = (5, 2)
+PIT = (6, 2)
+MULTIPLE_ITEMS = (7, 2)
+PILLAR_A = (0, 3)
+PILLAR_E = (1, 3)
+PILLAR_I = (2, 3)
+PILLAR_P = (3, 3)
 EXIT = (0, 2)
 
 INVENTORY_HEALING_POTION = (0, 4)

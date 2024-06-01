@@ -347,9 +347,15 @@ def draw_room(screen: pygame.Surface, room: DungeonRoom, x, y, room_size, visite
     :param room_size: The size of the room
     :param visited: The set of visited rooms when drawing
     """
-    if room is None or room in visited or room not in __GAME.get_visited_rooms():
+    if room is None or room in visited:
         return
     visited.add(room)
+    if room not in __GAME.get_visited_rooms():
+        for dx, dy, direction in [(1, 0, room.get_east()), (0, 1, room.get_south()), (-1, 0, room.get_west()),
+                                  (0, -1, room.get_north())]:
+            if direction:
+                draw_room(screen, direction, x + dx, y + dy, room_size, visited)
+        return
     mini_tile_size = room_size // 3
     for i in range(3):
         for j in range(3):
@@ -358,9 +364,6 @@ def draw_room(screen: pygame.Surface, room: DungeonRoom, x, y, room_size, visite
     for dx, dy, direction in [(1, 0, room.get_east()), (0, 1, room.get_south()), (-1, 0, room.get_west()),
                               (0, -1, room.get_north())]:
         if direction:
-            # pygame.draw.line(screen, (0, 255, 0),
-            #                  (x * room_size + room_size // 2, y * room_size + room_size // 2),
-            #                  ((x + dx) * room_size + room_size // 2, (y + dy) * room_size + room_size // 2))
             draw_room(screen, direction, x + dx, y + dy, room_size, visited)
 
 
@@ -398,5 +401,28 @@ def __get_appropriate_tile(room: DungeonRoom, row, col, size) -> pygame.Surface:
         return Tile.get_tile(Tile.PLAYER[char_name], size, size)
     elif room is __GAME.get_dungeon().get_exit():
         return Tile.get_tile(Tile.EXIT, size, size)
+    elif room.get_monster():
+        monster_name = room.get_monster().get_name()
+        return Tile.get_tile(Tile.MONSTER[monster_name], size, size)
+    elif len(room.get_items()) > 1:
+        return Tile.get_tile(Tile.MULTIPLE_ITEMS, size, size)
+    elif len(room.get_items()) == 1 and room.get_items()[0].value != RoomItem.Entrance.value:
+        item = room.get_items()[0].value
+        if item == RoomItem.PillarOfAbstraction.value:
+            return Tile.get_tile(Tile.PILLAR_A, size, size)
+        elif item == RoomItem.PillarOfEncapsulation.value:
+            return Tile.get_tile(Tile.PILLAR_E, size, size)
+        elif item == RoomItem.PillarOfInheritance.value:
+            return Tile.get_tile(Tile.PILLAR_I, size, size)
+        elif item == RoomItem.PillarOfPolymorphism.value:
+            return Tile.get_tile(Tile.PILLAR_P, size, size)
+        elif item == RoomItem.HealingPotion.value:
+            return Tile.get_tile(Tile.HEALING_POTION, size, size)
+        elif item == RoomItem.VisionPotion.value:
+            return Tile.get_tile(Tile.VISION_POTION, size, size)
+        elif item == RoomItem.Pit.value:
+            return Tile.get_tile(Tile.PIT, size, size)
+        else:
+            raise ValueError(f"Invalid item attempting to be drawn: {item}")
     else:
         return Tile.get_tile(Tile.FLOOR, size, size)

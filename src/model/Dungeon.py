@@ -103,6 +103,7 @@ class Dungeon:
         # TODO: Possibly make entrance randomly placed as well
         self.__entrance = self.__root
         self.__entrance.set_items([RoomItem.Entrance])
+        self.__entrance.set_monster(None)
 
         # Get all rooms in the dungeon, filter out the entrance, and randomly place the exit and pillars
         all_rooms = set()
@@ -112,6 +113,7 @@ class Dungeon:
 
         self.__exit = valid_rooms.pop()
         self.__exit.set_items([RoomItem.Exit])
+        self.__exit.set_monster(None)
 
         for pillar in RoomItem.get_pillars():
             valid_rooms.pop().set_items([pillar])
