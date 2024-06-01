@@ -1,6 +1,6 @@
 import pygame
 import src.controller.DungeonEvent as DungeonEvent
-from random import random, choice
+from random import random, choice, randint
 from model.DugeonRoom import DungeonRoom
 from model.DungeonCharacter import DungeonCharacter
 from model.Dungeon import Dungeon
@@ -60,6 +60,10 @@ class DungeonAdventure:
             if item.value not in RoomItem.get_static_items():
                 self.__my_inventory.append(item.value)
                 print(f"DA: Picked up {item}")
+            if item.value == RoomItem.Pit.value:
+                self.__my_player.damage(randint(1, 20))
+                print(f"DA: Player fell into a pit and took 5 damage")
+                pygame.event.post(pygame.event.Event(pygame.USEREVENT, {"key": DungeonEvent.GAMEPLAY_PIT_DAMAGE}))
         next_room.set_items([])
 
         monster = next_room.get_monster()

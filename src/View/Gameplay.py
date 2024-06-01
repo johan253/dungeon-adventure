@@ -234,6 +234,23 @@ def __gameplay(game: DungeonAdventure) -> None:
                              dungeon_starting_y // tile_size)
                 healthbar.draw(SCREEN, (healthbar_starting_x, healthbar_starting_y),
                                (healthbar_width, healthbar_height))
+            # Handle custom events thrown by the game
+            if event.type == pygame.USEREVENT:
+                # If you fall into a pit, flash the screen and update the health bar
+                if event.key == DungeonEvent.GAMEPLAY_PIT_DAMAGE:
+                    prev_screen = SCREEN.copy()
+                    red_translucent = prev_screen.copy()
+                    red_translucent.fill((255, 0, 0, 128), special_flags=pygame.BLEND_RGBA_MULT)
+                    for _ in range(3):
+                        SCREEN.blit(red_translucent, (0, 0))
+                        pygame.display.flip()
+                        pygame.time.delay(50)
+                        SCREEN.blit(prev_screen, (0, 0))
+                        pygame.display.flip()
+                        pygame.time.delay(50)
+                    if not game.get_player().is_alive():
+                        GameOver.start(SCREEN)
+                        return
 
         pygame.display.flip()
         pygame.time.delay(1000 // 60)
