@@ -401,11 +401,11 @@ def __get_appropriate_tile(room: DungeonRoom, row, col, size) -> pygame.Surface:
         return Tile.get_tile(Tile.PLAYER[char_name], size, size)
     elif room is __GAME.get_dungeon().get_exit():
         return Tile.get_tile(Tile.EXIT, size, size)
+    elif len(room.get_items()) > 1 or room.get_monster() and len(room.get_items()) == 1:
+        return Tile.get_tile(Tile.MULTIPLE_ITEMS, size, size)
     elif room.get_monster():
         monster_name = room.get_monster().get_name()
         return Tile.get_tile(Tile.MONSTER[monster_name], size, size)
-    elif len(room.get_items()) > 1:
-        return Tile.get_tile(Tile.MULTIPLE_ITEMS, size, size)
     elif len(room.get_items()) == 1 and room.get_items()[0].value != RoomItem.Entrance.value:
         item = room.get_items()[0].value
         if item == RoomItem.PillarOfAbstraction.value:

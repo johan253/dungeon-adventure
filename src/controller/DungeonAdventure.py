@@ -24,7 +24,7 @@ class DungeonAdventure:
     MEDIUM = 7
     HARD = 8
 
-    def __init__(self, player_name: str, player_class: str, difficulty: int = EASY):
+    def __init__(self, player_name: str, player_class: str, difficulty: int = MEDIUM):
         """
         This method initializes the Dungeon Adventure game.
         :param player_name: The name of the player
@@ -157,7 +157,7 @@ class DungeonAdventure:
                 if not player.is_alive() or not monster.is_alive():
                     self.__my_battle_state = False
             elif event == DungeonEvent.BATTLE_HEAL:
-                self.use_healing_potion(self.__my_player)
+                self.use_item(RoomItem.HealingPotion)
         # If there is no battle, handle the gameplay event
         else:
             if event == DungeonEvent.GAMEPLAY_MOVE_NORTH:
