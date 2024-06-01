@@ -25,6 +25,7 @@ MAX_TILE_SIZE = 96
 REDUCTION_FACTOR_PER_DIFFICULTY = 8
 SCREEN = pygame.display.set_mode((WIDTH, HEIGHT), pygame.SRCALPHA)
 pause = False
+LAST_FOUR_BUTTONS = []
 
 
 def play(screen: pygame.Surface, game: DungeonAdventure) -> None:
@@ -174,6 +175,7 @@ def __gameplay(game: DungeonAdventure) -> None:
     dungeon_starting_x = (SCREEN.get_width() - dungeon_width) // 2
     dungeon_starting_y = (SCREEN.get_height() - dungeon_height) // 2 #+ tile_size
     SCREEN.fill("black")
+    draw_inventory(game.get_inventory())
     draw_dungeon(SCREEN, game.get_dungeon(), tile_size, dungeon_starting_x // tile_size,
                  dungeon_starting_y // tile_size)
 
@@ -185,7 +187,6 @@ def __gameplay(game: DungeonAdventure) -> None:
     SCREEN.blit(health_text, title_text_rect)
     while True:
 
-        draw_inventory(game.get_inventory())
         if not pause:
             pygame.display.set_caption('DUNGEON ADVENTURE')
             healthbar.draw(SCREEN, (healthbar_starting_x, healthbar_starting_y), (healthbar_width, healthbar_height))
@@ -217,6 +218,8 @@ def __gameplay(game: DungeonAdventure) -> None:
                         __GAME.handle_event(DungeonEvent.GAMEPLAY_MOVE_WEST)
                     elif event.key == pygame.K_d:
                         __GAME.handle_event(DungeonEvent.GAMEPLAY_MOVE_EAST)
+                else:
+                    handle_cheat_code(event)
                 if event.key == pygame.K_p or event.key == pygame.K_ESCAPE:
                     pause = not pause
                 if game.get_battle_state():
@@ -226,6 +229,7 @@ def __gameplay(game: DungeonAdventure) -> None:
                         return
                 SCREEN.fill("black")
                 SCREEN.blit(health_text, title_text_rect)
+                draw_inventory(game.get_inventory())
                 draw_dungeon(SCREEN, game.get_dungeon(), tile_size, dungeon_starting_x // tile_size,
                              dungeon_starting_y // tile_size)
                 healthbar.draw(SCREEN, (healthbar_starting_x, healthbar_starting_y),
@@ -233,6 +237,22 @@ def __gameplay(game: DungeonAdventure) -> None:
 
         pygame.display.flip()
         pygame.time.delay(1000 // 60)
+
+
+def handle_cheat_code(event) -> None:
+    """
+    This method handles cheat code input for the game.
+    :param event: The event to handle
+    """
+    global LAST_FOUR_BUTTONS
+    if event.key == pygame.K_RETURN:
+        if LAST_FOUR_BUTTONS == [pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT]:
+            __GAME.handle_event(DungeonEvent.GAMEPLAY_GOD_MODE)
+            LAST_FOUR_BUTTONS = []
+    else:
+        LAST_FOUR_BUTTONS.append(event.key)
+        if len(LAST_FOUR_BUTTONS) > 4:
+            LAST_FOUR_BUTTONS.pop(0)
 
 
 def draw_inventory(inventory: list[RoomItem]) -> None:

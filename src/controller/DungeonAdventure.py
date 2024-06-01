@@ -172,6 +172,15 @@ class DungeonAdventure:
                 self.move_player('west')
             elif event == DungeonEvent.GAMEPLAY_MOVE_EAST:
                 self.move_player('east')
+            elif event == DungeonEvent.GAMEPLAY_GOD_MODE:
+                for x in range(self.__my_dungeon.get_dimensions()[0]):
+                    for y in range(self.__my_dungeon.get_dimensions()[1]):
+                        self.__my_visited_rooms.add(self.__my_dungeon.get_room(x, y))
+                self.__my_player._DungeonCharacter__my_max_health = 999999
+                self.__my_player._DungeonCharacter__my_health = 999999
+                self.__my_player._DungeonCharacter__my_damage_min = 999999
+                self.__my_player._DungeonCharacter__my_damage_max = 999999
+                self.__my_player._DungeonCharacter__my_chance_to_hit = 999999
 
     def get_dungeon(self):
         """
