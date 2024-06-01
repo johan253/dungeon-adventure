@@ -218,6 +218,10 @@ def __gameplay(game: DungeonAdventure) -> None:
                         __GAME.handle_event(DungeonEvent.GAMEPLAY_MOVE_WEST)
                     elif event.key == pygame.K_d:
                         __GAME.handle_event(DungeonEvent.GAMEPLAY_MOVE_EAST)
+                    elif event.key == pygame.K_h:
+                        __GAME.handle_event(DungeonEvent.GAMEPLAY_USE_HEALING_POTION)
+                    elif event.key == pygame.K_v:
+                        __GAME.handle_event(DungeonEvent.GAMEPLAY_USE_VISION_POTION)
                 else:
                     handle_cheat_code(event)
                 if event.key == pygame.K_p or event.key == pygame.K_ESCAPE:
@@ -238,23 +242,34 @@ def __gameplay(game: DungeonAdventure) -> None:
             if event.type == pygame.USEREVENT:
                 # If you fall into a pit, flash the screen and update the health bar
                 if event.key == DungeonEvent.GAMEPLAY_PIT_DAMAGE:
-                    prev_screen = SCREEN.copy()
-                    red_translucent = prev_screen.copy()
-                    red_translucent.fill((255, 0, 0, 128), special_flags=pygame.BLEND_RGBA_MULT)
-                    for _ in range(3):
-                        SCREEN.blit(red_translucent, (0, 0))
-                        pygame.display.flip()
-                        pygame.time.delay(50)
-                        SCREEN.blit(prev_screen, (0, 0))
-                        pygame.display.flip()
-                        pygame.time.delay(50)
+                    flash_screen((255, 0, 0, 128))
                     if not game.get_player().is_alive():
                         GameOver.start(SCREEN)
                         return
+                if event.key == DungeonEvent.GAMEPLAY_USE_HEALING_POTION:
+                    flash_screen((0, 255, 0, 128))
+                if event.key == DungeonEvent.GAMEPLAY_USE_VISION_POTION:
+                    flash_screen((0, 0, 255, 128))
+
 
         pygame.display.flip()
         pygame.time.delay(1000 // 60)
 
+
+def flash_screen(color: tuple[int, int, int, int] = (0, 0, 0, 128)) -> None:
+    """
+    This method flashes the screen red.
+    """
+    prev_screen = SCREEN.copy()
+    red_translucent = prev_screen.copy()
+    red_translucent.fill(color, special_flags=pygame.BLEND_RGBA_MULT)
+    for _ in range(3):
+        SCREEN.blit(red_translucent, (0, 0))
+        pygame.display.flip()
+        pygame.time.delay(50)
+        SCREEN.blit(prev_screen, (0, 0))
+        pygame.display.flip()
+        pygame.time.delay(50)
 
 def handle_cheat_code(event) -> None:
     """

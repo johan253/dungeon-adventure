@@ -86,32 +86,24 @@ class DungeonAdventure:
         :return: True if the item was used successfully, False otherwise
         """
         # Find item in inventory
-        item = next((item for item in self.__my_inventory if item == item_type), None)
+        item = next((item for item in self.__my_inventory if item == item_type.value), None)
         if not item:
             print(f"Item {item_type} not found in inventory")
             return False
-
-        # call the effect if the item exists within the map
-        effect_function = self.item_effects.get(item_type)
-        if effect_function:
-            effect_function(self.__my_player)
-            self.__my_inventory.remove(item)
-            print(f"Used {item_type}")
-            return True
-        else:
-            print(f"No effect defined for {item_type}")
-            return False
+        self.__my_inventory.remove(item)
+        if item_type == RoomItem.HealingPotion:
+            self.use_healing_potion(self.__my_player)
+        elif item_type == RoomItem.VisionPotion:
+            self.use_vision_potion(self.__my_player)
+        return True
 
     def use_healing_potion(self, player: DungeonCharacter):
         if self.__my_player.get_health() == self.__my_player.get_max_health():
             return
-        for i, item in enumerate(self.__my_inventory):
-            if item == RoomItem.HealingPotion.value:
-                self.__my_inventory.pop(i)
-                heal_amount = int(5 + random() * 10)
-                new_health = min(player.get_health() + heal_amount, player.get_max_health())
-                player.set_health(new_health)
-                return
+        heal_amount = int(5 + random() * 10)
+        new_health = min(player.get_health() + heal_amount, player.get_max_health())
+        player.set_health(new_health)
+        return
 
     def use_vision_potion(self, player):
         surrounding_rooms = self.get_adjacent_rooms()
@@ -185,6 +177,14 @@ class DungeonAdventure:
                 self.__my_player._DungeonCharacter__my_damage_min = 999999
                 self.__my_player._DungeonCharacter__my_damage_max = 999999
                 self.__my_player._DungeonCharacter__my_chance_to_hit = 999999
+            elif event == DungeonEvent.GAMEPLAY_USE_HEALING_POTION:
+                if self.use_item(RoomItem.HealingPotion):
+                    pygame.event.post(pygame.event.Event(pygame.USEREVENT, {"key": DungeonEvent.GAMEPLAY_USE_HEALING_POTION}))
+            elif event == DungeonEvent.GAMEPLAY_USE_VISION_POTION:
+                pass
+                # currently not functioning due to "use vision potion" function
+                # if self.use_item(RoomItem.VisionPotion):
+                #     pygame.event.post(pygame.event.Event(pygame.USEREVENT, {"key": DungeonEvent.GAMEPLAY_USE_VISION_POTION}))
 
     def get_dungeon(self):
         """
