@@ -158,6 +158,15 @@ def draw_help() -> None:
                     return
 
 
+def get_message(message) -> None:
+    message = get_font(24).render(message, True, 'white')
+    message_rect = message.get_rect(center=(SCREEN.get_width() // 2, 610))
+    SCREEN.blit(message, message_rect)
+    pygame.display.flip()
+    pygame.time.delay(1000)  # Delay for 1 seconds
+    pygame.display.flip()
+
+
 def __gameplay(game: DungeonAdventure) -> None:
     """
     This method starts the gameplay for the Dungeon Adventure game and draws the game on the screen.
@@ -173,7 +182,7 @@ def __gameplay(game: DungeonAdventure) -> None:
     dungeon_width = tile_size * game.get_dungeon().get_dimensions()[0]
     dungeon_height = tile_size * game.get_dungeon().get_dimensions()[1]
     dungeon_starting_x = (SCREEN.get_width() - dungeon_width) // 2
-    dungeon_starting_y = (SCREEN.get_height() - dungeon_height) // 2 #+ tile_size
+    dungeon_starting_y = (SCREEN.get_height() - dungeon_height) // 2  #+ tile_size
     SCREEN.fill("black")
     draw_inventory(game.get_inventory())
     draw_dungeon(SCREEN, game.get_dungeon(), tile_size, dungeon_starting_x // tile_size,
@@ -243,15 +252,16 @@ def __gameplay(game: DungeonAdventure) -> None:
                 # If you fall into a pit, flash the screen and update the health bar
                 if event.key == DungeonEvent.GAMEPLAY_PIT_DAMAGE:
                     flash_screen((255, 0, 0, 128))
+                    get_message("You have fallen into a pit!")
                     if not game.get_player().is_alive():
                         GameOver.start(SCREEN)
                         return
                 if event.key == DungeonEvent.GAMEPLAY_USE_HEALING_POTION:
                     flash_screen((0, 255, 0, 128))
+                    get_message("You have use a heal potion!")
                 if event.key == DungeonEvent.GAMEPLAY_USE_VISION_POTION:
                     flash_screen((0, 0, 255, 128))
-
-
+                    get_message("You have used a vision potion!")
         pygame.display.flip()
         pygame.time.delay(1000 // 60)
 
@@ -270,6 +280,7 @@ def flash_screen(color: tuple[int, int, int, int] = (0, 0, 0, 128)) -> None:
         SCREEN.blit(prev_screen, (0, 0))
         pygame.display.flip()
         pygame.time.delay(50)
+
 
 def handle_cheat_code(event) -> None:
     """
@@ -319,9 +330,6 @@ def draw_inventory(inventory: list[RoomItem]) -> None:
         if pillars <= 0:
             y += 10
         pillars -= 1
-
-
-
 
 
 def draw_dungeon(screen: pygame.Surface, dungeon, room_size, x, y) -> None:
