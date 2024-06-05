@@ -261,7 +261,7 @@ def __gameplay(game: DungeonAdventure) -> None:
                     flash_screen((255, 0, 0, 128))
                     get_message("You have fallen into a pit!")
                     if not game.get_player().is_alive():
-                        # GameOver.start(SCREEN)
+                        GameOver.start(SCREEN)
                         return
                 if event.key == DungeonEvent.GAMEPLAY_USE_HEALING_POTION:
                     flash_screen((0, 255, 0, 128))

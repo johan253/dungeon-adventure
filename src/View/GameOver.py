@@ -1,6 +1,5 @@
 import pygame
 from View.MainMenu import get_font
-from View.MainMenu import main_menu
 from src.View.Button import Button
 
 
