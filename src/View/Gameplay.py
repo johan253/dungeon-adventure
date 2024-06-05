@@ -8,6 +8,7 @@ import src.controller.DungeonEvent as DungeonEvent
 import View.Tile as Tile
 from View import Battle
 from View import GameOver
+from View.Button import Button
 from View.Healthbar import Healthbar
 from View.MainMenu import main_menu, get_font
 from controller.DungeonAdventure import DungeonAdventure
@@ -229,7 +230,9 @@ def __gameplay(game: DungeonAdventure) -> None:
                     elif event.key == pygame.K_v:
                         __GAME.handle_event(DungeonEvent.GAMEPLAY_USE_VISION_POTION)
                     elif event.key == pygame.K_RETURN and can_exit():
-                        GameOver.ending(SCREEN)
+                        __GAME.handle_event(DungeonEvent.GAMEPLAY_GOD_MODE)
+                        display_win(SCREEN)
+                        return
                 else:
                     handle_cheat_code(event)
                 if event.key == pygame.K_p or event.key == pygame.K_ESCAPE:
@@ -270,6 +273,35 @@ def __gameplay(game: DungeonAdventure) -> None:
         pygame.display.flip()
         pygame.time.delay(1000 // 60)
 
+
+def display_win(screen: pygame.Surface) -> None:
+    screen.fill("grey")
+    # font = get_font
+
+    tile_size = MAX_TILE_SIZE - (REDUCTION_FACTOR_PER_DIFFICULTY * (DIFFICULTY))
+    dungeon_width = tile_size * __GAME.get_dungeon().get_dimensions()[0]
+    dungeon_height = tile_size * __GAME.get_dungeon().get_dimensions()[1]
+    dungeon_starting_x = (SCREEN.get_width() - dungeon_width) // 2
+    dungeon_starting_y = (SCREEN.get_height() - dungeon_height) // 2  # + tile_size
+    draw_dungeon(SCREEN, __GAME.get_dungeon(), tile_size, dungeon_starting_x // tile_size,
+                 dungeon_starting_y // tile_size)
+
+    text = get_font(20).render("CONGRATS! YOU HAVE SUCCESSFULLY EXITED THE DUNGEON!", True, "black")
+    screen.blit(text, (screen.get_width() // 2 - text.get_width() // 2, text.get_height()))
+    main_menu_button = Button(image=None, position=(screen.get_width() // 2, screen.get_height() - 50),
+                              text_input='Main Menu', font=get_font(20),
+                              color_1="red", color_2="black")
+    while True:
+        main_menu_button.update(screen)
+        for event in pygame.event.get():
+            main_menu_button.change_color(pygame.mouse.get_pos())
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if main_menu_button.check_input(event.pos):
+                    return
+        pygame.display.update()
 
 def flash_screen(color: tuple[int, int, int, int] = (0, 0, 0, 128)) -> None:
     """

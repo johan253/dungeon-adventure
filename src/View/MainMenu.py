@@ -59,14 +59,17 @@ def play():
 
 def select_name():
     text_field = TextField(440, 360, 400, 50)
-    continue_button = Button(image=None, position=(640, 460), text_input='Continue', font=get_font(15),
+    enter_name_text = get_font(15).render('Enter your name:', True, "white")
+    enter_name_rect = enter_name_text.get_rect(center=(640, 260))
+    continue_button = Button(image=None, position=(640, 560), text_input='Continue', font=get_font(15),
                              color_1="white", color_2="red")
-    back_button = Button(image=None, position=(640, 560), text_input='Back', font=get_font(15),
+    back_button = Button(image=None, position=(640, 660), text_input='Back', font=get_font(15),
                          color_1="white", color_2="red")
     name = ""
     while True:
         pygame.display.set_caption('SELECT NAME')
         Screen.fill("black")
+        Screen.blit(enter_name_text, enter_name_rect)
         name = text_field.get_text()
 
         continue_button.change_color([pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1]])

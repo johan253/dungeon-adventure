@@ -1,5 +1,6 @@
 import pygame
 
+
 class TextField:
     def __init__(self, x, y, width, height, text='', color=(255, 255, 255)):
         self.rect = pygame.Rect(x, y, width, height)
@@ -11,7 +12,7 @@ class TextField:
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.rect.collidepoint(event.pos):
-                self.active = not self.active
+                self.active = True
             else:
                 self.active = False
         if event.type == pygame.KEYDOWN:
@@ -27,7 +28,7 @@ class TextField:
 
     def draw(self, screen):
         pygame.draw.rect(screen, self.color, self.rect, 2)
-        screen.blit(self.txt_surface, (self.rect.x+5, self.rect.y+5))
+        screen.blit(self.txt_surface, (self.rect.x + 5, self.rect.y + 5))
 
     def get_text(self):
         return self.text
