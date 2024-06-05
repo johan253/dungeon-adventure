@@ -151,13 +151,13 @@ def load():
 
         Screen.fill("black")
 
-        load_text = get_font(15).render('Select Load to Continue a Previous game:', True, (255, 255, 0))
+        load_text = get_font(24).render('Select Load to Continue a Previous game:', True, (255, 255, 0))
         load_rect = load_text.get_rect(center=(650, 60))
         Screen.blit(load_text, load_rect)
 
-        load_button = Button(image=None, position=(640, 260), text_input='LOAD', font=get_font(15),
+        load_button = Button(image=None, position=(640, 360), text_input='LOAD GAME', font=get_font(24),
                              color_1="white", color_2="red")
-        load_back_button = Button(image=None, position=(640, 560), text_input='Back', font=get_font(15),
+        load_back_button = Button(image=None, position=(640, 610), text_input='Back', font=get_font(24),
                                   color_1="white", color_2="red")
         load_back_button.change_color([load_mouse_position[0], load_mouse_position[1]])
         load_back_button.update(Screen)

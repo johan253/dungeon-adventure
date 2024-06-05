@@ -1,6 +1,8 @@
 import pygame
 import src.controller.DungeonEvent as DungeonEvent
 from random import random, choice, randint
+
+from View import Gameplay
 from model.DugeonRoom import DungeonRoom
 from model.DungeonCharacter import DungeonCharacter
 from model.Dungeon import Dungeon
@@ -39,7 +41,9 @@ class DungeonAdventure:
         self.__my_visited_rooms = set()
         self.__my_visited_rooms.add(self.__my_location)
         self.__my_battle_state = False
-        # current rooms
+        # Gameplay.get_ending()
+
+    # current rooms
         # dungeon
 
     def move_player(self, direction) -> bool:
@@ -64,8 +68,8 @@ class DungeonAdventure:
                 self.__my_player.damage(randint(1, 20))
                 print(f"DA: Player fell into a pit and took 5 damage")
                 pygame.event.post(pygame.event.Event(pygame.USEREVENT, {"key": DungeonEvent.GAMEPLAY_PIT_DAMAGE}))
-        next_room.set_items([])
 
+        next_room.set_items([])
         monster = next_room.get_monster()
         if monster:
             # TODO: Implement battle somehow? Gameplay.py currently just uses this state to swap to battle screen.

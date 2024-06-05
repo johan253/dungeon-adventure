@@ -73,39 +73,35 @@ def draw_pause() -> tuple[pygame.Rect, pygame.Rect, pygame.Rect, pygame.Rect, py
     pause_width = 360
 
     pygame.draw.rect(SCREEN, 'black', [0, 100, pause_width, pause_height])
-    pause_text = get_font(15).render("GAME PAUSED: TO RESUME PRESS ''ESC'' or ''P''", True, 'yellow')
+    pause_text = get_font(15).render("GAME PAUSED: TO Return PRESS ''ESC'' or ''P''", True, 'yellow')
     pause_rect = pause_text.get_rect(center=(640, 50))
     SCREEN.blit(pause_text, pause_rect)
 
     save_button_rect = pygame.Rect(30, 130, pause_width - 30, 50)
-    restart_button_rect = pygame.Rect(30, 230, pause_width - 30, 50)
-    main_menu_button_rect = pygame.Rect(30, 330, pause_width - 30, 50)
-    close_game_button_rect = pygame.Rect(30, 430, pause_width - 30, 50)
-    help_button_rect = pygame.Rect(30, 530, pause_width - 30, 50)
+    main_menu_button_rect = pygame.Rect(30, 230, pause_width - 30, 50)
+    close_game_button_rect = pygame.Rect(30, 330, pause_width - 30, 50)
+    help_button_rect = pygame.Rect(30, 430, pause_width - 30, 50)
 
     # Change color based on mouse position
     save_color = 'red' if save_button_rect.collidepoint(pause_mouse_position) else 'yellow'
-    restart_color = 'red' if restart_button_rect.collidepoint(pause_mouse_position) else 'yellow'
     main_menu_color = 'red' if main_menu_button_rect.collidepoint(pause_mouse_position) else 'yellow'
     close_game_color = 'red' if close_game_button_rect.collidepoint(pause_mouse_position) else 'yellow'
     help_color = 'red' if help_button_rect.collidepoint(pause_mouse_position) else 'yellow'
 
     # Draw buttons
     save_button_text = get_font(15).render('Save', True, save_color)
-    restart_button_text = get_font(15).render('Restart', True, restart_color)
     main_menu_button_text = get_font(15).render('Main Menu', True, main_menu_color)
     close_game_button_text = get_font(15).render('Close Game', True, close_game_color)
     help_button_text = get_font(15).render('Help', True, help_color)
 
     SCREEN.blit(save_button_text, (30, 130))
-    SCREEN.blit(restart_button_text, (30, 230))
-    SCREEN.blit(main_menu_button_text, (30, 330))
-    SCREEN.blit(close_game_button_text, (30, 430))
-    SCREEN.blit(help_button_text, (30, 530))
+    SCREEN.blit(main_menu_button_text, (30, 230))
+    SCREEN.blit(close_game_button_text, (30, 330))
+    SCREEN.blit(help_button_text, (30, 430))
 
     pygame.display.update()
 
-    return save_button_rect, restart_button_rect, main_menu_button_rect, close_game_button_rect, help_button_rect
+    return save_button_rect, main_menu_button_rect, close_game_button_rect, help_button_rect
 
 
 def draw_help() -> None:
@@ -114,11 +110,11 @@ def draw_help() -> None:
     """
     global SCREEN
     pygame.init()  # Initialize Pygame
-    help_height = 650
-    help_width = 660
+    help_height = 680
+    help_width = 680
     help_surface = pygame.Surface((help_width, help_height))
     help_surface.fill('black')
-
+    __GAME.get_inventory()
     text = ("""          To escape:\n
         1.Collect all 4 pillars of oop:\n
             a.Pillar of abstraction
@@ -130,19 +126,21 @@ def draw_help() -> None:
         the user will encounter the following:\n
         1.Monsters(they hit back)
         2.pits
-        3.potions\n\n
+        3.potions:
+            a.HEalth potion: use 'h'
+            b.Vision potion: use 'v'\n\n
         
         good luck adventurer!!""")
 
     help_font = pygame.font.SysFont(None, 20)
     y_offset = 30
     for line in text.split('\n'):
-        help_text = get_font(10).render(line, True, 'red')
-        text_rect = help_text.get_rect(center=(200, y_offset))
+        help_text = get_font(10).render(line, True, 'white')
+        text_rect = help_text.get_rect(center=(233, y_offset))
         help_surface.blit(help_text, text_rect)
         y_offset += text_rect.height + 1
 
-    SCREEN.blit(help_surface, (400, 80))
+    SCREEN.blit(help_surface, (360, 70))
 
     pygame.display.update()
 
@@ -163,7 +161,7 @@ def get_message(message) -> None:
     message_rect = message.get_rect(center=(SCREEN.get_width() // 2, 610))
     SCREEN.blit(message, message_rect)
     pygame.display.flip()
-    pygame.time.delay(1000)  # Delay for 1 seconds
+    pygame.time.delay(100)
     pygame.display.flip()
 
 
@@ -173,8 +171,9 @@ def __gameplay(game: DungeonAdventure) -> None:
     Also handles the events for the game.
     :param game: The game object
     """
-    global __GAME, pause, restart, save, main_menu_button, close_game, help_option
+    global __GAME, pause, save, main_menu_button, close_game, help_option
     global SCREEN
+    count = 0
     __GAME = game
     health_text = pygame.font.Font("Assets/Dungeon Depths.ttf", 12).render("Health", True, (255, 255, 255))
     title_text_rect = health_text.get_rect(center=(SCREEN.get_width() // 2, health_text.get_height() + 685))
@@ -190,26 +189,25 @@ def __gameplay(game: DungeonAdventure) -> None:
 
     healthbar_width = SCREEN.get_width() // 3
     healthbar_height = 48
-    healthbar_starting_x = healthbar_width + 10
+    healthbar_starting_x = dungeon_starting_x + (dungeon_width // 2) - (healthbar_width // 2) - 33
     healthbar_starting_y = health_text.get_height() + 625
     healthbar = Healthbar(game.get_player())
     SCREEN.blit(health_text, title_text_rect)
-    while True:
 
+    while True:
+        get_ending()
         if not pause:
             pygame.display.set_caption('DUNGEON ADVENTURE')
             healthbar.draw(SCREEN, (healthbar_starting_x, healthbar_starting_y), (healthbar_width, healthbar_height))
         if pause:
             pygame.display.set_caption('PAUSE')
-            save, restart, main_menu_button, close_game, help_option = draw_pause()
+            save, main_menu_button, close_game, help_option = draw_pause()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN and pause:
                 if save.collidepoint(event.pos):
                     save_game_state(__GAME)
-                if restart.collidepoint(event.pos):
-                    pass
                 if main_menu_button.collidepoint(event.pos):
                     pause = False
                     return
@@ -247,6 +245,7 @@ def __gameplay(game: DungeonAdventure) -> None:
                              dungeon_starting_y // tile_size)
                 healthbar.draw(SCREEN, (healthbar_starting_x, healthbar_starting_y),
                                (healthbar_width, healthbar_height))
+
             # Handle custom events thrown by the game
             if event.type == pygame.USEREVENT:
                 # If you fall into a pit, flash the screen and update the health bar
@@ -254,7 +253,7 @@ def __gameplay(game: DungeonAdventure) -> None:
                     flash_screen((255, 0, 0, 128))
                     get_message("You have fallen into a pit!")
                     if not game.get_player().is_alive():
-                        GameOver.start(SCREEN)
+                        # GameOver.start(SCREEN)
                         return
                 if event.key == DungeonEvent.GAMEPLAY_USE_HEALING_POTION:
                     flash_screen((0, 255, 0, 128))
@@ -262,6 +261,9 @@ def __gameplay(game: DungeonAdventure) -> None:
                 if event.key == DungeonEvent.GAMEPLAY_USE_VISION_POTION:
                     flash_screen((0, 0, 255, 128))
                     get_message("You have used a vision potion!")
+
+        get_ending()
+
         pygame.display.flip()
         pygame.time.delay(1000 // 60)
 
@@ -296,6 +298,14 @@ def handle_cheat_code(event) -> None:
         LAST_FOUR_BUTTONS.append(event.key)
         if len(LAST_FOUR_BUTTONS) > 4:
             LAST_FOUR_BUTTONS.pop(0)
+
+
+def get_ending() -> None:
+    if (RoomItem.PillarOfInheritance.value in __GAME.get_inventory() and
+            RoomItem.PillarOfAbstraction.value in __GAME.get_inventory() and
+            RoomItem.PillarOfEncapsulation.value in __GAME.get_inventory()
+            and RoomItem.PillarOfPolymorphism.value in __GAME.get_inventory()):
+        GameOver.ending(SCREEN)
 
 
 def draw_inventory(inventory: list[RoomItem]) -> None:
