@@ -195,7 +195,6 @@ def __gameplay(game: DungeonAdventure) -> None:
     SCREEN.blit(health_text, title_text_rect)
 
     while True:
-        get_ending()
         if not pause:
             pygame.display.set_caption('DUNGEON ADVENTURE')
             healthbar.draw(SCREEN, (healthbar_starting_x, healthbar_starting_y), (healthbar_width, healthbar_height))
@@ -229,6 +228,8 @@ def __gameplay(game: DungeonAdventure) -> None:
                         __GAME.handle_event(DungeonEvent.GAMEPLAY_USE_HEALING_POTION)
                     elif event.key == pygame.K_v:
                         __GAME.handle_event(DungeonEvent.GAMEPLAY_USE_VISION_POTION)
+                    elif event.key == pygame.K_RETURN and can_exit():
+                        GameOver.ending(SCREEN)
                 else:
                     handle_cheat_code(event)
                 if event.key == pygame.K_p or event.key == pygame.K_ESCAPE:
@@ -245,7 +246,11 @@ def __gameplay(game: DungeonAdventure) -> None:
                              dungeon_starting_y // tile_size)
                 healthbar.draw(SCREEN, (healthbar_starting_x, healthbar_starting_y),
                                (healthbar_width, healthbar_height))
-
+            if __GAME.get_current_room() == __GAME.get_dungeon().get_exit():
+                if not can_exit():
+                    get_message("You must collect all 4 pillars of OOP to exit!")
+                else:
+                    get_message("Press Enter to escape!")
             # Handle custom events thrown by the game
             if event.type == pygame.USEREVENT:
                 # If you fall into a pit, flash the screen and update the health bar
@@ -261,8 +266,6 @@ def __gameplay(game: DungeonAdventure) -> None:
                 if event.key == DungeonEvent.GAMEPLAY_USE_VISION_POTION:
                     flash_screen((0, 0, 255, 128))
                     get_message("You have used a vision potion!")
-
-        get_ending()
 
         pygame.display.flip()
         pygame.time.delay(1000 // 60)
@@ -300,12 +303,14 @@ def handle_cheat_code(event) -> None:
             LAST_FOUR_BUTTONS.pop(0)
 
 
-def get_ending() -> None:
+def can_exit() -> bool:
     if (RoomItem.PillarOfInheritance.value in __GAME.get_inventory() and
             RoomItem.PillarOfAbstraction.value in __GAME.get_inventory() and
-            RoomItem.PillarOfEncapsulation.value in __GAME.get_inventory()
-            and RoomItem.PillarOfPolymorphism.value in __GAME.get_inventory()):
-        GameOver.ending(SCREEN)
+            RoomItem.PillarOfEncapsulation.value in __GAME.get_inventory() and
+            RoomItem.PillarOfPolymorphism.value in __GAME.get_inventory() and
+            __GAME.get_current_room() == __GAME.get_dungeon().get_exit()):
+        return True
+    return False
 
 
 def draw_inventory(inventory: list[RoomItem]) -> None:
