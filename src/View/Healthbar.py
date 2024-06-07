@@ -1,5 +1,5 @@
 import pygame
-from src.model.DungeonCharacter import DungeonCharacter
+from model.DungeonCharacter import DungeonCharacter
 
 
 class Healthbar:

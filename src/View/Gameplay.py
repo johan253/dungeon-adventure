@@ -3,7 +3,7 @@ import sys
 from collections import defaultdict
 
 import pygame
-import src.controller.DungeonEvent as DungeonEvent
+import controller.DungeonEvent as DungeonEvent
 
 import View.Tile as Tile
 from View import Battle
