@@ -13,3 +13,4 @@ def get_sprite(character: str) -> pygame.Surface:
     image = pygame.transform.scale(image, (250, 250))
     return image
 
+

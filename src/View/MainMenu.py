@@ -15,11 +15,16 @@ pygame.display.set_caption('DUNGEON ADVENTURE')
 background = pygame.image.load('Assets/mainmenu.png')
 background = pygame.transform.scale(background, (1280, 720))
 
+thief_image = pygame.image.load('Assets/info_thief.png')
+warrior_image = pygame.image.load('Assets/info_warrior.png')
+priest_image = pygame.image.load('Assets/info_priestess.png')
+
 game: DungeonAdventure | None = None
 
 
 def get_font(size):
     return pygame.font.Font('Assets/Dungeon Depths.ttf', size)
+
 
 
 def play():
@@ -97,27 +102,72 @@ def select_name():
 
 def select_hero(player_name: str):
     buttons: dict[str, Button] = {
-        "thief": Button(image=None, position=(640, 260), text_input='Thief', font=get_font(15),
-                        color_1="white", color_2="red"),
+        "thief": Button(image=None, position=(620, 100), text_input='Thief', font=get_font(15),
+                        color_1="white", color_2='orange'),
 
-        "warrior": Button(image=None, position=(640, 360), text_input='Warrior', font=get_font(15),
+        "warrior": Button(image=None, position=(640, 300), text_input='Warrior', font=get_font(15),
                           color_1="white", color_2="red"),
 
-        "priestess": Button(image=None, position=(640, 460), text_input='Priestess', font=get_font(15),
-                            color_1="white", color_2="red"),
+        "priestess": Button(image=None, position=(645, 500), text_input='Priestess', font=get_font(15),
+                            color_1="white", color_2="purple"),
 
-        "back": Button(image=None, position=(640, 660), text_input='Back', font=get_font(15),
+        "back": Button(image=None, position=(620, 700), text_input='Back', font=get_font(15),
                        color_1="white", color_2="red")
     }
-    play_text = get_font(15).render(f'Welcome {player_name}! Select a Hero:', True, (255, 255, 0))
-    play_rect = play_text.get_rect(center=(640, 160))
+    play_text = get_font(15).render(f'Welcome {player_name}! Select a Hero:', True, 'cyan')
+    play_rect = play_text.get_rect(center=(640, 40))
+
     while True:
         pygame.display.set_caption('SELECT HERO')
         play_mouse_position = pygame.mouse.get_pos()
 
         Screen.fill("black")
-
+        Screen.blit(thief_image, (440, 138))
+        Screen.blit(warrior_image, (440, 338))
+        Screen.blit(priest_image, (440, 538))
         Screen.blit(play_text, play_rect)
+
+        warrior_stats = ("""health: 125
+        \nmin/max damage: 35/60                       
+        \nattack speed: 4
+        \nchance to hit: 0.8
+        \nchance to block: 0.2
+                         """)
+        warrior_lines = warrior_stats.split('\n')  # Split the text into lines
+        warrior_y_offset = 340  # Initial Y offset for the first line
+        for warrior_stat in warrior_lines:
+            warrior_text = get_font(8).render(warrior_stat, True, 'yellow')
+            warrior_rect = warrior_text.get_rect(midleft=(580, warrior_y_offset))
+            Screen.blit(warrior_text, warrior_rect)
+            warrior_y_offset += warrior_rect.height + 0.5
+
+        thief_stats = ("""health: 75
+        \nmin/max damage: 20/40                       
+        \nattack speed: 6
+        \nchance to hit: 0.8
+        \nchance to block: 0.4
+                         """)
+        thief_lines = thief_stats.split('\n')  # Split the text into lines
+        thief_y_offset = 140  # Initial Y offset for the first line
+        for thief_stat in thief_lines:
+            thief_text = get_font(8).render(thief_stat, True, 'yellow')
+            thief_rect = thief_text.get_rect(midleft=(580, thief_y_offset))
+            Screen.blit(thief_text, thief_rect)
+            thief_y_offset += thief_rect.height + 0.5
+
+        priestess_stats = ("""health: 75
+        \nmin/max damage: 25/45                       
+        \nattack speed: 5
+        \nchance to hit: 0.7
+        \nchance to block: 0.3
+                         """)
+        priestess_lines = priestess_stats.split('\n')  # Split the text into lines
+        priestess_y_offset = 540  # Initial Y offset for the first line
+        for priestess_stat in priestess_lines:
+            priestess_text = get_font(8).render(priestess_stat, True, 'yellow')
+            priestess_rect = priestess_text.get_rect(midleft=(580, priestess_y_offset))
+            Screen.blit(priestess_text, priestess_rect)
+            priestess_y_offset += priestess_rect.height + 0.5
 
         for button in buttons.values():
             button.change_color([play_mouse_position[0], play_mouse_position[1]])
