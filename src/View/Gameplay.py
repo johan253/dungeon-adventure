@@ -11,6 +11,7 @@ from View import GameOver
 from View.Button import Button
 from View.Healthbar import Healthbar
 from View.MainMenu import main_menu, get_font
+from View.PlaySound import music, sound_efx
 from controller.DungeonAdventure import DungeonAdventure
 from model.DugeonRoom import DungeonRoom
 from model.RoomItem import RoomItem
@@ -194,14 +195,16 @@ def __gameplay(game: DungeonAdventure) -> None:
     healthbar_starting_y = health_text.get_height() + 625
     healthbar = Healthbar(game.get_player())
     SCREEN.blit(health_text, title_text_rect)
-
+    music('Assets/Sounds/dungeon.wav', -1)
     while True:
+
         if not pause:
             pygame.display.set_caption('DUNGEON ADVENTURE')
             healthbar.draw(SCREEN, (healthbar_starting_x, healthbar_starting_y), (healthbar_width, healthbar_height))
         if pause:
             pygame.display.set_caption('PAUSE')
             save, main_menu_button, close_game, help_option = draw_pause()
+            pygame.mixer.music.set_volume(0.5)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
@@ -210,6 +213,7 @@ def __gameplay(game: DungeonAdventure) -> None:
                     save_game_state(__GAME)
                 if main_menu_button.collidepoint(event.pos):
                     pause = False
+                    music('Assets/Sounds/main_menu.wav',-1)
                     return
                 if close_game.collidepoint(event.pos):
                     sys.exit()
@@ -219,12 +223,16 @@ def __gameplay(game: DungeonAdventure) -> None:
                 if not pause:
                     if event.key == pygame.K_w:
                         __GAME.handle_event(DungeonEvent.GAMEPLAY_MOVE_NORTH)
+                        sound_efx('Assets/Sounds/footstep.wav',0)
                     elif event.key == pygame.K_s:
                         __GAME.handle_event(DungeonEvent.GAMEPLAY_MOVE_SOUTH)
+                        sound_efx('Assets/Sounds/footstep.wav',0)
                     elif event.key == pygame.K_a:
                         __GAME.handle_event(DungeonEvent.GAMEPLAY_MOVE_WEST)
+                        sound_efx('Assets/Sounds/footstep.wav',0)
                     elif event.key == pygame.K_d:
                         __GAME.handle_event(DungeonEvent.GAMEPLAY_MOVE_EAST)
+                        sound_efx('Assets/Sounds/footstep.wav',0)
                     elif event.key == pygame.K_h:
                         __GAME.handle_event(DungeonEvent.GAMEPLAY_USE_HEALING_POTION)
                     elif event.key == pygame.K_v:
@@ -240,6 +248,7 @@ def __gameplay(game: DungeonAdventure) -> None:
                 if game.get_battle_state():
                     Battle.start(SCREEN, game)
                     if not game.get_player().is_alive():
+                        music('Assets/Sounds/defeat.wav', 0)
                         GameOver.start(SCREEN)
                         return
                 SCREEN.fill("black")
@@ -259,14 +268,18 @@ def __gameplay(game: DungeonAdventure) -> None:
                 # If you fall into a pit, flash the screen and update the health bar
                 if event.key == DungeonEvent.GAMEPLAY_PIT_DAMAGE:
                     flash_screen((255, 0, 0, 128))
+                    sound_efx('Assets/Sounds/pit.wav', 0)
                     get_message("You have fallen into a pit!")
                     if not game.get_player().is_alive():
+                        music('Assets/Sounds/defeat.wav', 0)
                         GameOver.start(SCREEN)
                         return
                 if event.key == DungeonEvent.GAMEPLAY_USE_HEALING_POTION:
+                    sound_efx('Assets/Sounds/heal.wav', 0)
                     flash_screen((0, 255, 0, 128))
                     get_message("You have use a heal potion!")
                 if event.key == DungeonEvent.GAMEPLAY_USE_VISION_POTION:
+                    sound_efx('Assets/Sounds/vision.wav', 0)
                     flash_screen((0, 0, 255, 128))
                     get_message("You have used a vision potion!")
 
@@ -277,7 +290,7 @@ def __gameplay(game: DungeonAdventure) -> None:
 def display_win(screen: pygame.Surface) -> None:
     screen.fill("grey")
     # font = get_font
-
+    music('Assets/Sounds/win.wav', 0)
     tile_size = MAX_TILE_SIZE - (REDUCTION_FACTOR_PER_DIFFICULTY * (DIFFICULTY))
     dungeon_width = tile_size * __GAME.get_dungeon().get_dimensions()[0]
     dungeon_height = tile_size * __GAME.get_dungeon().get_dimensions()[1]
@@ -300,6 +313,8 @@ def display_win(screen: pygame.Surface) -> None:
                 exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if main_menu_button.check_input(event.pos):
+                    pygame.mixer.music.stop()
+                    music('Assets/Sounds/main_menu.wav', -1)
                     return
         pygame.display.update()
 

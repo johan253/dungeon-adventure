@@ -3,6 +3,7 @@ import src.controller.DungeonEvent as DungeonEvent
 from random import random, choice, randint
 
 from View import Gameplay
+from View.PlaySound import sound_efx, music
 from model.DugeonRoom import DungeonRoom
 from model.DungeonCharacter import DungeonCharacter
 from model.Dungeon import Dungeon
@@ -63,6 +64,7 @@ class DungeonAdventure:
         for item in next_room.get_items():
             if item.value not in RoomItem.get_static_items():
                 self.__my_inventory.append(item.value)
+                sound_efx('Assets/Sounds/inventory.wav', 0)
                 print(f"DA: Picked up {item}")
             if item.value == RoomItem.Pit.value:
                 self.__my_player.damage(randint(1, 20))
@@ -137,6 +139,7 @@ class DungeonAdventure:
         :param event: The event to be handled
         """
         # If there is a battle, handle the battle event
+
         if self.__my_battle_state:
             if event == DungeonEvent.BATTLE_ATTACK:
                 fast_attacker = self.__my_player
@@ -151,7 +154,6 @@ class DungeonAdventure:
                     slow_attacker.attack(fast_attacker)
                 if not fast_attacker.is_alive() or not slow_attacker.is_alive():
                     self.__my_battle_state = False
-
             elif event == DungeonEvent.BATTLE_SPECIAL:
                 player = self.__my_player
                 monster = self.__my_location.get_monster()

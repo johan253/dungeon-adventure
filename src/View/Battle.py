@@ -1,6 +1,7 @@
 import pygame
 import sys
 import src.controller.DungeonEvent as DungeonEvent
+from View.PlaySound import music, sound_efx
 from src.controller.DungeonAdventure import DungeonAdventure
 from src.model.DungeonCharacter import DungeonCharacter
 from src.model.RoomItem import RoomItem
@@ -38,6 +39,7 @@ def start(the_screen: pygame.Surface, game: DungeonAdventure) -> None:
     ENEMY = game.get_current_room().get_monster()
     OPTIONS_POS = (50, SCREEN.get_height() - 200)
     update_available_health_potions()
+
     if ENEMY is None:
         raise Exception("No enemy in room")
     __draw_battle_scene(game.get_player(), ENEMY)
@@ -115,10 +117,13 @@ def handle_keydown(event: pygame.event.Event) -> None:
         # else, handle the selected option
         if SELECTED_OPTION == 0:
             the_action = DungeonEvent.BATTLE_ATTACK
+            sound_efx('Assets/Sounds/attack.wav', 0)
         elif SELECTED_OPTION == 1:
             the_action = DungeonEvent.BATTLE_SPECIAL
+            sound_efx('Assets/Sounds/attack.wav', 0)
         elif SELECTED_OPTION == 2:
             the_action = DungeonEvent.BATTLE_HEAL
+            sound_efx('Assets/Sounds/heal.wav', 0)
     # If an action was selected, handle the action
     if the_action is None:
         return

@@ -1,6 +1,7 @@
 import pygame, sys
 from View.Button import Button
 from View import Gameplay
+from View.PlaySound import music
 from View.TextField import TextField
 from model.DugeonRoom import DungeonRoom
 from src.controller.DungeonAdventure import DungeonAdventure
@@ -283,6 +284,8 @@ def about():
 
 
 def main_menu():
+    music('Assets/Sounds/main_menu.wav', -1)
+
     menu_text = get_font(50).render("Dungeon Adventure", True, "White")
     menu_rect = menu_text.get_rect(center=(650, 100))
 
@@ -295,7 +298,6 @@ def main_menu():
     while True:
         pygame.display.set_caption('MAIN MENU')
         Screen.blit(background, (0, 0))
-
         mouse_position = pygame.mouse.get_pos()
 
         Screen.blit(menu_text, menu_rect)
