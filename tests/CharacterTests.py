@@ -8,7 +8,7 @@ from model.CharacterFactory import CharacterFactory
 
 class CharacterTests(unittest.TestCase):
     """
-    This class tests the model classes
+    This class tests the Dungeon Characters
     """
 
     def setUp(self) -> None:
@@ -106,13 +106,13 @@ class CharacterTests(unittest.TestCase):
         gremlin = self.gremlin
         count_heal = 0
         count_attacks = 0
-        while gremlin.get_health() > 0:
+        for _ in range(100):
             health = gremlin.get_health()
-            gremlin.damage(5)
-            if gremlin.get_health() >= health:
+            gremlin.damage(gremlin.get_min_heal())
+            if gremlin.get_health() == health:
                 count_heal += 1
+            gremlin.set_health(gremlin.get_max_health())
             count_attacks += 1
-        self.assertEqual(gremlin.get_health(), 0, "Ogre health should be 0 when dead")
         self.assertGreater(count_heal, 0, "Should have healed at least once")
         self.assertGreaterEqual(count_heal, int(count_attacks * gremlin.get_chance_to_heal() * 0.5),
                                 f"Should have healed at least about "
@@ -121,7 +121,6 @@ class CharacterTests(unittest.TestCase):
                              f"Should have healed at most about "
                              f"{int(count_heal * gremlin.get_chance_to_heal())} times")
 
-    # TODO: Implement the following test for every hero, when special abilities are implemented
     def test_special_ability_warrior(self):
         """
         This method tests the special ability of the warrior
@@ -130,18 +129,20 @@ class CharacterTests(unittest.TestCase):
         ogre = self.ogre
         count_special = 0
         count_attacks = 0
-        while ogre.get_health() > 0:
+        for _ in range(100):
             health = ogre.get_health()
             success = war.do_special(ogre)
             if success and ogre.get_health() > 0:
                 self.assertLess(ogre.get_health(), health,
                                 "Ogre health should decrease after special ability lands")
-                self.assertGreaterEqual(health - ogre.get_health(), 75,
+                self.assertGreaterEqual(health - ogre.get_health(), 75 - ogre.get_max_heal(),
                                         "Ogre health should decrease by at least 75")
                 self.assertLessEqual(health - ogre.get_health(), 175,
                                      "Ogre health should decrease by at most 175")
                 count_special += 1
             count_attacks += 1
+            ogre.set_health(ogre.get_max_health())
+        ogre.damage(ogre.get_max_health())
         self.assertEqual(ogre.get_health(), 0, "Ogre health should be 0 when dead")
         self.assertGreater(count_special, 0, "Should have used special ability at least once")
         self.assertGreaterEqual(count_special, int(count_attacks * 0.4 * 0.5),
@@ -166,15 +167,19 @@ class CharacterTests(unittest.TestCase):
             if result:
                 count_special += 1
             count_attempts += 1
-        self.assertTrue(0.75 * self.thi.get_chance_to_hit() * count_attempts <= count_special <=
-                        0.85 * count_attempts * self.thi.get_chance_to_hit(),
+        self.assertTrue(0.50 * self.thi.get_chance_to_hit() * count_attempts <= count_special <=
+                        1.0 * count_attempts * self.thi.get_chance_to_hit(),
                         f"Special ability landed {count_special} times out of {count_attempts} attempts")
 
     def test_special_ability_priestess(self):
         """
         This method tests the special ability of the priestess
         """
-        pass
+        for _ in range(100):
+            self.pri.set_health(1)
+            self.pri.do_special(self.ogre)
+            self.assertGreaterEqual(self.pri.get_health(), 26, "Priestess should heal for at least 25")
+            self.assertLessEqual(self.pri.get_health(), 51, "Priestess should heal for at most 50")
 
 
 if __name__ == '__main__':

@@ -10,6 +10,7 @@ class Monster(DungeonCharacter, ABC):
         - my_chance_to_heal: Float
             The chance that the monster will heal itself
     """
+
     def __new__(cls, *args, **kwargs):
         """
         This method overrides the __new__ method to prevent instantiation of the abstract Monster class
@@ -63,14 +64,13 @@ class Monster(DungeonCharacter, ABC):
         """
         return self.__my_max_heal
 
-
     def heal(self) -> None:
         """
         This method heals the monster based on chance to heal and healing range
         """
         if random() <= self.__my_chance_to_heal:
-            self.set_health(min(int(random() * (self.__my_max_heal - self.__my_min_heal) + self.__my_min_heal),
-                                self.get_max_health()))
+            heal_amount = int(random() * (self.__my_max_heal - self.__my_min_heal) + self.__my_min_heal)
+            self.set_health(min(self.get_health() + heal_amount, self.get_max_health()))
 
     def damage(self, the_damage: int) -> None:
         """
