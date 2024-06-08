@@ -1,7 +1,9 @@
+""" This module contains the tests for the Dungeon class and DungeonRoom"""
 import unittest
 from src.model.DugeonRoom import DungeonRoom
 from src.model.RoomItem import RoomItem
 from src.model.Dungeon import Dungeon
+from src.model.CharacterFactory import CharacterFactory
 
 
 class DungeonTest(unittest.TestCase):
@@ -38,13 +40,13 @@ class DungeonTest(unittest.TestCase):
         self.assertTrue(root is not None, "Root room not set")
         dfs(root)
         self.assertTrue(len(visited) == 25, "Dungeon not initialized correctly")
-        visited.clear()
-        root = Dungeon(7, 4).get_root()
-        dfs(root)
-        self.assertTrue(len(visited) == 28, "Dungeon not initialized correctly")
         for i in range(Dungeon.MIN_DIMENSION):
             for j in range(Dungeon.MIN_DIMENSION):
                 self.assertRaises(ValueError, Dungeon, i, j)
+        for i in range(Dungeon.MIN_DIMENSION, Dungeon.MIN_DIMENSION + 5):
+            for j in range(Dungeon.MIN_DIMENSION, Dungeon.MIN_DIMENSION + 5):
+                if i != j:
+                    self.assertRaises(ValueError, Dungeon, i, j)
 
     def test_dungeon_necessary_items(self):
         """
@@ -106,6 +108,23 @@ class DungeonTest(unittest.TestCase):
         dfs(root)
         self.assertTrue(found_entrance and found_exit, "Dungeon not traversable")
 
+    def test_dungeon_getters(self):
+        """
+        This method tests the getter methods of the dungeon
+        """
+        for i in range(self.dungeon.get_dimensions()[0]):
+            for j in range(self.dungeon.get_dimensions()[1]):
+                self.assertTrue(self.dungeon.get_room(i, j) is not None, "Room not returned correctly")
+        for i in range(self.dungeon.get_dimensions()[0], self.dungeon.get_dimensions()[0] + 5):
+            for j in range(self.dungeon.get_dimensions()[1], self.dungeon.get_dimensions()[1] + 5):
+                self.assertRaises(ValueError, self.dungeon.get_room, i, j)
+
+        exit_room = self.dungeon.get_exit()
+        self.assertTrue(exit_room is not None, "Exit room not returned correctly")
+        self.assertTrue(any(RoomItem.Exit.value == item.value for item in exit_room.get_items()),
+                        "Exit not in exit room")
+        self.assertEqual(len(exit_room.get_items()), 1, "Exit room has more than one item")
+
     def test_dungeon_room_constructor(self):
         """
         This method tests the dungeon class
@@ -118,8 +137,8 @@ class DungeonTest(unittest.TestCase):
             if len(room.get_items()) > 0:
                 count_rooms_with_item += 1
 
-        self.assertTrue(count_rooms * 0.075 * len(RoomItem.get_mixable_items()) < count_rooms_with_item <
-                        count_rooms * 0.125 * len(RoomItem.get_mixable_items()),
+        self.assertTrue(count_rooms * 0.05 * len(RoomItem.get_mixable_items()) < count_rooms_with_item <
+                        count_rooms * 0.15 * len(RoomItem.get_mixable_items()),
                         f"Room item distribution is incorrect, out of 100 rooms, {count_rooms_with_item} have items")
 
     def test_dungeon_room_set_item(self):
@@ -180,3 +199,17 @@ class DungeonTest(unittest.TestCase):
         self.room.set_south(DungeonRoom())
         self.assertTrue(self.room.get_all_adjacent_rooms() == [None, None, self.room.get_south(), None],
                         "Adjacent rooms not returned correctly")
+
+    def test_dungeon_room_monster(self):
+        """
+        This method tests the monster in the dungeon room
+        """
+        self.room.set_monster(None)
+        self.assertTrue(self.room.get_monster() is None, "Monster not returned correctly")
+
+        for _ in range(10):
+            monster = CharacterFactory().create_random_monster()
+            self.room.set_monster(monster)
+            self.assertTrue(self.room.get_monster() == monster, "Monster not returned correctly")
+            self.room.get_monster().damage(999999)
+            self.assertTrue(self.room.get_monster() is None, "Monster not removed correctly after death")

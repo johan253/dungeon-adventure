@@ -26,8 +26,8 @@ class Dungeon:
         :param the_width: The width of the dungeon
         :param the_height: The height of the dungeon
         """
-        if the_width < self.MIN_DIMENSION or the_height < self.MIN_DIMENSION:
-            raise ValueError("Dungeon must be at least 4x4")
+        if the_width < self.MIN_DIMENSION or the_height < self.MIN_DIMENSION or the_width != the_height:
+            raise ValueError("Dungeon must be at least 4x4 and must be square")
         self.__width: int = the_width
         self.__height: int = the_height
         self.__root: DungeonRoom | None = DungeonRoom()
@@ -100,7 +100,6 @@ class Dungeon:
         """
         Places the entrance, exit, and pillars in random rooms in the dungeon.
         """
-        # TODO: Possibly make entrance randomly placed as well
         self.__entrance = self.__root
         self.__entrance.set_items([RoomItem.Entrance])
         self.__entrance.set_monster(None)
