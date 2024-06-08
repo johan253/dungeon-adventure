@@ -43,6 +43,13 @@ TILE_SHEET = pygame.image.load("Assets/tiles.png")
 
 
 def get_tile(tile_type: tuple[int, int], width: int, height: int):
+    """
+    Getter for the tiles of the dungeon.
+    :param tile_type: The tile type to be obtained.
+    :param width: Width value of the tiles
+    :param height: Height value of the tile
+    :return: The image of the tile
+    """
     image = pygame.Surface((TILE_SIZE, TILE_SIZE))
     image.blit(TILE_SHEET, (0, 0), (tile_type[0] * TILE_SIZE, tile_type[1] * TILE_SIZE, TILE_SIZE, TILE_SIZE))
     image = pygame.transform.scale(image, (width, height))

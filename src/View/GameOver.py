@@ -32,6 +32,11 @@ def start(screen: pygame.Surface) -> None:
 
 
 def ending(screen: pygame.Surface) -> None:
+    """
+    This function displays a new window should the user exit the game successfully.
+    :param screen: The screen that the window will be on.
+    :return:
+    """
     screen.fill("grey")
     # font = get_font
     text = get_font(20).render("CONGRATS! YOU HAVE SUCCESSFULLY EXITED THE DUNGEON!", True, "black")

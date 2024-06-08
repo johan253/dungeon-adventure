@@ -159,6 +159,7 @@ def draw_help() -> None:
 
 
 def get_message(message) -> None:
+    """This function displays a message to the user based on actions in the dungeon."""
     message = get_font(24).render(message, True, 'white')
     message_rect = message.get_rect(center=(SCREEN.get_width() // 2, 610))
     SCREEN.blit(message, message_rect)
@@ -288,6 +289,11 @@ def __gameplay(game: DungeonAdventure) -> None:
 
 
 def display_win(screen: pygame.Surface) -> None:
+    """
+    This function displays the winning window for the user.
+    :param screen: The screen that will be used for displaying.
+    :return:
+    """
     screen.fill("grey")
     # font = get_font
     music('Assets/Sounds/win.wav', 0)
@@ -351,6 +357,10 @@ def handle_cheat_code(event) -> None:
 
 
 def can_exit() -> bool:
+    """
+    This function checks whether the user has met requirements to exit the dungeon.
+    :return: a boolean indicating whether the conditions have been met.
+    """
     if (RoomItem.PillarOfInheritance.value in __GAME.get_inventory() and
             RoomItem.PillarOfAbstraction.value in __GAME.get_inventory() and
             RoomItem.PillarOfEncapsulation.value in __GAME.get_inventory() and

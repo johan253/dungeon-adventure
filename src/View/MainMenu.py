@@ -24,11 +24,19 @@ game: DungeonAdventure | None = None
 
 
 def get_font(size):
+    """
+    This function returns the font for the whole game.
+    :param size: the size wanted for the font
+    :return: the assigned font
+    """
     return pygame.font.Font('Assets/Dungeon Depths.ttf', size)
 
 
-
 def play():
+    """
+    this function displays the play window of the main menu.
+    :return: N/A
+    """
     while True:
         pygame.display.set_caption('PLAY')
 
@@ -64,6 +72,10 @@ def play():
 
 
 def select_name():
+    """
+    This function displays the enter name for the main menu window after the play window.
+    :return: N/A
+    """
     text_field = TextField(440, 360, 400, 50)
     enter_name_text = get_font(15).render('Enter your name:', True, "white")
     enter_name_rect = enter_name_text.get_rect(center=(640, 260))
@@ -102,6 +114,11 @@ def select_name():
 
 
 def select_hero(player_name: str):
+    """
+    This function display the character window with all their stats.
+    :param player_name: The name entered by the user in the previous window.
+    :return: N/A
+    """
     buttons: dict[str, Button] = {
         "thief": Button(image=None, position=(620, 100), text_input='Thief', font=get_font(15),
                         color_1="white", color_2='orange'),
@@ -198,6 +215,10 @@ def select_hero(player_name: str):
 
 
 def load():
+    """
+    This function displays the load window in the main menu.
+    :return: N/A
+    """
     while True:
         pygame.display.set_caption('LOAD')
 
@@ -235,6 +256,10 @@ def load():
 
 
 def about():
+    """
+    This function displays the 'about' information of the program.
+    :return: N/A
+    """
     pygame.display.set_caption('ABOUT')
 
     info = """Welcome to Dungeon Adventure!
@@ -284,6 +309,10 @@ def about():
 
 
 def main_menu():
+    """
+    This function displays the initial main menu to navigate the game screen.
+    :return: N/A
+    """
     music('Assets/Sounds/main_menu.wav', -1)
 
     menu_text = get_font(50).render("Dungeon Adventure", True, "White")
