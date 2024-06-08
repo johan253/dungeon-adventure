@@ -1,4 +1,4 @@
-from model.Monster import Monster
+from src.model.Monster import Monster
 
 
 class Skeleton(Monster):

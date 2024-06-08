@@ -1,5 +1,5 @@
-from model.DugeonRoom import DungeonRoom
-from model.RoomItem import RoomItem
+from src.model.DugeonRoom import DungeonRoom
+from src.model.RoomItem import RoomItem
 import random
 
 

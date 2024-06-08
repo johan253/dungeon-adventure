@@ -1,7 +1,7 @@
 import random
-from model.CharacterFactory import CharacterFactory
-from model.Monster import Monster
-from model.RoomItem import RoomItem
+from src.model.CharacterFactory import CharacterFactory
+from src.model.Monster import Monster
+from src.model.RoomItem import RoomItem
 from typing import TypeVar
 
 T = TypeVar('T', bound='DungeonRoom')

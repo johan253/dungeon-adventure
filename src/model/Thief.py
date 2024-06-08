@@ -1,5 +1,5 @@
-from model.Hero import Hero
-from model.DungeonCharacter import DungeonCharacter
+from src.model.Hero import Hero
+from src.model.DungeonCharacter import DungeonCharacter
 import random
 
 

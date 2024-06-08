@@ -1,12 +1,12 @@
-import pygame
-import sys
-
-from View import Gameplay
+import pygame, sys
 from View.Button import Button
+from View import Gameplay
 from View.PlaySound import music
 from View.TextField import TextField
-from controller.DungeonAdventure import DungeonAdventure
-from model.CharacterFactory import CharacterFactory
+from model.DugeonRoom import DungeonRoom
+from src.controller.DungeonAdventure import DungeonAdventure
+from src.model.CharacterFactory import CharacterFactory
+from src.model.Dungeon import Dungeon
 
 pygame.init()
 
@@ -25,6 +25,7 @@ game: DungeonAdventure | None = None
 
 def get_font(size):
     return pygame.font.Font('Assets/Dungeon Depths.ttf', size)
+
 
 
 def play():

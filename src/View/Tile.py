@@ -1,5 +1,5 @@
 import pygame
-from model.CharacterFactory import CharacterFactory
+from src.model.CharacterFactory import CharacterFactory
 
 FLOOR = (4, 0)
 WALL_LEFT = (2, 1)

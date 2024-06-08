@@ -1,4 +1,4 @@
-from model.DungeonCharacter import DungeonCharacter
+from src.model.DungeonCharacter import DungeonCharacter
 from random import random
 from abc import ABC
 
