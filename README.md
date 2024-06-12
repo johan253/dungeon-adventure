@@ -11,6 +11,8 @@ Made as a final project for TCSS360 Software Development and Quality Assurance T
 - The user can start a game(create a name, select a character).
 - The user can save their current game and then load the game.
 - The user can access the About window to learn more about the game and how to play.
+- The user can traverse the dungeon with sounds effects, battle monster, and collect items.
+- The user can exit the dungeon through defeat after losing all health or victory by collecting all items required.
 ## Developed with
 - Python
 - SQLite
