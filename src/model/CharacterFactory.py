@@ -1,12 +1,12 @@
-from src.model.Hero import Hero
-from src.model.Monster import Monster
-from src.model.Skeleton import Skeleton
-from src.model.Ogre import Ogre
-from src.model.Gremlin import Gremlin
-from src.model.Warrior import Warrior
-from src.model.Thief import Thief
-from src.model.Priestess import Priestess
-from src.controller.DatabaseController import DatabaseController
+from model.Hero import Hero
+from model.Monster import Monster
+from model.Skeleton import Skeleton
+from model.Ogre import Ogre
+from model.Gremlin import Gremlin
+from model.Warrior import Warrior
+from model.Thief import Thief
+from model.Priestess import Priestess
+from controller.DatabaseController import DatabaseController
 from random import choice
 
 

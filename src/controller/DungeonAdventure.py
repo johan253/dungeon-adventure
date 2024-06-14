@@ -1,5 +1,5 @@
 import pygame
-import src.controller.DungeonEvent as DungeonEvent
+import controller.DungeonEvent as DungeonEvent
 from random import random, choice, randint
 
 from View import Gameplay

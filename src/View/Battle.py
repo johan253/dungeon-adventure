@@ -1,15 +1,14 @@
 import pygame
 import sys
-import src.controller.DungeonEvent as DungeonEvent
+import controller.DungeonEvent as DungeonEvent
 from View.PlaySound import music, sound_efx
-from src.controller.DungeonAdventure import DungeonAdventure
-from src.model.DungeonCharacter import DungeonCharacter
-from src.model.RoomItem import RoomItem
+from controller.DungeonAdventure import DungeonAdventure
+from model.DungeonCharacter import DungeonCharacter
+from model.RoomItem import RoomItem
 from View.Healthbar import Healthbar
-from View.MainMenu import get_font
 from View import Sprite
 
-FONT = get_font(12)
+FONT = pygame.font.Font(None, 36)
 ENEMY: DungeonCharacter | None = None
 SCREEN: pygame.Surface | None = None
 GAME: DungeonAdventure | None = None

@@ -3,14 +3,13 @@ import sys
 from collections import defaultdict
 
 import pygame
-import src.controller.DungeonEvent as DungeonEvent
+import controller.DungeonEvent as DungeonEvent
 
 import View.Tile as Tile
 from View import Battle
 from View import GameOver
 from View.Button import Button
 from View.Healthbar import Healthbar
-from View.MainMenu import main_menu, get_font
 from View.PlaySound import music, sound_efx
 from controller.DungeonAdventure import DungeonAdventure
 from model.DugeonRoom import DungeonRoom
@@ -75,7 +74,7 @@ def draw_pause() -> tuple[pygame.Rect, pygame.Rect, pygame.Rect, pygame.Rect, py
     pause_width = 360
 
     pygame.draw.rect(SCREEN, 'black', [0, 100, pause_width, pause_height])
-    pause_text = get_font(15).render("GAME PAUSED: TO Return PRESS ''ESC'' or ''P''", True, 'yellow')
+    pause_text = pygame.font.Font(None, 36).render("GAME PAUSED: TO Return PRESS ''ESC'' or ''P''", True, 'yellow')
     pause_rect = pause_text.get_rect(center=(640, 50))
     SCREEN.blit(pause_text, pause_rect)
 
@@ -91,10 +90,10 @@ def draw_pause() -> tuple[pygame.Rect, pygame.Rect, pygame.Rect, pygame.Rect, py
     help_color = 'red' if help_button_rect.collidepoint(pause_mouse_position) else 'yellow'
 
     # Draw buttons
-    save_button_text = get_font(15).render('Save', True, save_color)
-    main_menu_button_text = get_font(15).render('Main Menu', True, main_menu_color)
-    close_game_button_text = get_font(15).render('Close Game', True, close_game_color)
-    help_button_text = get_font(15).render('Help', True, help_color)
+    save_button_text = pygame.font.Font(None, 36).render('Save', True, save_color)
+    main_menu_button_text = pygame.font.Font(None, 36).render('Main Menu', True, main_menu_color)
+    close_game_button_text = pygame.font.Font(None, 36).render('Close Game', True, close_game_color)
+    help_button_text = pygame.font.Font(None, 36).render('Help', True, help_color)
 
     SCREEN.blit(save_button_text, (30, 130))
     SCREEN.blit(main_menu_button_text, (30, 230))
@@ -134,10 +133,10 @@ def draw_help() -> None:
         
         good luck adventurer!!""")
 
-    help_font = pygame.font.SysFont(None, 20)
+    help_font = pygame.font.SysFont(None, 24)
     y_offset = 30
     for line in text.split('\n'):
-        help_text = get_font(10).render(line, True, 'white')
+        help_text = pygame.font.Font(None, 10).render(line, True, 'white')
         text_rect = help_text.get_rect(center=(233, y_offset))
         help_surface.blit(help_text, text_rect)
         y_offset += text_rect.height + 1
@@ -160,7 +159,7 @@ def draw_help() -> None:
 
 def get_message(message) -> None:
     """This function displays a message to the user based on actions in the dungeon."""
-    message = get_font(24).render(message, True, 'white')
+    message = pygame.font.Font(None, 24).render(message, True, 'white')
     message_rect = message.get_rect(center=(SCREEN.get_width() // 2, 610))
     SCREEN.blit(message, message_rect)
     pygame.display.flip()
@@ -305,10 +304,10 @@ def display_win(screen: pygame.Surface) -> None:
     draw_dungeon(SCREEN, __GAME.get_dungeon(), tile_size, dungeon_starting_x // tile_size,
                  dungeon_starting_y // tile_size)
 
-    text = get_font(20).render("CONGRATS! YOU HAVE SUCCESSFULLY EXITED THE DUNGEON!", True, "black")
+    text = pygame.font.Font(None, 24).render("CONGRATS! YOU HAVE SUCCESSFULLY EXITED THE DUNGEON!", True, "black")
     screen.blit(text, (screen.get_width() // 2 - text.get_width() // 2, text.get_height()))
     main_menu_button = Button(image=None, position=(screen.get_width() // 2, screen.get_height() - 50),
-                              text_input='Main Menu', font=get_font(20),
+                              text_input='Main Menu', font=pygame.font.Font(None, 24),
                               color_1="red", color_2="black")
     while True:
         main_menu_button.update(screen)
@@ -375,7 +374,7 @@ def draw_inventory(inventory: list[RoomItem]) -> None:
     This method draws the inventory on the screen.
     :param inventory: The inventory to draw
     """
-    inventory_text = get_font(15).render("Inventory", True, 'yellow')
+    inventory_text = pygame.font.Font(None, 36).render("Inventory", True, 'yellow')
     SCREEN.blit(inventory_text, (SCREEN.get_width() - inventory_text.get_width() - 10, 10))
     icon_size = 32
 
@@ -396,7 +395,7 @@ def draw_inventory(inventory: list[RoomItem]) -> None:
     pillars = 3
     for item_image, item_count in image_to_count.items():
         SCREEN.blit(item_image, (x, y))
-        count_text = get_font(15).render(str(item_count), True, 'yellow')
+        count_text = pygame.font.Font(None, 36).render(str(item_count), True, 'yellow')
         SCREEN.blit(count_text, (x - icon_size, y))
         y += icon_size
         if pillars <= 0:

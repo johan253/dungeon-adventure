@@ -1,5 +1,5 @@
 import pygame
-from src.model import Warrior, Thief, Priestess, Ogre, Gremlin, Skeleton
+from model import Warrior, Thief, Priestess, Ogre, Gremlin, Skeleton
 
 WARRIOR = Warrior.Warrior.DEFAULT_NAME
 THIEF = Thief.Thief.DEFAULT_NAME

@@ -1,9 +1,9 @@
 """ This module contains the tests for the Dungeon class and DungeonRoom"""
 import unittest
-from src.model.DugeonRoom import DungeonRoom
-from src.model.RoomItem import RoomItem
-from src.model.Dungeon import Dungeon
-from src.model.CharacterFactory import CharacterFactory
+from model.DugeonRoom import DungeonRoom
+from model.RoomItem import RoomItem
+from model.Dungeon import Dungeon
+from model.CharacterFactory import CharacterFactory
 
 
 class DungeonTest(unittest.TestCase):
